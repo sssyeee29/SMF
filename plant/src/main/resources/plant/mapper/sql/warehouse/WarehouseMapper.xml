@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="plant.dev.warehouse.mapper.WarehouseMapper">
+
+    <select id="findItems" parameterType="map"
+            resultType="plant.dev.warehouse.dto.InventoryItemDto">
+        SELECT
+        item_id   AS id,
+        item_name AS name,
+        item_code AS code,
+        quantity,
+        location,
+        in_date   AS inDate,
+        out_date  AS outDate,
+        note,
+        category
+        FROM inventory_tbl
+        WHERE 1=1
+        <if test="search != null and search != ''">
+            AND (item_name LIKE CONCAT('%', #{search}, '%')
+            OR  item_code LIKE CONCAT('%', #{search}, '%'))
+        </if>
+        <if test="productType != null and productType != ''">
+            AND product_type = #{productType}
+        </if>
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+        <if test="status != null and status != ''">
+            AND delivery_status = #{status}
+        </if>
+        <if test="regDays != null">
+            AND in_date >= DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY)
+        </if>
+        ORDER BY item_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countItems" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM inventory_tbl
+        WHERE 1=1
+        <if test="search != null and search != ''">
+            AND (item_name LIKE CONCAT('%', #{search}, '%')
+            OR  item_code LIKE CONCAT('%', #{search}, '%'))
+        </if>
+        <if test="productType != null and productType != ''">
+            AND product_type = #{productType}
+        </if>
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+        <if test="status != null and status != ''">
+            AND delivery_status = #{status}
+        </if>
+        <if test="regDays != null">
+            AND in_date >= DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY)
+        </if>
+    </select>
+
+    <delete id="deleteItem" parameterType="long">
+        DELETE FROM inventory_tbl WHERE item_id = #{id}
+    </delete>
+
+</mapper>

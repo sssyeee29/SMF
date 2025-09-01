@@ -1,0 +1,51 @@
+/* App.css */
+
+.app-container {
+  min-height: 100vh;
+}
+
+.app-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-top: 1px solid #d1d5db;
+  padding: 0.5rem;
+  z-index: 10;
+}
+
+.app-nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.app-nav-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4b5563;
+}
+
+.app-nav-button.active {
+  color: #2563eb;
+}
+
+.app-nav-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.app-nav-text {
+  font-size: 0.75rem;
+}
+
+.app-main-content {
+  padding-bottom: 4rem;
+}

@@ -1,0 +1,448 @@
+/* Settings Page CSS - 모든 클래스에 set- 접두사 적용 */
+
+.set-container {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+}
+
+.dark .set-container {
+  background-color: #111827;
+}
+
+/* 상단 헤더 */
+.set-header {
+  background-color: white;
+  border-bottom: 1px solid #d1d5db;
+  padding: 1rem;
+}
+
+.dark .set-header {
+  background-color: #1f2937;
+  border-bottom: 1px solid #374151;
+}
+
+.set-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.set-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.set-back-button {
+  margin-right: 1rem;
+  color: #6b7280;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: color 0.2s;
+}
+
+.set-back-button:hover {
+  color: #374151;
+}
+
+.dark .set-back-button {
+  color: #9ca3af;
+}
+
+.dark .set-back-button:hover {
+  color: #d1d5db;
+}
+
+.set-back-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.set-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #374151;
+  margin: 0;
+}
+
+.dark .set-title {
+  color: #f9fafb;
+}
+
+.set-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.set-username {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.dark .set-username {
+  color: #9ca3af;
+}
+
+.set-logout-button {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  color: black;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.set-logout-button:hover {
+  background-color: #f9fafb;
+}
+
+.dark .set-logout-button {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.dark .set-logout-button:hover {
+  background-color: #4b5563;
+}
+
+/* 메인 컨텐츠 */
+.set-content {
+  padding: 1.5rem;
+}
+
+.set-content-wrapper {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+/* 그리드 레이아웃 */
+.set-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .set-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .set-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* 카드 스타일 */
+.set-card {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.dark .set-card {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+
+.set-card-title {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+.dark .set-card-title {
+  color: #f9fafb;
+}
+
+.set-card-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  color: #6b7280;
+}
+
+.dark .set-card-icon {
+  color: #9ca3af;
+}
+
+.set-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* 설정 항목 스타일 */
+.set-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.set-setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.set-setting-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.dark .set-setting-label {
+  color: #9ca3af;
+}
+
+/* 입력 요소들 */
+.set-checkbox {
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.set-range-label,
+.set-input-label,
+.set-select-label,
+.set-color-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.dark .set-range-label,
+.dark .set-input-label,
+.dark .set-select-label,
+.dark .set-color-label {
+  color: #9ca3af;
+}
+
+.set-range-input {
+  width: 100%;
+  cursor: pointer;
+}
+
+.set-range-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.set-range-value {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.dark .set-range-value {
+  color: #9ca3af;
+}
+
+.set-text-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.set-text-input:disabled {
+  background-color: #f9fafb;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.set-text-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.dark .set-text-input {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.dark .set-text-input:disabled {
+  background-color: #1f2937;
+  opacity: 0.6;
+}
+
+.dark .set-text-input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 1px #60a5fa;
+}
+
+.set-input-hint {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.dark .set-input-hint {
+  color: #9ca3af;
+}
+
+.set-select-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.set-select-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.dark .set-select-input {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.dark .set-select-input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 1px #60a5fa;
+}
+
+/* 색상 선택기 */
+.set-color-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.set-color-input {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+}
+
+.dark .set-color-input {
+  border: 1px solid #4b5563;
+}
+
+.set-color-value {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.dark .set-color-value {
+  color: #9ca3af;
+}
+
+/* 시스템 정보 섹션 */
+.set-system-info {
+  /* 빈 배경 - 시스템 정보는 카드 배경 없음 */
+}
+
+.set-system-title {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+.dark .set-system-title {
+  color: #f9fafb;
+}
+
+.set-system-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.set-system-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.set-system-label {
+  color: #6b7280;
+}
+
+.dark .set-system-label {
+  color: #9ca3af;
+}
+
+.set-system-value {
+  font-weight: 500;
+}
+
+.dark .set-system-value {
+  color: #f9fafb;
+}
+
+/* 버튼 그룹 */
+.set-button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.set-cancel-button {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.set-cancel-button:hover {
+  background-color: #f9fafb;
+}
+
+.dark .set-cancel-button {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.dark .set-cancel-button:hover {
+  background-color: #4b5563;
+}
+
+.set-save-button {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.set-save-button:hover {
+  background-color: #1d4ed8;
+}
+
+.dark .set-save-button {
+  background-color: #3b82f6;
+}
+
+.dark .set-save-button:hover {
+  background-color: #2563eb;
+}

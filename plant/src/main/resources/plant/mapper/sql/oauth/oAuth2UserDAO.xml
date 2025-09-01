@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace를 DAO 클래스에서 호출할 때 사용하는 이름("oAuth2UserDAO")과 일치시킵니다. -->
+<mapper namespace="oAuth2UserDAO">
+
+    <select id="findByUsername" parameterType="string" resultType="plant.dev.auth.dto.UserDto">
+        SELECT
+            user_id         AS userId,
+            user_pswr       AS userPswr,
+            user_name       AS userName,
+            user_yn         AS userYn,
+            rol_grade       AS rolGrade,
+            user_provider   AS userProvider,
+            user_provider_id AS userProviderId
+        FROM
+            user_tbl
+        WHERE
+            user_id = #{username}
+    </select>
+
+    <insert id="save" parameterType="plant.dev.auth.dto.UserDto">
+        INSERT INTO user_tbl (
+            user_id, user_pswr, user_name, user_yn, rol_grade,
+            user_provider, user_provider_id
+        ) VALUES (
+                     #{userId}, #{userPswr}, #{userName}, #{userYn}, #{rolGrade},
+                     #{userProvider}, #{userProviderId}
+                 )
+    </insert>
+
+</mapper>

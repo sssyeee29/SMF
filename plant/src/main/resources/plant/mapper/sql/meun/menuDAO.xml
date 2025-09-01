@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="menuDAO">
+    <select id="findMenusByRole" parameterType="string" resultType="CustomMap">
+        SELECT
+        A.menu_id           AS "id",
+        A.menu_name         AS "label",
+        A.menu_url          AS "path",
+        A.menu_level        AS "level",
+        A.menu_prnt_id      AS "prnt_id",
+        A.menu_level_order  AS "order"
+        FROM
+        menu_tbl A
+        <choose>
+            <when test='rolGrade != null and rolGrade != "ANONYMOUS"'>
+                JOIN menu_prms_tbl B ON A.menu_id = B.menu_id
+                WHERE B.rol_grade = #{rolGrade}
+            </when>
+            <otherwise>
+                JOIN menu_prms_tbl B ON A.menu_id = B.menu_id
+                WHERE B.rol_grade = 'ANONYMOUS'
+            </otherwise>
+        </choose>
+        AND A.menu_yn = 'Y'
+        ORDER BY
+        A.menu_level, A.menu_level_order
+    </select>
+</mapper>

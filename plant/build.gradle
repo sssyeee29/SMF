@@ -1,0 +1,112 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.7'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // DB *************************************************************
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //runtimeOnly 'com.h2database:h2'
+    //runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    // DB *************************************************************
+
+
+
+    // 암호화 ***********************************************************
+    // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+    // 암호화 ***********************************************************
+
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // test 환경에서 lombok -> 직접 기입해주어야 한다.
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-text
+    implementation("org.apache.commons:commons-text:1.13.1") //HtmlCharacterEscapes
+
+
+    // CustomMap *************************************************************
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+    implementation("com.fasterxml.jackson.core:jackson-core:2.19.1")
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
+    implementation("org.apache.commons:commons-collections4:4.5.0")
+    // CustomMap *************************************************************
+
+    // ComCrossSiteHndlr *************************************************************
+    // https://mvnrepository.com/artifact/jakarta.servlet.jsp/jakarta.servlet.jsp-api
+    compileOnly("jakarta.servlet.jsp:jakarta.servlet.jsp-api:4.0.0")
+    // https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api
+    implementation("jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.2")
+    // https://mvnrepository.com/artifact/org.glassfish.web/jakarta.servlet.jsp.jstl
+    implementation("org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1")
+    // ComCrossSiteHndlr *************************************************************
+
+    // AOP *************************************************************
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // AOP *************************************************************
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // jwt *************************************************************
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
+    //runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+    // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-gson
+    implementation("io.jsonwebtoken:jjwt-gson:0.12.6")
+    // jwt *************************************************************
+
+    // https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client
+    implementation("org.springframework.security:spring-security-oauth2-client:6.5.1")
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation("org.apache.commons:commons-lang3:3.17.0")
+
+
+    // https://mvnrepository.com/artifact/com.github.gavlyukovskiy/p6spy-spring-boot-starter
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.11.0")
+
+    // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
+    implementation("jakarta.validation:jakarta.validation-api:3.1.1")
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

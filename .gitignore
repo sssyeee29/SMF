@@ -1,0 +1,42 @@
+# --- Node / React ---
+**/node_modules/
+**/dist/
+**/build/
+**/.eslintcache
+**/coverage/
+
+# --- Java / Spring Boot ---
+**/target/
+**/.gradle/
+**/out/
+**/*.class
+**/*.log
+**/*.log.*
+**/*.war
+**/*.ear
+**/*.jar
+# keep wrapper jars
+!**/gradle/wrapper/gradle-wrapper.jar
+!**/.mvn/wrapper/maven-wrapper.jar
+
+# --- Logs (Node tools) ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+**/logs/
+**/log/
+
+# --- IDE ---
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini

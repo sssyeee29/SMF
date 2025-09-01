@@ -1,0 +1,88 @@
+/* HomePage.css */
+
+.home-page {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+}
+
+.home-header {
+  background-color: white;
+  border-bottom: 1px solid #d1d5db;
+  padding: 1rem;
+}
+
+.home-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.home-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.home-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.home-username {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.home-logout-button {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  color: black;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.home-logout-button:hover {
+  background-color: #f9fafb;
+}
+
+.home-main-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 80vh;
+  gap: 4rem;
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: row;
+  gap: 4rem;
+  margin-top: 10rem;
+}
+
+.menu-button {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  padding: 5rem 8rem;
+  border-radius: 1.5rem;
+  font-size: 2.25rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.menu-button:hover {
+  background-color: #f9fafb;
+}
+
+.description-box {
+  background-color: #1f2937;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+}
