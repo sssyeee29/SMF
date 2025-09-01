@@ -2,16 +2,18 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Camera, ArrowLeft } from 'lucide-react';
 import './CameraPage.css';
 
-
-
 const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, username, handleLogout }) => {
   const [selectedImage, setSelectedImage] = useState([]);
   const [detectionResult, setDetectionResult] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
-    // 카메라 1, 2
+  // 카메라 1, 2
   const [cameraStream1, setCameraStream1] = useState(null);
   const [cameraStream2, setCameraStream2] = useState(null);
+  
+  // 비디오 일시정지 상태
+  const [isPaused1, setIsPaused1] = useState(false);
+  const [isPaused2, setIsPaused2] = useState(false);
 
   const [devices, setDevices] = useState([]);
   const [selectedDeviceId1, setSelectedDeviceId1] = useState('');
@@ -86,7 +88,6 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
     }, 2000);
   }, [setDetectionHistory]);
 
-
   return (
     <div className="camera-page">
       {/* 헤더 */}
@@ -105,8 +106,6 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
           </button>
         </div>
       </div>{/* 헤더 건들지 말기 */}
-
-
 
       {/*본 화면 */}
       <div className="main-content">
@@ -129,7 +128,6 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
               onChange={e=>setSelectedDeviceId1(e.target.value)}
               className="device-select"
             >
-
               <option value="">PC 카메라 선택</option>
               {devices.map(cam => <option key={cam.deviceId} value={cam.deviceId}>{cam.label}</option>)}
             </select>
@@ -155,6 +153,25 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
             </div>
 
             <div className="camera-controls">
+              <button 
+                onClick={()=>{
+                  if(!cameraStream1) {
+                    startCamera(selectedDeviceId1, setCameraStream1, videoRef1);
+                  } else if(videoRef1.current) {
+                    if(isPaused1) {
+                      videoRef1.current.play();
+                      setIsPaused1(false);
+                    } else {
+                      videoRef1.current.pause();
+                      setIsPaused1(true);
+                    }
+                  }
+                }} 
+                className={!cameraStream1 || isPaused1 ? "btn-camera-on" : "btn-camera-off"}
+              >
+                {!cameraStream1 || isPaused1 ? '시작' : '중지'}
+              </button>
+
               {!cameraStream1 ? (
                 <button 
                   onClick={()=>startCamera(selectedDeviceId1, setCameraStream1, videoRef1)} 
@@ -164,7 +181,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
                 </button>
               ) : (
                 <button 
-                  onClick={()=>{cameraStream1.getTracks().forEach(t=>t.stop()); setCameraStream1(null)}} 
+                  onClick={()=>{cameraStream1.getTracks().forEach(t=>t.stop()); setCameraStream1(null); setIsPaused1(false);}} 
                   className="btn-camera-off"
                 >
                   카메라 OFF
@@ -177,7 +194,6 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
               >
                 캡쳐
               </button>
-
             </div>
           </div>
 
@@ -197,10 +213,10 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
               onChange={e=>setSelectedDeviceId2(e.target.value)}
               className="device-select"
             >
-
               <option value="">PC 카메라 선택</option>
               {devices.map(cam => <option key={cam.deviceId} value={cam.deviceId}>{cam.label}</option>)}
             </select>
+            
             <div className="video-container">
               {cameraStream2 || wifiCamUrl2 ? (
                 <video 
@@ -220,24 +236,45 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
                 </div>
               )}
             </div>
+            
             <div className="camera-controls">
-              {!cameraStream2 ? (
+              <button 
+                onClick={()=>{
+                  if(!cameraStream1) {
+                    startCamera(selectedDeviceId1, setCameraStream1, videoRef1);
+                  } else if(videoRef1.current) {
+                    if(isPaused1) {
+                      videoRef1.current.play();
+                      setIsPaused1(false);
+                    } else {
+                      videoRef1.current.pause();
+                      setIsPaused1(true);
+                    }
+                  }
+                }} 
+                className={!cameraStream1 || isPaused1 ? "btn-camera-on" : "btn-camera-off"}
+              >
+                {!cameraStream1 || isPaused1 ? '시작' : '중지'}
+              </button>
+
+              {!cameraStream1 ? (
                 <button 
-                  onClick={()=>startCamera(selectedDeviceId2, setCameraStream2, videoRef2)} 
+                  onClick={()=>startCamera(selectedDeviceId1, setCameraStream1, videoRef1)} 
                   className="btn-camera-on"
                 >
                   카메라 ON
                 </button>
               ) : (
                 <button 
-                  onClick={()=>{cameraStream2.getTracks().forEach(t=>t.stop()); setCameraStream2(null)}} 
+                  onClick={()=>{cameraStream1.getTracks().forEach(t=>t.stop()); setCameraStream1(null); setIsPaused1(false);}} 
                   className="btn-camera-off"
                 >
                   카메라 OFF
                 </button>
               )}
+
               <button 
-                onClick={()=>{const img=captureImage(videoRef2); if(img){setSelectedImage([img]); detectDefects([img])}}} 
+                onClick={()=>{const img=captureImage(videoRef1); if(img){setSelectedImage([img]); detectDefects([img])}}} 
                 className="btn-capture"
               >
                 캡쳐
