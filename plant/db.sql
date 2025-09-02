@@ -40,3 +40,6 @@ CREATE TABLE detection_log_tbl (
     user_id VARCHAR(20), -- 작업자 ID
     image_url VARCHAR(255) -- 제품 이미지 URL
 );
+
+ALTER TABLE user_tbl ADD COLUMN user_provider VARCHAR(50);
+ALTER TABLE user_tbl ADD COLUMN user_provider_id VARCHAR(255);

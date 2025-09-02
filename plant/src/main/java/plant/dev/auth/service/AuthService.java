@@ -72,7 +72,9 @@ public class AuthService {
                 passwordEncoder.encode(requestDto.getPassword()),
                 requestDto.getName(),
                 "Y",
-                "ROLE_USER"
+                "ROLE_USER",
+                null,
+                null
         );
 
         // 3. JPA를 통해 사용자 정보 저장
