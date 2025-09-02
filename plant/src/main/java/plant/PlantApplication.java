@@ -5,7 +5,7 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
-
+//수정
 // Spring Boot 메인 애플리케이션 클래스입니다.
 @Slf4j
 @ServletComponentScan
