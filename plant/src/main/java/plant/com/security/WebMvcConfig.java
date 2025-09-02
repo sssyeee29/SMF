@@ -20,15 +20,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Value("${cors.allowed-origins}")
 	private String[] allowedOrigins;
 
-@Override
-public void addCorsMappings(CorsRegistry registry) {
-    registry.addMapping("/api/**")
-            .allowedOrigins(allowedOrigins)
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-            .allowedHeaders("*")
-            .allowCredentials(true)
-            .maxAge(3600);
-}
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/api/**")
+				.allowedOrigins(allowedOrigins)
+				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+				.allowedHeaders("*")
+				.allowCredentials(true)
+				.maxAge(3600);
+	}
 }
 
 /*
