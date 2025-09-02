@@ -24,10 +24,6 @@ public class UserDto {
     // 'user_yn' 컬럼과 매핑 (신규 추가)
     private String userYn;
 
-    // OAuth2용 필드 (이 필드들은 user_tbl에 컬럼이 없어 DB에 저장되지 않음)
-    private String userProvider;
-    private String userProviderId;
-
     // userEmail은 userId가 이메일을 저장하므로 중복되어 제거하거나,
     // 별도 로직을 위해 유지할 수 있습니다. 여기서는 userId를 사용하도록 통일합니다.
 }
