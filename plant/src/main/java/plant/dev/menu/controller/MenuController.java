@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import plant.dev.com.cmm.util.map.CustomMap;
-import plant.dev.com.cmm.util.map.DtoToCustomMapConverter;
+import plant.com.cmm.util.map.CustomMap;
+import plant.com.cmm.util.map.DtoToCustomMapConverter;
 import plant.dev.menu.service.MenuService;
 
 import java.util.List;

@@ -16,3 +16,4 @@ public interface WarehouseMapper {
     InventoryItemDto findById(Long id);
     int updateDelivery(Map<String, Object> params); // expects: id, qty, status, outDate
 }
+

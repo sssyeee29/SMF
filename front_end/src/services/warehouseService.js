@@ -75,3 +75,18 @@ export async function deliverItem(id, amount) {
   // axios는 204에서도 에러를 던지지 않음
   return res.data ?? { id, amount };
 }
+
+export async function createItem(payload) {
+  const res = await fetch('/api/warehouse/items', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (res.status === 204) return true;
+  if (!res.ok) throw new Error(`createItem failed: ${res.status}`);
+  try {
+    return await res.json();
+  } catch {
+    return true;
+  }
+}

@@ -2,9 +2,14 @@
 import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { ArrowLeft, Search, Plus, X, Trash2, Package } from 'lucide-react';
 import './WarehousePage.css';
-import { fetchInventory, deleteItem as apiDeleteItem, deliverItem } from '../services/warehouseService';
+import {
+  fetchInventory,
+  deleteItem as apiDeleteItem,
+  deliverItem,
+  createItem,              // ✅ 생성 API 추가 임포트
+} from '../services/warehouseService';
 
-// 로컬/서버 스위치 (서버 연동이면 false)
+// 서버 연동이면 false
 const USE_LOCAL_DATA = false;
 
 // UI ↔ 서버 값 매핑
@@ -26,7 +31,7 @@ const toNumber = (q) => (typeof q === 'number' ? q : parseInt(String(q).replace(
 const isDeliveryReady = (q) => toNumber(q) >= DELIVER_THRESHOLD;
 
 const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
-  // 🔎 UI 입력 상태
+  // 🔎 검색/필터 입력 상태
   const [searchTerm, setSearchTerm] = useState('');
   const [productType, setProductType] = useState('전체');
   const [subCategory, setSubCategory] = useState('전체');
@@ -37,6 +42,19 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
 
   // 📷 카메라 모달
   const [showCamera, setShowCamera] = useState(null);
+
+  // ➕ 상품 추가 모달/폼
+  const [showAdd, setShowAdd] = useState(false);
+  const [newItem, setNewItem] = useState({
+    name: '',
+    code: '',
+    quantity: 0,
+    location: '',
+    inDate: '',
+    note: '',
+    category: '바나나맛',
+    productType: '기본',
+  });
 
   // 📄 데이터/페이징/로딩
   const [inventoryData, setInventoryData] = useState(USE_LOCAL_DATA ? LOCAL_DATA : []);
@@ -96,7 +114,7 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
     if (USE_LOCAL_DATA) return;
     setLoading(true);
     setErrorMsg('');
-    if (abortRef.current) abortRef.current.abort();
+    abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -179,7 +197,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
     const newQ = Math.max(0, curQ - DELIVER_THRESHOLD);
 
     if (USE_LOCAL_DATA) {
-      // 페이지 데이터 업데이트
       setInventoryData((list) =>
         list.map((i) =>
           String(i.id) === String(itemId)
@@ -187,7 +204,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
             : i
         )
       );
-      // 로컬 원본 반영
       const idx = LOCAL_DATA.findIndex((i) => String(i.id) === String(itemId));
       if (idx >= 0) {
         LOCAL_DATA[idx] = {
@@ -200,8 +216,8 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
     } else {
       try {
         setLoading(true);
-        await deliverItem(itemId, DELIVER_THRESHOLD);   // ✅ 실제 서버 차감 호출
-        await loadListFromServer();                     // 서버 최신값 재조회
+        await deliverItem(itemId, DELIVER_THRESHOLD);
+        await loadListFromServer();
       } catch (e) {
         console.error('납품 처리 실패:', e);
         alert('납품 처리에 실패했습니다.');
@@ -248,6 +264,67 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
     }
   };
 
+  // ➕ 상품 추가 저장
+  const handleCreate = async () => {
+    if (!newItem.name || !newItem.code) {
+      alert('제품명과 코드는 필수입니다.');
+      return;
+    }
+
+    if (USE_LOCAL_DATA) {
+      const nextId = Math.max(0, ...LOCAL_DATA.map(i => +i.id || 0)) + 1;
+      const row = {
+        id: nextId,
+        name: newItem.name,
+        code: newItem.code,
+        quantity: Number(newItem.quantity) || 0,
+        location: newItem.location || '-',
+        inDate: newItem.inDate || new Date().toISOString().slice(0,10),
+        outDate: '-',
+        note: newItem.note || '-',
+        category: newItem.category,
+        productType: newItem.productType,
+        status: '납품준비',
+      };
+      LOCAL_DATA.unshift(row);
+      setInventoryData(prev => [row, ...prev]);
+      setTotal(t => t + 1);
+    } else {
+      try {
+        setLoading(true);
+        await createItem({
+          name: newItem.name,
+          code: newItem.code,
+          quantity: Number(newItem.quantity) || 0,
+          location: newItem.location || '-',
+          inDate: newItem.inDate || new Date().toISOString().slice(0,10),
+          note: newItem.note || '-',
+          // 서버가 영문 enum이라면 매핑 필요
+          category: categoryMap[newItem.category] || '',
+          productType: productTypeMap[newItem.productType] || '',
+        });
+        await loadListFromServer();
+      } catch (e) {
+        console.error(e);
+        alert('상품 등록에 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    setShowAdd(false);
+    setNewItem({
+      name: '',
+      code: '',
+      quantity: 0,
+      location: '',
+      inDate: '',
+      note: '',
+      category: '바나나맛',
+      productType: '기본',
+    });
+  };
+
   // ⏭️ 페이지네이션
   const totalPages = Math.max(1, Math.ceil(total / size));
   const goPrev = () => setPage((p) => Math.max(1, p - 1));
@@ -278,7 +355,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
             <h3 className="wh-section-title">재고 현황 통계</h3>
             <div className="wh-chart-container">
               {chartData.map((item, index) => {
-                // 게이지는 임계값 기준으로 0~100 환산
                 const pct = Math.min(100, Math.max(0, Math.round((toNumber(item.quantity) / DELIVER_THRESHOLD) * 100)));
                 return (
                   <div key={index} className="wh-chart-item">
@@ -301,12 +377,7 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
           <div className="wh-warehouse-section">
             <h3 className="wh-section-title">창고 구역</h3>
             <div className="wh-section-grid">
-              {[
-                { section: 'A구역', items: 8,  color: 'wh-section-blue',   camera: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-                { section: 'B구역', items: 5,  color: 'wh-section-green',  camera: 'https://www.w3schools.com/html/movie.mp4' },
-                { section: 'C구역', items: 3,  color: 'wh-section-yellow', camera: 'https://www.w3schools.com/html/mov_bbb.mp4' },
-                { section: '불량구역', items: 12, color: 'wh-section-purple', camera: 'https://www.w3schools.com/html/movie.mp4' },
-              ].map((sec) => (
+              {warehouseLayout.map((sec) => (
                 <button
                   key={sec.section}
                   onClick={() => setShowCamera(sec)}
@@ -326,7 +397,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
           {/* 검색 및 필터 */}
           <div className="wh-filter-container">
             <div className="wh-filter-row">
-              {/* 검색 */}
               <div className="wh-filter-group">
                 <span className="wh-filter-label">검색분류</span>
                 <div className="wh-search-wrapper">
@@ -343,7 +413,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
                 </div>
               </div>
 
-              {/* 필터 */}
               <div className="wh-filter-group">
                 <span className="wh-filter-label">상품구분</span>
                 <select value={productType} onChange={(e) => setProductType(e.target.value)} className="wh-filter-select wh-select-small">
@@ -363,7 +432,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
                 </select>
               </div>
 
-              {/* 등록일 */}
               <div className="wh-filter-group">
                 <span className="wh-filter-label">등록일</span>
                 <select value={registrationDate} onChange={(e) => setRegistrationDate(e.target.value)} className="wh-filter-select wh-select-medium">
@@ -376,7 +444,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
                 </select>
               </div>
 
-              {/* 납품상태 */}
               <div className="wh-filter-group">
                 <span className="wh-filter-label">납품상태</span>
                 <select value={deliveryStatus} onChange={(e) => setDeliveryStatus(e.target.value)} className="wh-filter-select wh-select-small">
@@ -387,7 +454,10 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
               </div>
 
               {/* 버튼 */}
-              <button className="wh-btn wh-btn-primary">
+              <button
+                className="wh-btn wh-btn-primary"
+                onClick={() => setShowAdd(true)}                 // ✅ onClick 연결
+              >
                 <Plus className="wh-btn-icon" />
                 상품추가
               </button>
@@ -396,7 +466,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
               </button>
             </div>
 
-            {/* 년월일 지정 */}
             {registrationDate === '년월일 지정' && (
               <div className="wh-date-range">
                 <div className="wh-date-group">
@@ -567,6 +636,69 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
             </div>
             <div className="wh-modal-content">
               <video src={showCamera.camera} controls autoPlay loop className="wh-video" />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 상품 추가 모달 */}
+      {showAdd && (
+        <div className="wh-modal-overlay" role="dialog" aria-modal="true" aria-label="상품 추가">
+          <div className="wh-modal">
+            <div className="wh-modal-header">
+              <h3 className="wh-modal-title">상품 추가</h3>
+              <button onClick={() => setShowAdd(false)} className="wh-modal-close" aria-label="닫기">
+                <X className="wh-close-icon" />
+              </button>
+            </div>
+
+            <div className="wh-modal-content">
+              <div className="wh-form">
+                <div className="wh-form-row">
+                  <label>제품명</label>
+                  <input value={newItem.name} onChange={e=>setNewItem(s=>({...s,name:e.target.value}))} />
+                </div>
+                <div className="wh-form-row">
+                  <label>코드</label>
+                  <input value={newItem.code} onChange={e=>setNewItem(s=>({...s,code:e.target.value}))} />
+                </div>
+                <div className="wh-form-row">
+                  <label>수량</label>
+                  <input type="number" min="0" value={newItem.quantity} onChange={e=>setNewItem(s=>({...s,quantity:e.target.value}))} />
+                </div>
+                <div className="wh-form-row">
+                  <label>위치</label>
+                  <input value={newItem.location} onChange={e=>setNewItem(s=>({...s,location:e.target.value}))} />
+                </div>
+                <div className="wh-form-row">
+                  <label>입고일</label>
+                  <input type="date" value={newItem.inDate} onChange={e=>setNewItem(s=>({...s,inDate:e.target.value}))} />
+                </div>
+                <div className="wh-form-row">
+                  <label>분류</label>
+                  <select value={newItem.category} onChange={e=>setNewItem(s=>({...s,category:e.target.value}))}>
+                    <option>바나나맛</option>
+                    <option>딸기맛</option>
+                    <option>멜론맛</option>
+                  </select>
+                </div>
+                <div className="wh-form-row">
+                  <label>상품구분</label>
+                  <select value={newItem.productType} onChange={e=>setNewItem(s=>({...s,productType:e.target.value}))}>
+                    <option>기본</option>
+                    <option>세트</option>
+                  </select>
+                </div>
+                <div className="wh-form-row">
+                  <label>비고</label>
+                  <input value={newItem.note} onChange={e=>setNewItem(s=>({...s,note:e.target.value}))} />
+                </div>
+              </div>
+            </div>
+
+            <div className="wh-modal-footer">
+              <button className="wh-btn wh-btn-secondary" onClick={()=>setShowAdd(false)}>취소</button>
+              <button className="wh-btn wh-btn-primary" onClick={handleCreate}>저장</button>
             </div>
           </div>
         </div>
