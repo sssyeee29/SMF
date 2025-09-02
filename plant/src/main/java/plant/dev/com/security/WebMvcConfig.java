@@ -23,10 +23,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**")
-				.allowedOrigins(allowedOrigins)
-				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+				.allowedOrigins(allowedOrigins) // 예: http://localhost:3000
+				.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS") // ✅ PATCH 추가
 				.allowedHeaders("*")
-				.allowCredentials(true)
+				.allowCredentials(true) // 쿠키/세션 안 쓰면 false로
 				.maxAge(3600);
 	}
 }

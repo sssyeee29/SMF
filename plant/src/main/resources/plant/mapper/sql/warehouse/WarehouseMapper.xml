@@ -4,23 +4,26 @@
 
 <mapper namespace="plant.dev.warehouse.mapper.WarehouseMapper">
 
+    <!-- 목록 조회 -->
     <select id="findItems" parameterType="map"
             resultType="plant.dev.warehouse.dto.InventoryItemDto">
         SELECT
-        item_id   AS id,
-        item_name AS name,
-        item_code AS code,
+        item_id          AS id,
+        item_name        AS name,
+        item_code        AS code,
         quantity,
         location,
-        in_date   AS inDate,
-        out_date  AS outDate,
+        in_date          AS inDate,
+        out_date         AS outDate,
         note,
-        category
+        category,
+        product_type     AS productType,   -- ✅ DTO 매핑 보강
+        delivery_status  AS status         -- ✅ DTO 매핑 보강
         FROM inventory_tbl
         WHERE 1=1
         <if test="search != null and search != ''">
             AND (item_name LIKE CONCAT('%', #{search}, '%')
-            OR  item_code LIKE CONCAT('%', #{search}, '%'))
+            OR item_code LIKE CONCAT('%', #{search}, '%'))
         </if>
         <if test="productType != null and productType != ''">
             AND product_type = #{productType}
@@ -31,20 +34,29 @@
         <if test="status != null and status != ''">
             AND delivery_status = #{status}
         </if>
+
+        <!-- ✅ 상대기간: 최근 N일 -->
         <if test="regDays != null">
-            AND in_date >= DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY)
+            AND in_date BETWEEN DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY) AND CURDATE()
         </if>
+
+        <!-- ✅ 절대기간(from/to): 둘 다 있을 때만 적용 -->
+        <if test="from != null and to != null">
+            AND in_date BETWEEN #{from} AND #{to}
+        </if>
+
         ORDER BY item_id DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
 
+    <!-- 총 개수 -->
     <select id="countItems" parameterType="map" resultType="int">
-        SELECT COUNT(*)
+        SELECT COUNT(1)
         FROM inventory_tbl
         WHERE 1=1
         <if test="search != null and search != ''">
             AND (item_name LIKE CONCAT('%', #{search}, '%')
-            OR  item_code LIKE CONCAT('%', #{search}, '%'))
+            OR item_code LIKE CONCAT('%', #{search}, '%'))
         </if>
         <if test="productType != null and productType != ''">
             AND product_type = #{productType}
@@ -55,11 +67,49 @@
         <if test="status != null and status != ''">
             AND delivery_status = #{status}
         </if>
+
+        <!-- ✅ regDays -->
         <if test="regDays != null">
-            AND in_date >= DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY)
+            AND in_date BETWEEN DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY) AND CURDATE()
+        </if>
+
+        <!-- ✅ from/to -->
+        <if test="from != null and to != null">
+            AND in_date BETWEEN #{from} AND #{to}
         </if>
     </select>
 
+    <!-- ✅ 단건 조회: 납품 시 현재 수량/상태 확인 -->
+    <select id="findById" parameterType="long"
+            resultType="plant.dev.warehouse.dto.InventoryItemDto">
+        SELECT
+            item_id          AS id,
+            item_name        AS name,
+            item_code        AS code,
+            quantity,
+            location,
+            in_date          AS inDate,
+            out_date         AS outDate,
+            note,
+            category,
+            product_type     AS productType,
+            delivery_status  AS status
+        FROM inventory_tbl
+        WHERE item_id = #{id}
+    </select>
+
+    <!-- ✅ 납품 업데이트: 수량/상태/출고일 갱신 -->
+    <!-- params: id, qty, status, outDate -->
+    <update id="updateDelivery" parameterType="map">
+        UPDATE inventory_tbl
+        SET
+            quantity       = #{qty},
+            delivery_status= #{status},
+            out_date       = #{outDate}
+        WHERE item_id = #{id}
+    </update>
+
+    <!-- 삭제 -->
     <delete id="deleteItem" parameterType="long">
         DELETE FROM inventory_tbl WHERE item_id = #{id}
     </delete>
