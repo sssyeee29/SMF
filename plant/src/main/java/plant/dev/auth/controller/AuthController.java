@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import plant.dev.com.cmm.util.map.CustomMap;
+import plant.com.cmm.util.map.CustomMap;
 import plant.dev.auth.dto.RegisterDto;
 import plant.dev.auth.dto.UserDto;
 import plant.dev.auth.service.AuthService;
