@@ -8,7 +8,7 @@
 
 /* 헤더 */
 .wh-header {
- background-color: white;
+  background-color: white;
   border-bottom: 1px solid #d1d5db;
   padding: 1rem;
   display: flex;
@@ -22,7 +22,7 @@
 }
 
 .wh-back-btn {
- margin-right: 1rem;
+  margin-right: 1rem;
   color: #4b5563;
   background: none;
   border: none;
@@ -41,7 +41,7 @@
 }
 
 .wh-title {
-font-size: 1.125rem;
+  font-size: 1.125rem;
   font-weight: 500;
   color: #1f2937;
   margin: 0;
@@ -54,7 +54,7 @@ font-size: 1.125rem;
 }
 
 .wh-username {
-    font-size: 0.875rem;
+  font-size: 0.875rem;
   color: #4b5563;
 }
 
@@ -127,6 +127,11 @@ font-size: 1.125rem;
 
 .wh-chart-quantity {
   font-weight: 500;
+  color: #111827;
+}
+
+.wh-chart-quantity.wh-quantity-full {
+  color: #16a34a;
 }
 
 .wh-progress-bar {
@@ -141,6 +146,10 @@ font-size: 1.125rem;
   height: 0.75rem;
   border-radius: 9999px;
   transition: all 0.3s ease;
+}
+
+.wh-progress-fill.wh-progress-full {
+  background-color: #16a34a;
 }
 
 /* 창고 구역 */
@@ -344,7 +353,7 @@ font-size: 1.125rem;
 .wh-summary-stats {
   background-color: white;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
   border: 1px solid #d1d5db;
@@ -372,6 +381,10 @@ font-size: 1.125rem;
 
 .wh-stat-orange {
   color: #ea580c;
+}
+
+.wh-stat-red {
+  color: #dc2626;
 }
 
 .wh-stat-label {
@@ -461,10 +474,59 @@ font-size: 1.125rem;
   color: #6b7280;
 }
 
+/* 수량 관련 스타일 */
+.wh-quantity-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .wh-quantity {
   font-size: 0.875rem;
   font-weight: 500;
   color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wh-quantity.wh-quantity-full {
+  color: #16a34a;
+}
+
+.wh-quantity.wh-quantity-empty {
+  color: #dc2626;
+}
+
+.wh-delivery-badge {
+  background-color: #16a34a;
+  color: white;
+  font-size: 0.625rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.wh-quantity-bar {
+  width: 100px;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.25rem;
+}
+
+.wh-quantity-fill {
+  height: 0.25rem;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  background-color: #3b82f6;
+}
+
+.wh-quantity-fill.wh-fill-full {
+  background-color: #16a34a;
+}
+
+.wh-quantity-fill.wh-fill-empty {
+  background-color: #dc2626;
 }
 
 .wh-location,
@@ -474,24 +536,42 @@ font-size: 1.125rem;
   color: #111827;
 }
 
-.wh-delete-btn {
-  color: #dc2626;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
+/* 납품 버튼 */
+.wh-delivery-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
   border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid;
   transition: all 0.2s ease;
 }
 
-.wh-delete-btn:hover {
-  color: #991b1b;
-  background-color: #fef2f2;
+.wh-delivery-btn.wh-delivery-ready {
+  color: #16a34a;
+  background-color: #f0fdf4;
+  border-color: #16a34a;
+  cursor: pointer;
 }
 
-.wh-delete-icon {
-  width: 1rem;
-  height: 1rem;
+.wh-delivery-btn.wh-delivery-ready:hover {
+  background-color: #dcfce7;
+  transform: translateY(-1px);
+}
+
+.wh-delivery-btn.wh-delivery-disabled {
+  color: #9ca3af;
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.wh-delivery-icon {
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 /* 페이지네이션 */
@@ -604,7 +684,7 @@ font-size: 1.125rem;
   }
   
   .wh-summary-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
 }
@@ -635,5 +715,9 @@ font-size: 1.125rem;
   .wh-modal {
     width: 90%;
     margin: 1rem;
+  }
+  
+  .wh-summary-stats {
+    grid-template-columns: 1fr;
   }
 }

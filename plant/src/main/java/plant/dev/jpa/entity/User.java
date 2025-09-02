@@ -32,4 +32,9 @@ public class User {
     @Column(name = "rol_grade", length = 50)
     private String rolGrade;
 
+    @Column(name = "user_provider", length = 50)
+    private String userProvider;
+
+    @Column(name = "user_provider_id", length = 255)
+    private String userProviderId;
 }
