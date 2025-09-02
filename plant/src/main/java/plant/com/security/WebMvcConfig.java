@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 // Web MVC 관련 설정을 담당하는 클래스입니다.
@@ -28,6 +29,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.allowedHeaders("*")
 				.allowCredentials(true)
 				.maxAge(3600);
+	}
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		// Raspberry Pi에서 저장한 이미지 접근 경로 설정
+		registry.addResourceHandler("/static/frames/**")
+				.addResourceLocations("file:///C:/ingest_frames/");  // 윈도우 경로는 file:/// 로 시작
 	}
 }
 
