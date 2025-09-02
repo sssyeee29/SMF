@@ -105,6 +105,8 @@ dependencies {
 
     // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
+
+    implementation 'org.json:json:20230618'
 }
 
 tasks.named('test') {
