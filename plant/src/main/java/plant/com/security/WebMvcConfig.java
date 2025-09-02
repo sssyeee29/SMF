@@ -28,6 +28,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.allowedHeaders("*")
 				.allowCredentials(true)
 				.maxAge(3600);
+
+		// [카메라 API 전용 CORS 설정] /camera/**
+		registry.addMapping("/camera/**")
+				.allowedOrigins("http://localhost:3000") // React 개발 서버
+				.allowedMethods("GET", "POST")
+				.allowCredentials(true);
 	}
 }
 
