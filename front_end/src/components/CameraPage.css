@@ -63,7 +63,7 @@
 }
 
 .main-content {
-  padding: 1.5rem 1.5rem 3rem 1.5rem; /* 하단에 3rem 여백 추가 */
+  padding: 1.5rem 1.5rem 3rem 1.5rem;
   max-width: 72rem;
   margin: 0 auto;
   display: grid;
@@ -115,7 +115,6 @@
   margin-bottom: 1rem;
   overflow: hidden;
   position: relative;
-
   width: 1000px;     
   max-width: 100%;  
   height: auto;
@@ -185,189 +184,28 @@
   background-color: #b91c1c;
 }
 
-.btn-capture {
-  background-color: #fff;
-  color: #4b5563;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.875rem;
-  border-radius: 0.25rem;
-  border: 1px solid #d1d5db;
-  cursor: pointer;
-}
-
-.btn-capture:hover {
-  background-color: #2563eb;
-  color: #fff;
-}
-
-.ai-inspection-panel {
-  position: fixed;
-  top: 6.5rem;               /* 헤더 아래에서 시작 */
-  left: 2rem;              /* 화면 왼쪽 여백 */
-  width: 320px;            /* 사이드바 폭 */
-  height: 550px; /* 화면 전체 높이 - 헤더 여백 */
-  overflow-y: auto;        /* 내용이 넘치면 내부 스크롤 */
-
-  background-color: white;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  z-index: 100; 
-}
-
-.ai-title {
-  font-size: 0.875rem;
-  color: #4b5563;
-  margin-bottom: 1rem;
-}
-
-.btn-dual-capture {
-  margin-bottom: 1rem;
-  background-color: #fff;
-  color: #4b5563;
-  border: 1px solid #d1d5db;
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
-
-.btn-dual-capture:hover {
-  background-color: #2563eb;
-  color: #fff;
-}
-
-.processing-container {
-  text-align: center;
-  padding: 2rem 0;
-  flex: 1;
-}
-
-.loading-spinner {
-  animation: spin 1s linear infinite;
-  width: 2rem;
-  height: 2rem;
-  border: 2px solid #2563eb;
-  border-top-color: transparent;
-  border-radius: 50%;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.processing-text {
-  font-size: 0.875rem;
-  color: #4b5563;
-}
-
-.results-container {
-  flex: 1;
-}
-
-.captured-images {
-  margin-bottom: 1rem;
-  display: grid;
-  grid-template-columns: 1fr; /* 한 줄에 한 이미지 */
-  gap: 0.5rem;
-}
-
-.captured-image {
-  width: 100%;
-  height: 12rem; /* 기존 8rem → 12rem */
-  object-fit: cover;
-  border-radius: 0.25rem;
-  border: 1px solid #d1d5db;
-}
-
-.result-item {
-  padding-top: 0.5rem;
-  margin-top: 0.5rem;
-  border-top: 1px solid #e5e7eb;
-  font-size: 0.875rem;
-}
-
-.result-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.result-defect {
-  color: #dc2626;
-  font-weight: 500;
-}
-
-.result-good {
-  color: #059669;
-  font-weight: 500;
-}
-
-.btn-new-inspection {
-  width: 100%;
-  margin-top: 1rem;
-  background-color: #4b5563;
-  color: white;
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  border-radius: 0.25rem;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-new-inspection:hover {
-  background-color: #374151;
-}
-
-.waiting-container {
-  text-align: center;
-  padding: 2rem 0;
-  color: #6b7280;
-  flex: 1;
-}
-
-.waiting-text {
-  font-size: 0.875rem;
-}
-
 .hidden-canvas {
   display: none;
 }
 
-/* 비디오 화면 내 버튼들 */
-.video-overlay-controls {
-  position: absolute;
-  bottom: 0.75rem;
-  right: 0.75rem;
-  display: flex;
-  gap: 0.5rem;
-  z-index: 10;
-}
 
-.video-overlay-btn {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  border: none;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.75rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
 
-.video-overlay-btn:hover {
-  background-color: rgba(0, 0, 0, 0.9);
-}
 
-.video-overlay-btn.recording {
-  background-color: rgba(220, 38, 38, 0.8);
-}
-
-.video-overlay-btn.recording:hover {
-  background-color: rgba(220, 38, 38, 1);
+/* 데스크톱 (1024px 이상) */
+@media (min-width: 1024px) {
+  .main-content {
+    padding: 2rem;
+  }
+  
+  .camera-section {
+    gap: 2rem;
+  }
+  
+  .camera-container {
+    padding: 1.5rem;
+  }
+  
+  .video-container {
+    margin-bottom: 1.5rem;
+  }
 }

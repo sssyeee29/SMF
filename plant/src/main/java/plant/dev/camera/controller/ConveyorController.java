@@ -29,4 +29,3 @@ public class ConveyorController {
         return restTemplate.postForEntity(url, null, String.class);
     }
 }
-
