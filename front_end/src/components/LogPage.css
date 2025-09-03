@@ -669,3 +669,36 @@
 .log-empty-state p {
   font-size: 0.875rem;
 }
+
+/* --- 신규 추가: 라이트박스 스타일 --- */
+.log-product-image {
+    cursor: pointer;
+}
+
+.log-lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100; /* 기존 모달(z-index: 50)보다 위에 표시 */
+    cursor: pointer;
+    animation: log-fadeIn 0.2s ease-out; /* 부드러운 등장 효과 */
+}
+
+.log-lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+.log-lightbox-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 0.5rem;
+}
