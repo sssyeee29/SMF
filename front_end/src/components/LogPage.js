@@ -72,6 +72,21 @@ const LogPageUtils = {
   }
 };
 
+// --- 신규 추가: 이미지 라이트박스 컴포넌트 ---
+const ImageLightbox = ({ imageUrl, onClose }) => {
+    console.log(imageUrl)
+    if (!imageUrl) return null;
+
+    // 배경을 클릭하면 닫히도록 설정
+    return (
+        <div className="log-lightbox-overlay" onClick={onClose}>
+            <div className="log-lightbox-content">
+                <img src={imageUrl} alt="확대 이미지" className="log-lightbox-image" />
+            </div>
+        </div>
+    );
+};
+
 // 통계 아이템 컴포넌트
 const StatItem = ({ type, value, label, total }) => {
   const percentage = LogPageUtils.calculatePercentage(value, total);
@@ -106,6 +121,17 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const handlePrevious = () => onPageChange(currentPage - 1);
   const handleNext = () => onPageChange(currentPage + 1);
 
+ // 페이지 번호 그룹을 계산하는 로직
+  const pageNumbers = [];
+  const maxPageButtons = 5; // 한 번에 보여줄 최대 페이지 버튼 수
+  const currentGroup = Math.ceil(currentPage / maxPageButtons);
+  let startPage = (currentGroup - 1) * maxPageButtons + 1;
+  let endPage = Math.min(startPage + maxPageButtons - 1, totalPages);
+
+  for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+  }
+
   return (
     <div className="log-pagination">
       <button 
@@ -116,13 +142,14 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         이전
       </button>
 
-      {Array.from({ length: totalPages }, (_, i) => (
+      {/* 계산된 페이지 번호들만 버튼으로 렌더링 */}
+      {pageNumbers.map((number) => (
         <button
-          key={i + 1}
-          onClick={() => onPageChange(i + 1)}
-          className={`log-page-button ${currentPage === i + 1 ? 'log-active' : ''}`}
+            key={number}
+            onClick={() => onPageChange(number)}
+            className={`log-page-button ${currentPage === number ? 'log-active' : ''}`}
         >
-          {i + 1}
+            {number}
         </button>
       ))}
 
@@ -138,7 +165,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 // 상세 모달 컴포넌트
-const DetailModal = ({ selectedDetail, onClose }) => {
+const DetailModal = ({ selectedDetail, onClose ,setLightboxImage}) => {
   if (!selectedDetail) return null;
 
   return (
@@ -159,9 +186,10 @@ const DetailModal = ({ selectedDetail, onClose }) => {
               <div className="log-image-container">
                 {selectedDetail.image ? (
                   <img 
-                    src={selectedDetail.image} 
+                    src={`/static/frames/${selectedDetail.image}?t=${new Date().getTime()}`}
                     alt="제품 썸네일" 
                     className="log-product-image"
+                    onClick={() => setLightboxImage(`/static/frames/${selectedDetail.image}?t=${new Date().getTime()}`)}
                   />
                 ) : (
                   <div className="log-image-placeholder">
@@ -232,7 +260,8 @@ const LogPage = ({ setCurrentPage, detectionHistory, username, handleLogout ,set
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [currentLogPage, setCurrentLogPage] = useState(1);
   const logsPerPage = 25;
-console.log(`detectionHistory `+detectionHistory);
+  const [lightboxImage, setLightboxImage] = useState(null);
+
   // 통계 및 페이지네이션 데이터 계산
   const stats = LogPageUtils.calculateStats(detectionHistory);
   const { 
@@ -359,7 +388,7 @@ console.log(`detectionHistory `+detectionHistory);
                 </thead>
                 <tbody className="log-table-body">
                   {currentLogs.map((log, index) => (
-                    <tr key={log.id} className="log-table-row">
+                    <tr key={log.id|| `log-item-${index}`} className="log-table-row">
                       <td className="log-table-cell">
                         {detectionHistory.length - (indexOfFirstLog + index)}
                       </td>
@@ -405,6 +434,12 @@ console.log(`detectionHistory `+detectionHistory);
       <DetailModal 
         selectedDetail={selectedDetail}
         onClose={closeDetailModal}
+        setLightboxImage={setLightboxImage}
+      />
+      {/* --- 신규 추가: 라이트박스 렌더링 --- */}
+      <ImageLightbox
+           imageUrl={lightboxImage}
+           onClose={() => setLightboxImage(null)}
       />
     </div>
   );
