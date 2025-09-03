@@ -6,8 +6,11 @@ import {
   fetchInventory,
   deleteItem as apiDeleteItem,
   deliverItem,
-  createItem,              // ✅ 생성 API 추가 임포트
+  createItem,
 } from '../services/warehouseService';
+
+// ⬇️ 3D 창고 임포트
+import Warehouse3D from './Warehouse3D';
 
 // 서버 연동이면 false
 const USE_LOCAL_DATA = false;
@@ -29,6 +32,14 @@ const LOCAL_DATA = [
 const DELIVER_THRESHOLD = 100;
 const toNumber = (q) => (typeof q === 'number' ? q : parseInt(String(q).replace(/[^\d.-]/g, ''), 10) || 0);
 const isDeliveryReady = (q) => toNumber(q) >= DELIVER_THRESHOLD;
+
+// ▶ 섹션 → 카메라 스트림 매핑 (3D 상단 패널에서 사용)
+const camMap = {
+  A: 'https://www.w3schools.com/html/mov_bbb.mp4',
+  B: 'https://www.w3schools.com/html/movie.mp4',
+  C: 'https://www.w3schools.com/html/mov_bbb.mp4',
+  D: 'https://www.w3schools.com/html/movie.mp4', // 불량구역
+};
 
 const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
   // 🔎 검색/필터 입력 상태
@@ -394,6 +405,17 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
 
         {/* 오른쪽 메인 영역 */}
         <div className="wh-main">
+          {/* ⬇️ 3D 창고 미니맵 */}
+          <div className="wh-3d-box">
+            <Warehouse3D
+              data={inventoryData}
+              threshold={DELIVER_THRESHOLD}
+              getCameraStream={(section) => camMap[section]}
+              onSelect={(item) => console.log('picked:', item)}
+              style={{ height: 560 }}
+            />
+          </div>
+
           {/* 검색 및 필터 */}
           <div className="wh-filter-container">
             <div className="wh-filter-row">
@@ -456,7 +478,7 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
               {/* 버튼 */}
               <button
                 className="wh-btn wh-btn-primary"
-                onClick={() => setShowAdd(true)}                 // ✅ onClick 연결
+                onClick={() => setShowAdd(true)}
               >
                 <Plus className="wh-btn-icon" />
                 상품추가
