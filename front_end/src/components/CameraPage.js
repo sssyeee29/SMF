@@ -232,16 +232,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
               )}
 
 
-              {/* 캡처: video/img 모두 지원 */}
-              <button
-                onClick={() => {
-                  const img = captureFlexible(videoRef1, imgRef1);
-                  if (img) { setSelectedImage([img]); detectDefects([img]); }
-                }}
-                className="btn-capture"
-              >
-                캡쳐
-              </button>
+  
             </div>
           </div>
 
@@ -286,129 +277,52 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
             </div>
 
             <div className="camera-controls">
+              {/* 카메라 2 컨트롤 - 모두 cameraStream2, videoRef2, isPaused2로 수정 */}
               <button
                 onClick={() => {
-                  if (!cameraStream1) {
-                    startCamera(selectedDeviceId1, setCameraStream1, videoRef1);
-                  } else if (videoRef1.current) {
-                    if (isPaused1) {
-                      videoRef1.current.play();
-                      setIsPaused1(false);
+                  if (!cameraStream2) {
+                    startCamera(selectedDeviceId2, setCameraStream2, videoRef2);
+                  } else if (videoRef2.current) {
+                    if (isPaused2) {
+                      videoRef2.current.play();
+                      setIsPaused2(false);
                     } else {
-                      videoRef1.current.pause();
-                      setIsPaused1(true);
+                      videoRef2.current.pause();
+                      setIsPaused2(true);
                     }
                   }
                 }}
-                className={!cameraStream1 || isPaused1 ? "btn-camera-on" : "btn-camera-off"}
+                className={!cameraStream2 || isPaused2 ? "btn-camera-on" : "btn-camera-off"}
               >
-                {!cameraStream1 || isPaused1 ? '시작' : '중지'}
+                {!cameraStream2 || isPaused2 ? '시작' : '중지'}
               </button>
 
-              {!cameraStream1 ? (
+              {!cameraStream2 ? (
                 <button
-                  onClick={() => startCamera(selectedDeviceId1, setCameraStream1, videoRef1)}
+                  onClick={() => startCamera(selectedDeviceId2, setCameraStream2, videoRef2)}
                   className="btn-camera-on"
                 >
                   카메라 ON
                 </button>
               ) : (
                 <button
-                  onClick={() => { cameraStream1.getTracks().forEach(t => t.stop()); setCameraStream1(null); setIsPaused1(false); }}
+                  onClick={() => { cameraStream2.getTracks().forEach(t => t.stop()); setCameraStream2(null); setIsPaused2(false); }}
                   className="btn-camera-off"
                 >
                   카메라 OFF
                 </button>
               )}
 
-              <button
-                onClick={() => { const img = captureImage(videoRef1); if (img) { setSelectedImage([img]); detectDefects([img]) } }}
-                className="btn-capture"
-              >
-                캡쳐
-              </button>
+             
             </div>
           </div>
         </div>
 
-        {/* 우측: AI 검사 */}
-        <div className="ai-inspection-panel">
-          <div className="ai-title">AI 부분 검사 상태</div>
 
-          <button
-            onClick={() => {
-              const img1 = captureImage(videoRef1);
-              const img2 = captureImage(videoRef2);
-              if (img1 && img2) {
-                setSelectedImage([img1, img2]);
-                detectDefects([img1, img2])
-              }
-            }}
-            className="btn-dual-capture"
-          >
-            두 카메라 동시에 촬영
-          </button>
-
-          {isProcessing ? (
-            <div className="processing-container">
-              <div className="loading-spinner"></div>
-              <div className="processing-text">검사 중...</div>
-            </div>
-          ) : detectionResult.length ? (
-            <div className="results-container">
-              <div className="captured-images">
-                {selectedImage.map((img, i) =>
-                  <img
-                    key={i}
-                    src={img}
-                    className="captured-image"
-                    alt={`검사 이미지 ${i + 1}`}
-                  />
-                )}
-              </div>
-              {detectionResult.map((res, i) =>
-                <div key={i} className="result-item">
-                  <div className="result-row">
-                    <span>결과:</span>
-                    <span className={res.result === "불량품" ? "result-defect" : "result-good"}>
-                      {res.result}
-                    </span>
-                  </div>
-
-                  <div className="result-row">
-                    <span>불량 유형:</span>
-                    <span>{res.type}</span>
-                  </div>
-
-                  <div className="result-row">
-                    <span>신뢰도:</span>
-                    <span>{res.confidence}</span>
-                  </div>
-
-                  <div className="result-row">
-                    <span>검사 시간:</span>
-                    <span>{res.timestamp}</span>
-                  </div>
-                </div>
-              )}
-              <button
-                onClick={() => { setDetectionResult([]); setSelectedImage([]) }}
-                className="btn-new-inspection"
-              >
-                새로운 검사
-              </button>
-            </div>
-          ) : (
-            <div className="waiting-container">
-              <div className="waiting-text">검사 대기 중</div>
-            </div>
-          )}
-        </div>
+        <canvas ref={canvasRef} className="hidden-canvas" />
       </div>
-
-      <canvas ref={canvasRef} className="hidden-canvas" />
     </div>
   );
-};
 
+};
 export default CameraPage;
