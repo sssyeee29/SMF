@@ -16,6 +16,12 @@ import {loginUser,logoutUser} from './services/login';
 
 
 const App = () => {
+
+    useEffect(() => {
+        handleLogout();
+    }, []);
+
+
   // ✅ 로그인 관리
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState(""); // 로그인한 사용자 이름 저장
