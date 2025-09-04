@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="plant.dev.camera.mapper.DetectionLogMapper">
+
+    <insert id="upsertDetectionLog"
+            parameterType="plant.dev.camera.dto.DetectionLogDTO"
+            useGeneratedKeys="true"
+            keyProperty="logId">
+        INSERT INTO detection_log_tbl (
+            capture_id,
+            classes,
+            product_code,
+            product_result,
+            defect_type,
+            confidence,
+            image_url
+        ) VALUES (
+                     #{captureId},
+                     #{classes},
+                     #{productCode},
+                     #{productResult},
+                     #{defectType},
+                     #{confidence},
+                     #{imageUrl}
+                 )
+            ON DUPLICATE KEY UPDATE
+                                 classes        = VALUES(classes),
+                                 product_code   = VALUES(product_code),
+                                 product_result = VALUES(product_result),
+                                 defect_type    = VALUES(defect_type),
+                                 confidence     = VALUES(confidence),
+                                 image_url      = VALUES(image_url)
+    </insert>
+
+</mapper>
