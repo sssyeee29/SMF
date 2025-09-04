@@ -325,92 +325,112 @@ function WarehouseLights() {
   );
 }
 
-function WarehouseStatus({ threshold, totalItems, lowStock }) {
-  return (
-    <Html fullscreen>
-      <div
-        style={{
-          position: "absolute",
-          top: 16,
-          right: 16,
-          background: "rgba(30, 41, 59, 0.95)",
-          color: "#f1f5f9",
-          border: "1px solid #475569",
-          borderRadius: 8,
-          padding: 12,
-          fontSize: 12,
-          fontFamily: "system-ui, sans-serif",
-          backdropFilter: "blur(8px)",
-          minWidth: 160,
-        }}
-      >
-        <div style={{ fontWeight: 600, marginBottom: 8, color: "#fbbf24" }}>📦 창고 현황</div>
+// WarehouseStatus 함수 제거됨 - 이제 메인 컴포넌트에서 직접 렌더링
 
-        <div style={{ marginBottom: 8 }}>
-          <div>전체 항목: {totalItems}개</div>
-          <div style={{ color: lowStock > 0 ? "#ef4444" : "#22c55e" }}>부족 항목: {lowStock}개</div>
-        </div>
-
-        <div style={{ borderTop: "1px solid #475569", paddingTop: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-            <div style={{ width: 8, height: 8, background: "#ef4444", borderRadius: 2 }} />
-            <span style={{ fontSize: 11 }}>부족 (&lt;80%)</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-            <div style={{ width: 8, height: 8, background: "#f59e0b", borderRadius: 2 }} />
-            <span style={{ fontSize: 11 }}>주의 (80-99%)</span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <div style={{ width: 8, height: 8, background: "#22c55e", borderRadius: 2 }} />
-            <span style={{ fontSize: 11 }}>충분 (≥100%)</span>
-          </div>
-        </div>
-
-        <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #475569", color: "#94a3b8", fontSize: 10 }}>
-          기준: {threshold}개
-        </div>
-      </div>
-    </Html>
-  );
-}
-
-function WarehouseCeilingLights({ width = 20, depth = 10 }) {
+function WarehouseCeilingLights({ width = 20, depth = 10, sections = 3 }) {
+  const lightsPerSection = 2;
+  const sectionWidth = width / sections;
+  
   return (
     <group>
-      {Array.from({ length: 3 }, (_, i) => (
-        <rectAreaLight
-          key={i}
-          width={width / 3}
-          height={0.5}
-          color="#ffffff"
-          intensity={5}
-          position={[i * (width / 3) + 2, 5, depth / 2]}
-          rotation={[-Math.PI / 2, 0, 0]}
-        />
+      {Array.from({ length: sections }, (_, sectionIdx) => (
+        <group key={sectionIdx}>
+          {Array.from({ length: lightsPerSection }, (_, lightIdx) => {
+            const x = sectionIdx * sectionWidth + (lightIdx + 0.5) * (sectionWidth / lightsPerSection);
+            const z = depth / 2;
+            
+            return (
+              <group key={lightIdx} position={[x, 4.5, z]}>
+                {/* 천장 조명 스탠드 구조 */}
+                <mesh position={[0, 0.3, 0]} castShadow>
+                  <cylinderGeometry args={[0.05, 0.05, 0.6]} />
+                  <meshStandardMaterial color="#2d3748" />
+                </mesh>
+                
+                {/* 조명 갓 (반사판) */}
+                <mesh position={[0, 0, 0]} castShadow>
+                  <coneGeometry args={[0.4, 0.3, 8]} />
+                  <meshStandardMaterial color="#4a5568" side={2} />
+                </mesh>
+                
+                {/* 조명 전구 */}
+                <mesh position={[0, -0.1, 0]}>
+                  <sphereGeometry args={[0.08]} />
+                  <meshStandardMaterial color="#fffef7" emissive="#fff9c4" emissiveIntensity={0.8} />
+                </mesh>
+                
+                {/* 빛 원뿔 효과 - 메인 */}
+                <mesh position={[0, -1.5, 0]} rotation={[0, 0, 0]}>
+                  <coneGeometry args={[1.2, 3, 16, 1, true]} />
+                  <meshBasicMaterial 
+                    color="#fff9c4" 
+                    transparent 
+                    opacity={0.15}
+                    side={2}
+                  />
+                </mesh>
+                
+                {/* 빛 원뿔 효과 - 내부 밝은 부분 */}
+                <mesh position={[0, -1.2, 0]} rotation={[0, 0, 0]}>
+                  <coneGeometry args={[0.8, 2.4, 12, 1, true]} />
+                  <meshBasicMaterial 
+                    color="#ffffff" 
+                    transparent 
+                    opacity={0.25}
+                    side={2}
+                  />
+                </mesh>
+                
+                {/* 빛 원뿔 효과 - 중심 핫스팟 */}
+                <mesh position={[0, -1, 0]} rotation={[0, 0, 0]}>
+                  <coneGeometry args={[0.4, 2, 8, 1, true]} />
+                  <meshBasicMaterial 
+                    color="#ffffff" 
+                    transparent 
+                    opacity={0.35}
+                    side={2}
+                  />
+                </mesh>
+                
+                {/* 전구 주변 글로우 효과 */}
+                <mesh position={[0, -0.1, 0]}>
+                  <sphereGeometry args={[0.2]} />
+                  <meshBasicMaterial 
+                    color="#fff9c4" 
+                    transparent 
+                    opacity={0.3}
+                  />
+                </mesh>
+                
+                {/* 실제 조명 */}
+                <spotLight
+                  position={[0, -0.2, 0]}
+                  target-position={[0, -4, 0]}
+                  intensity={2.5}
+                  angle={Math.PI / 5}
+                  penumbra={0.2}
+                  color="#ffffff"
+                  castShadow
+                  shadow-mapSize-width={1024}
+                  shadow-mapSize-height={1024}
+                />
+                
+                {/* 추가 포인트 라이트 */}
+                <pointLight
+                  position={[0, -0.15, 0]}
+                  intensity={1.8}
+                  color="#fff9c4"
+                  distance={8}
+                  decay={1}
+                />
+              </group>
+            );
+          })}
+        </group>
       ))}
     </group>
   );
 }
-
-function WarehouseEmergencyLights({ depth = 10 }) {
-  return (
-    <group>
-      <pointLight position={[0, 2.5, 0]} intensity={1} color="#ff0000" distance={4} decay={2} />
-      <pointLight position={[0, 2.5, depth]} intensity={1} color="#00ff00" distance={4} decay={2} />
-    </group>
-  );
-}
-
-function FlickeringLight() {
-  const ref = useRef();
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      ref.current.intensity = 0.5 + Math.sin(clock.elapsedTime * 10) * 0.2;
-    }
-  });
-  return <pointLight ref={ref} position={[5, 3, 5]} color="#ffaa00" />;
-}
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 메인 컴포넌트
@@ -480,11 +500,8 @@ export default function Warehouse3D({
       >
         <color attach="background" args={["#475569"]} />
        
-
         <WarehouseLights />
-        <WarehouseCeilingLights width={sceneWidth} depth={rowsCount * CELL} />
-        <WarehouseEmergencyLights depth={rowsCount * CELL} />
-        <FlickeringLight />
+        <WarehouseCeilingLights width={sceneWidth} depth={rowsCount * CELL} sections={sectionCount} />
         <WarehouseStructure sections={sectionCount} rowsCount={rowsCount} colsCount={colsCount} />
         <WarehouseRacks sections={sectionCount} rowsCount={rowsCount} colsCount={colsCount} />
 
@@ -508,9 +525,52 @@ export default function Warehouse3D({
           maxPolarAngle={1.3}
           target={[targetX, 1, targetZ]}
         />
-
-        <WarehouseStatus threshold={threshold} totalItems={stats.total} lowStock={stats.lowStock} />
       </Canvas>
+
+      {/* 창고 현황 - 화면 고정 */}
+      <div
+        style={{
+          position: "absolute",
+          top: 16,
+          left: 16,
+          background: "rgba(30, 41, 59, 0.95)",
+          color: "#f1f5f9",
+          border: "1px solid #475569",
+          borderRadius: 8,
+          padding: 12,
+          fontSize: 12,
+          fontFamily: "system-ui, sans-serif",
+          backdropFilter: "blur(8px)",
+          minWidth: 160,
+          zIndex: 10,
+        }}
+      >
+        <div style={{ fontWeight: 600, marginBottom: 8, color: "#fbbf24" }}>📦 창고 현황</div>
+
+        <div style={{ marginBottom: 8 }}>
+          <div>전체 항목: {stats.total}개</div>
+          <div style={{ color: stats.lowStock > 0 ? "#ef4444" : "#22c55e" }}>부족 항목: {stats.lowStock}개</div>
+        </div>
+
+        <div style={{ borderTop: "1px solid #475569", paddingTop: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+            <div style={{ width: 8, height: 8, background: "#ef4444", borderRadius: 2 }} />
+            <span style={{ fontSize: 11 }}>부족 (&lt;80%)</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+            <div style={{ width: 8, height: 8, background: "#f59e0b", borderRadius: 2 }} />
+            <span style={{ fontSize: 11 }}>주의 (80-99%)</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 8, height: 8, background: "#22c55e", borderRadius: 2 }} />
+            <span style={{ fontSize: 11 }}>충분 (≥100%)</span>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #475569", color: "#94a3b8", fontSize: 10 }}>
+          기준: {threshold}개
+        </div>
+      </div>
 
       {/* 선택된 아이템 정보 패널 */}
       {selected && (
@@ -527,7 +587,7 @@ export default function Warehouse3D({
             <div><strong>수량:</strong> {selected.quantity}개</div>
             {selected.location && <div><strong>위치:</strong> {selected.location}</div>}
             <div style={{ color: selected.quantity >= threshold ? "#22c55e" : "#ef4444", fontWeight: 600, marginTop: 4 }}>
-              {selected.quantity >= threshold ? "✅ 출고 가능" : "⚠️ 재고 부족"}
+              {selected.quantity >= threshold ? "✅출고 가능" : "⚠️ 재고 부족"}
             </div>
           </div>
         </div>
