@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { ArrowLeft, X } from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import {ArrowLeft, X} from 'lucide-react';
 import './LogPage.css'; // CSS 파일 임포트
-// 백엔드 부분 
+// 백엔드 부분
 import {logs} from '../services/logs';
 
 // 유틸리티 함수들을 별도 객체로 분리
@@ -29,17 +29,17 @@ const LogPageUtils = {
   // CSV 내보내기 함수
   exportToCSV: (detectionHistory, username) => {
     const csvContent = [
-      ['순서', '촬영 시간', '제품 코드', '검출 결과', '불량 유형', '검출 확률', '작업자 ID'],
+      ['순서', '촬영 시간', '제품 코드', '검출 결과', '불량 유형', '검출 확률'],
       ...detectionHistory.map((log, index) => {
         const formattedTimestamp = log.timestamp.replace('T', ' ').replace(/-/g, '/');
         return [
           detectionHistory.length - index,
           formattedTimestamp,
-          log.productCode || 'PROD-001',
+          log.productCode,
           log.result,
-          log.type || (log.result === '불량품' ? '뚜껑 손상' : '-'),
-          log.confidence,
-          log.workerId || username
+          log.type,
+          log.confidence
+
         ];
       })
     ].map(row => row.join(',')).join('\n');
@@ -186,10 +186,10 @@ const DetailModal = ({ selectedDetail, onClose ,setLightboxImage}) => {
               <div className="log-image-container">
                 {selectedDetail.image ? (
                   <img 
-                    src={`/static/frames/${selectedDetail.image}?t=${new Date().getTime()}`}
+                    src={`${selectedDetail.image}?t=${new Date().getTime()}`}
                     alt="제품 썸네일" 
                     className="log-product-image"
-                    onClick={() => setLightboxImage(`/static/frames/${selectedDetail.image}?t=${new Date().getTime()}`)}
+                    onClick={() => setLightboxImage(`${selectedDetail.image}?t=${new Date().getTime()}`)}
                   />
                 ) : (
                   <div className="log-image-placeholder">
@@ -229,10 +229,7 @@ const DetailModal = ({ selectedDetail, onClose ,setLightboxImage}) => {
                   <span className="log-info-label">확률:</span>
                   <span className="log-info-value">{selectedDetail.confidence}</span>
                 </div>
-                <div className="log-info-row">
-                  <span className="log-info-label">작업자:</span>
-                  <span className="log-info-value">{selectedDetail.작업자ID}</span>
-                </div>
+
               </div>
             </div>
           </div>
@@ -284,7 +281,6 @@ const LogPage = ({ setCurrentPage, detectionHistory, username, handleLogout ,set
     setSelectedDetail({
       ...log,
       순서: detectionHistory.length - (indexOfFirstLog + index),
-      작업자ID: log.workerId || username,
       제품코드: log.productCode || 'PROD-001',
       썸네일: log.image || '/placeholder-image.jpg'
     });
@@ -382,7 +378,6 @@ const LogPage = ({ setCurrentPage, detectionHistory, username, handleLogout ,set
                     <th className="log-table-header-cell">검출 결과</th>
                     <th className="log-table-header-cell">불량 유형</th>
                     <th className="log-table-header-cell">검출 확률</th>
-                    <th className="log-table-header-cell">작업자 ID</th>
                     <th className="log-table-header-cell">비고</th>
                   </tr>
                 </thead>
@@ -405,7 +400,6 @@ const LogPage = ({ setCurrentPage, detectionHistory, username, handleLogout ,set
                         {log.result === '불량품' ? (log.type || '뚜껑 손상') : '-'}
                       </td>
                       <td className="log-table-cell">{log.confidence}%</td>
-                      <td className="log-table-cell">{log.workerId || username}</td>
                       <td className="log-table-cell">
                         <button 
                           onClick={() => openDetailModal(log, index)}

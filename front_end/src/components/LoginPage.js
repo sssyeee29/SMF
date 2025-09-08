@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import './LoginPage.css';
 
-const LoginPage = ({ onLogin }) => {
+
+const LoginPage = ({ onLogin , onSignupClick }) => {
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
 
@@ -36,6 +37,9 @@ const LoginPage = ({ onLogin }) => {
             로그인
           </button>
         </form>
+          <div className="signup-link" onClick={onSignupClick}>
+              회원가입
+          </div>
       </div>
     </div>
   );

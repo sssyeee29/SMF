@@ -1,6 +1,6 @@
 import axios from 'axios';
 import httpClient from './httpClient';
-import { API_ENDPOINTS } from '../config/api';
+import {API_ENDPOINTS} from '../config/api';
 
 /**
  * 사용자 로그인 함수
@@ -36,3 +36,25 @@ export const logoutUser = async () => {
         return '로그아웃 처리 중 오류가 발생했습니다.';
     }
 };
+
+/**
+ * 사용자 가입 함수
+ * @description 실제로는 Axios를 사용하여 백엔드에 API 요청을 보냅니다.
+ * @param id 사용자 id
+ * @param pw 사용자 pw
+ * @returns Promise<User>
+ */
+export const register = async (id, password , name) => {
+    try {
+        const response = await httpClient.post(
+            API_ENDPOINTS.auth.register,
+            {id, password, name}
+        );
+        return response.data;
+    } catch (error) { //unknown
+        if (axios.isAxiosError(error) && error.response) {
+            throw new Error((error.response.data)?.message || '로그인에 실패했습니다.');
+        }
+        throw new Error('알 수 없는 오류가 발생했습니다.');
+    }
+}

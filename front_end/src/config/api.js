@@ -9,6 +9,7 @@ export const API_ENDPOINTS = {
   auth: {
     login: '/api/auth/login',
     logout: '/api/auth/logout',
+    register:'/api/auth/register',
   },
   log:{
     logs:'/api/logs',
