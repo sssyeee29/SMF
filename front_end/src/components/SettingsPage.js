@@ -57,11 +57,31 @@ const SettingsPage = ({ setCurrentPage, username, handleLogout }) => {
   };
 
 
-  const handleSave = () => {
-    // 설정 저장 로직
-    console.log('Settings saved:', settings);
-    alert('설정이 저장되었습니다.');
-  };
+const handleSave = async () => {
+  try {
+    const response = await fetch('/api/pi/settings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        confidence: settings.confidenceThreshold / 100,
+        sensitivity: settings.detectionSensitivity / 100,
+        tolerance: settings.allowableTolerance / 100
+      })
+    });
+
+    const data = await response.json();
+    if (data.ok) {
+      alert('설정이 저장되었습니다.');
+    } else {
+      alert('저장 실패: ' + data.msg);
+    }
+  } catch (err) {
+    console.error(err);
+    alert('서버 오류');
+  }
+};
 
   return (
     <div className="set-container ">
