@@ -1,13 +1,18 @@
 package plant.dev.camera.controller;
 
 import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import plant.dev.camera.service.DetectionLogService;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,6 +22,7 @@ public class RaspberryPiController {
 
     // 🔸 추론 결과를 임시로 저장할 메모리 맵 (나중에 DB로 교체 가능)
     private final Map<String, JSONObject> inferenceMap = new ConcurrentHashMap<>();
+    private static final String FLASK_SERVER_URL = "http://192.168.10.243:5000";
 
     // 🔸 이미지 저장 경로 (실제 운영 환경에서는 config 파일로 분리 추천)
     private static final String SAVE_DIR = "C:/ingest_frames";
@@ -103,4 +109,37 @@ public class RaspberryPiController {
                 "image_url", imageUrl        // 프론트에서 <img src=...> 가능
         ));
     }
+
+    @PostMapping("/settings")
+    public ResponseEntity<?> updateAISettings(@RequestBody Map<String, Object> settings) {
+        try {
+            String flaskUrl = FLASK_SERVER_URL + "/api/pi/settings";
+
+            // Flask에서 인식 가능한 키로 재매핑
+            Map<String, Object> flaskSettings = new HashMap<>();
+            if (settings.containsKey("confidenceThreshold"))
+                flaskSettings.put("confidence", settings.get("confidenceThreshold"));
+            if (settings.containsKey("sensitivity"))
+                flaskSettings.put("sensitivity", settings.get("sensitivity"));
+            if (settings.containsKey("tolerance"))
+                flaskSettings.put("tolerance", settings.get("tolerance"));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(flaskSettings, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestEntity, Map.class);
+
+
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("ok", false, "msg", "Flask 서버 전송 실패"));
+        }
+    }
+
+
+
+
 }
