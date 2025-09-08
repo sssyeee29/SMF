@@ -61,14 +61,14 @@ public class AuthService {
     @Transactional
     public void register(RegisterDto requestDto) {
         // 1. 이메일(사용자 ID) 중복 확인
-        if (userRepository.findByUserId(requestDto.getEmail()).isPresent()) {
-            log.error("중복이메일. User: {}", requestDto.getEmail());
-            throw new CustomException("error.save_failed");
+        if (userRepository.findByUserId(requestDto.getId()).isPresent()) {
+            log.error("중복아이디. User: {}", requestDto.getId());
+            throw new CustomException("error.Duplicate_id");
         }
 
         // 2. User 엔티티 생성 및 정보 설정
         User newUser = new User(
-                requestDto.getEmail(),
+                requestDto.getId(),
                 passwordEncoder.encode(requestDto.getPassword()),
                 requestDto.getName(),
                 "Y",

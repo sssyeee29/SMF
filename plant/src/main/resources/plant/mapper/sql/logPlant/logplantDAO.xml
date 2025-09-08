@@ -2,17 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="logplantDAO">
     <select id="findlogs" resultType="CustomMap">
-        SELECT ut.user_name as workerId
-             , DATE_FORMAT (log.input_date ,'%Y-%m-%d %H:%i') as timestamp
+
+        SELECT DATE_FORMAT (log.input_date ,'%Y-%m-%d %H:%i') as timestamp
              , log.product_code as productCode
-             , log.product_result as result
+             , case when log.product_result = 'defect' then '불량품'
+             		when log.product_result = 'normal' then '양품'
+               else '보류' end
+             as result
              , log.defect_type as type
-             , log.confidence as confidence
-             , log.user_id as userid
+             , TRUNCATE(log.confidence,2) as confidence
              , log.image_url as image
         FROM detection_log_tbl log
-                 join user_tbl ut
-        where log.user_id = ut.user_id
         order by log.input_date desc
+
     </select>
 </mapper>

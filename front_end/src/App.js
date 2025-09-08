@@ -1,18 +1,19 @@
 // App.js - 메인 애플리케이션 컴포넌트
-import React, { useState, useEffect } from 'react';
-import { Home, Camera, FileText, Package, Cog } from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import {Camera, Cog, FileText, Home, Package} from 'lucide-react';
 import './App.css';
 
 // 페이지 컴포넌트들 import
 import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignupPage'; //회원가입 페이지
 import HomePage from './components/HomePage';
 import CameraPage from './components/CameraPage';
 import LogPage from './components/LogPage';
 import WarehousePage from './components/WarehousePage';
 import SettingsPage from './components/SettingsPage';
 
-// 백엔드 부분 
-import {loginUser,logoutUser} from './services/login';
+// 백엔드 부분
+import {loginUser, logoutUser, register} from './services/login';
 
 
 const App = () => {
@@ -27,7 +28,13 @@ const App = () => {
   const [username, setUsername] = useState(""); // 로그인한 사용자 이름 저장
 
   // ✅ 현재 페이지 상태
-  const [currentPage, setCurrentPage] = useState('login'); 
+  const [currentPage, setCurrentPage] = useState('login');
+  const [authPage, setAuthPage] = useState('login'); // login 또는 signup
+
+
+  // ✅ 사용자 데이터 관리 (실제로는 데이터베이스나 서버에 저장)
+  const [users, setUsers] = useState([]);
+
 
   // ✅ 미리 지정한 아이디/비번
   const validId = "";
@@ -111,6 +118,22 @@ const App = () => {
     }
 */
   };
+    // ✅ 회원가입 함수
+    const handleSignup = (id, pw, name) => {
+        // 회원가입
+        register(id, pw , name)
+            .then(user => {
+                console.log("가입 성공:", user);
+                alert(user.message);
+                setAuthPage('login');
+            })
+            .catch(error => {
+                console.error("가입 실패:", error.message);
+                alert(error.message);
+            });
+
+        return true;
+    };
 
   // ✅ 로그아웃 함수
   const handleLogout = () => {
@@ -121,7 +144,15 @@ const App = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("username"); 
   };
+    // ✅ 회원가입 페이지 이동
+  const handleSignupClick = () => {
+      setAuthPage('signup');
+  };
 
+  // ✅ 로그인 페이지로 돌아가기
+  const handleBackToLogin = () => {
+      setAuthPage('login');
+  };
   // 전역 상태와 함수들을 props로 전달
   const pageProps = {
     currentPage,
@@ -135,9 +166,23 @@ const App = () => {
   };
 
   // ✅ 로그인 안됐을 때는 로그인 화면만 보임
-  if (!isLoggedIn) {
-    return <LoginPage onLogin={handleLogin} />;
-  }
+    // ✅ 로그인 안됐을 때는 로그인/회원가입 화면만 보임
+    if (!isLoggedIn) {
+        if (authPage === 'signup') {
+            return (
+                <SignupPage
+                    onSignup={handleSignup}
+                    onBackToLogin={handleBackToLogin}
+                />
+            );
+        }
+        return (
+            <LoginPage
+                onLogin={handleLogin}
+                onSignupClick={handleSignupClick}
+            />
+        );
+    }
 
   return (
     <div className="app-container">
