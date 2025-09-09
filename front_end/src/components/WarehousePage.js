@@ -10,6 +10,9 @@ import {
   deliverItem,
 } from '../services/warehouseService';
 
+// ⬇️ 3D 미니맵
+import Warehouse3D from './Warehouse3D';
+
 // 서버와 연동할지 여부 (true면 로컬 더미데이터 사용)
 const USE_LOCAL_DATA = false;
 
@@ -438,6 +441,19 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
               </div>
               <div className="wh-stat-label">납품 대기</div>
             </div>
+          </div>
+
+          {/* 3D 창고 미니맵 */}
+          <div style={{ margin: '12px 0' }}>
+            <Warehouse3D
+              data={inventoryData}
+              threshold={100} // (아이템별 limit을 쓰고 싶으면 개조 가능)
+              onSelect={(item) => {
+                // 아이템 클릭 시 원하는 동작
+                console.log('picked:', item);
+              }}
+              style={{ height: 360 }}
+            />
           </div>
 
           {/* 메인 테이블 영역 */}

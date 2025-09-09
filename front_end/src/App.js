@@ -1,6 +1,6 @@
 // App.js - 메인 애플리케이션 컴포넌트
-import React, {useEffect, useState} from 'react';
-import {Camera, Cog, FileText, Home, Package} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { LayoutDashboard, Camera, FileText, Package, Cog } from 'lucide-react';
 import './App.css';
 
 // 페이지 컴포넌트들 import
@@ -12,15 +12,17 @@ import LogPage from './components/LogPage';
 import WarehousePage from './components/WarehousePage';
 import SettingsPage from './components/SettingsPage';
 
+
 // 백엔드 부분
-import {loginUser, logoutUser, register} from './services/login';
+import { loginUser, logoutUser, register } from './services/login';
+
 
 
 const App = () => {
 
-    useEffect(() => {
-        handleLogout();
-    }, []);
+  useEffect(() => {
+    handleLogout();
+  }, []);
 
 
   // ✅ 로그인 관리
@@ -94,64 +96,64 @@ const App = () => {
 
     // 여기서 있는 아이디 확인 
     loginUser(id, pw)
-    .then(user => {
-      console.log("로그인 성공:", user);
-      setIsLoggedIn(true);
-      setUsername(user.name); // 백엔드에서 받은 이름 사용
-      setCurrentPage("home");
-      localStorage.setItem("isLoggedIn", "true"); 
-      localStorage.setItem("username", user.name); // 유저이름도 저장
-    })
-    .catch(error => {
-      console.error("로그인 실패:", error.message);
-      alert(error.message);
-    });
-/*
-    if (id === validId && pw === validPw) {
-      setIsLoggedIn(true);
-      setUsername(id); // 아이디 저장
-      setCurrentPage("home");
-      localStorage.setItem("isLoggedIn", "true"); 
-      localStorage.setItem("username", id); // 유저이름도 저장
-    } else {
-      alert("아이디 또는 비밀번호가 틀렸습니다!");
-    }
-*/
+      .then(user => {
+        console.log("로그인 성공:", user);
+        setIsLoggedIn(true);
+        setUsername(user.name); // 백엔드에서 받은 이름 사용
+        setCurrentPage("home");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("username", user.name); // 유저이름도 저장
+      })
+      .catch(error => {
+        console.error("로그인 실패:", error.message);
+        alert(error.message);
+      });
+    /*
+        if (id === validId && pw === validPw) {
+          setIsLoggedIn(true);
+          setUsername(id); // 아이디 저장
+          setCurrentPage("home");
+          localStorage.setItem("isLoggedIn", "true"); 
+          localStorage.setItem("username", id); // 유저이름도 저장
+        } else {
+          alert("아이디 또는 비밀번호가 틀렸습니다!");
+        }
+    */
   };
-    // ✅ 회원가입 함수
-    const handleSignup = (id, pw, name) => {
-        // 회원가입
-        register(id, pw , name)
-            .then(user => {
-                console.log("가입 성공:", user);
-                alert(user.message);
-                setAuthPage('login');
-            })
-            .catch(error => {
-                console.error("가입 실패:", error.message);
-                alert(error.message);
-            });
+  // ✅ 회원가입 함수
+  const handleSignup = (id, pw, name) => {
+    // 회원가입
+    register(id, pw, name)
+      .then(user => {
+        console.log("가입 성공:", user);
+        alert(user.message);
+        setAuthPage('login');
+      })
+      .catch(error => {
+        console.error("가입 실패:", error.message);
+        alert(error.message);
+      });
 
-        return true;
-    };
+    return true;
+  };
 
   // ✅ 로그아웃 함수
   const handleLogout = () => {
     logoutUser();
     setIsLoggedIn(false);
-    setUsername(""); 
+    setUsername("");
     setCurrentPage("login");
     localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("username"); 
+    localStorage.removeItem("username");
   };
-    // ✅ 회원가입 페이지 이동
+  // ✅ 회원가입 페이지 이동
   const handleSignupClick = () => {
-      setAuthPage('signup');
+    setAuthPage('signup');
   };
 
   // ✅ 로그인 페이지로 돌아가기
   const handleBackToLogin = () => {
-      setAuthPage('login');
+    setAuthPage('login');
   };
   // 전역 상태와 함수들을 props로 전달
   const pageProps = {
@@ -166,66 +168,66 @@ const App = () => {
   };
 
   // ✅ 로그인 안됐을 때는 로그인 화면만 보임
-    // ✅ 로그인 안됐을 때는 로그인/회원가입 화면만 보임
-    if (!isLoggedIn) {
-        if (authPage === 'signup') {
-            return (
-                <SignupPage
-                    onSignup={handleSignup}
-                    onBackToLogin={handleBackToLogin}
-                />
-            );
-        }
-        return (
-            <LoginPage
-                onLogin={handleLogin}
-                onSignupClick={handleSignupClick}
-            />
-        );
+  // ✅ 로그인 안됐을 때는 로그인/회원가입 화면만 보임
+  if (!isLoggedIn) {
+    if (authPage === 'signup') {
+      return (
+        <SignupPage
+          onSignup={handleSignup}
+          onBackToLogin={handleBackToLogin}
+        />
+      );
     }
+    return (
+      <LoginPage
+        onLogin={handleLogin}
+        onSignupClick={handleSignupClick}
+      />
+    );
+  }
 
   return (
     <div className="app-container">
-        {/* 하단 네비게이션 바 */}
-        <div className="app-bottom-nav">
-          <div className="app-nav-buttons">
-            <button 
-              onClick={() => setCurrentPage('home')}
-              className={`app-nav-button ${currentPage === 'home' ? 'active' : ''}`}
-            >
-              <Home className="app-nav-icon" />
-              <span className="app-nav-text">홈</span>
-            </button>
-            <button 
-              onClick={() => setCurrentPage('camera')}
-              className={`app-nav-button ${currentPage === 'camera' ? 'active' : ''}`}
-            >
-              <Camera className="app-nav-icon" />
-              <span className="app-nav-text">카메라</span>
-            </button>
-            <button 
-              onClick={() => setCurrentPage('log')}
-              className={`app-nav-button ${currentPage === 'log' ? 'active' : ''}`}
-            >
-              <FileText className="app-nav-icon" />
-              <span className="app-nav-text">로그</span>
-            </button>
-            <button 
-              onClick={() => setCurrentPage('warehouse')}
-              className={`app-nav-button ${currentPage === 'warehouse' ? 'active' : ''}`}
-            >
-              <Package className="app-nav-icon" />
-              <span className="app-nav-text">창고</span>
-            </button>
-            <button 
-              onClick={() => setCurrentPage('settings')}
-              className={`app-nav-button ${currentPage === 'settings' ? 'active' : ''}`}
-            >
-              <Cog className="app-nav-icon" />
-              <span className="app-nav-text">설정</span>
-            </button>
-          </div>
+      {/* 하단 네비게이션 바 */}
+      <div className="app-bottom-nav">
+        <div className="app-nav-buttons">
+          <button
+            onClick={() => setCurrentPage('home')}
+            className={`app-nav-button ${currentPage === 'home' ? 'active' : ''}`}
+          >
+            <Home className="app-nav-icon" />
+            <span className="app-nav-text">홈</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('camera')}
+            className={`app-nav-button ${currentPage === 'camera' ? 'active' : ''}`}
+          >
+            <Camera className="app-nav-icon" />
+            <span className="app-nav-text">카메라</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('log')}
+            className={`app-nav-button ${currentPage === 'log' ? 'active' : ''}`}
+          >
+            <FileText className="app-nav-icon" />
+            <span className="app-nav-text">로그</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('warehouse')}
+            className={`app-nav-button ${currentPage === 'warehouse' ? 'active' : ''}`}
+          >
+            <Package className="app-nav-icon" />
+            <span className="app-nav-text">창고</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('settings')}
+            className={`app-nav-button ${currentPage === 'settings' ? 'active' : ''}`}
+          >
+            <Cog className="app-nav-icon" />
+            <span className="app-nav-text">설정</span>
+          </button>
         </div>
+      </div>
 
       {/* 메인 컨텐츠 */}
       <div className="app-main-content">
