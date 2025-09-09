@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="plant.dev.dashboard.mapper.DashboardMapper">
+
+    <!-- G1: 정상/불량 건수 (불량률 포함) -->
+    <select id="selectQualityTrend" resultType="plant.dev.dashboard.dto.DashboardDTO.QualityTrendRow">
+        SELECT
+            DATE_FORMAT(
+                    inspect_date,
+                    CASE #{periodType}
+                        WHEN 'week'  THEN '%x-W%v'
+                        WHEN 'month' THEN '%Y-%m'
+                        WHEN 'year'  THEN '%Y'
+                        END
+            ) AS period,
+            SUM(CASE WHEN UPPER(result) = 'NORMAL' THEN 1 ELSE 0 END) AS normal,
+            SUM(CASE WHEN UPPER(result) = 'DEFECT' THEN 1 ELSE 0 END) AS defect,
+            ROUND(
+                    SUM(CASE WHEN UPPER(result) = 'DEFECT' THEN 1 ELSE 0 END) * 100.0
+                        / NULLIF(COUNT(*), 0),
+                    2
+            ) AS defectRatePct
+        FROM inspection_tbl
+        GROUP BY period
+        ORDER BY period;
+    </select>
+
+    <!-- G2: 납품 현황 (납품 건수 + 납품 수량) - inventory_tbl 사용 -->
+    <select id="selectDeliveryStatus" resultType="plant.dev.dashboard.dto.DashboardDTO.DeliveryComboRow">
+        SELECT
+            DATE_FORMAT(
+                    out_date,
+                    CASE #{periodType}
+                        WHEN 'week'  THEN '%x-W%v'
+                        WHEN 'month' THEN '%Y-%m'
+                        WHEN 'year'  THEN '%Y'
+                        END
+            ) AS period,
+            COUNT(*)      AS deliveredCount,  -- 납품 건수(행 수)
+            SUM(quantity) AS deliveredQty     -- 납품 수량 합계
+        FROM inventory_tbl
+        WHERE out_date IS NOT NULL
+          AND UPPER(delivery_status) = 'DONE'
+        GROUP BY period
+        ORDER BY period;
+    </select>
+
+    <!-- G3: 불량 원인 분석 (뚜껑 손상 vs 몸통 찌그러짐) -->
+    <!-- 서브쿼리에서 기간/원인별 불량건 집계 후, 바깥에서 기간별 합으로 비중 계산 -->
+    <select id="selectDefectCause" resultType="plant.dev.dashboard.dto.DashboardDTO.DefectCauseRow">
+        SELECT
+            t.period,
+            t.causeCode,
+            t.defectCount,
+            ROUND(
+                    t.defectCount * 100.0
+                        / NULLIF(SUM(t.defectCount) OVER (PARTITION BY t.period), 0),
+                    2
+            ) AS sharePct
+        FROM (
+                 SELECT
+                     DATE_FORMAT(
+                             inspect_date,
+                             CASE #{periodType}
+                                 WHEN 'week'  THEN '%x-W%v'
+                                 WHEN 'month' THEN '%Y-%m'
+                                 WHEN 'year'  THEN '%Y'
+                                 END
+                     ) AS period,
+                     defect_cause AS causeCode,   -- 예: '뚜껑 손상', '몸통 찌그러짐'
+                     COUNT(*)     AS defectCount
+                 FROM inspection_tbl
+                 WHERE UPPER(result) = 'DEFECT'
+                 GROUP BY period, defect_cause
+             ) t
+        ORDER BY t.period, t.causeCode;
+    </select>
+
+    <!-- G4: 제품별 납품 현황 (바나나/딸기/메로나) - inventory_tbl 사용 -->
+    <select id="selectProductDelivery" resultType="plant.dev.dashboard.dto.DashboardDTO.ProductDeliveryRow">
+        SELECT
+            DATE_FORMAT(
+                    out_date,
+                    CASE #{periodType}
+                        WHEN 'week'  THEN '%x-W%v'
+                        WHEN 'month' THEN '%Y-%m'
+                        WHEN 'year'  THEN '%Y'
+                        END
+            ) AS period,
+            item_name  AS productName,
+            item_code  AS productCode,
+            COUNT(*)   AS deliveredCount,
+            SUM(quantity) AS deliveredQty
+        FROM inventory_tbl
+        WHERE out_date IS NOT NULL
+          AND UPPER(delivery_status) = 'DELIVERED'
+        GROUP BY period, item_code, item_name
+        ORDER BY period, item_code;
+    </select>
+
+</mapper>

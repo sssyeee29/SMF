@@ -13,6 +13,7 @@ import WarehousePage from './components/WarehousePage';
 import SettingsPage from './components/SettingsPage';
 import DashboardPage from './components/DashboardPage';
 
+
 // 백엔드 부분
 import { loginUser, logoutUser, register } from './services/login';
 
@@ -25,6 +26,7 @@ const App = () => {
   useEffect(() => {
     handleLogout();
   }, []);
+
 
   // ✅ 로그인 관리
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -99,7 +101,6 @@ const App = () => {
   // ✅ 회원가입/로그인 페이지 전환
   const handleSignupClick = () => setAuthPage('signup');
   const handleBackToLogin = () => setAuthPage('login');
-
   const pageProps = {
     currentPage,
     setCurrentPage,
@@ -112,6 +113,7 @@ const App = () => {
   };
 
   // ✅ 비로그인 시
+
   if (!isLoggedIn) {
     if (authPage === 'signup') {
       return (
@@ -177,7 +179,7 @@ const App = () => {
               <span className="app-nav-text">설정</span>
             </button>
           </div>
-        </div>
+      </div>
       </div>
 
       {/* 메인 컨텐츠 */}
