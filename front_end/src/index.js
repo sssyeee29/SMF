@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import './i18n'; //언어 모드 변경
+import { ThemeProvider } from './contexts/ThemeContexts';
+import { LanguageProvider } from './contexts/LanguageContext';
+const Loading = () => <div>Loading translations...</div>;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  // <React.StrictMode>
-    <App />
-  // </React.StrictMode>
+  <LanguageProvider>
+    <ThemeProvider>
+      <Suspense fallback={<Loading />}>
+        <App />
+      </Suspense>
+    </ThemeProvider>
+  </LanguageProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,5 +1,6 @@
 package plant.dev.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -7,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import plant.com.cmm.exception.CustomException;
+import plant.com.cmm.util.ClientIpUtils;
 import plant.com.cmm.util.map.CustomMap;
 import plant.com.jwt.JwtUtil;
 import plant.dev.auth.dto.RegisterDto;
@@ -25,9 +27,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public CustomMap login(String userId, String password) {
+    public CustomMap login(String userId, String password) throws CustomException {
         // 1. JPA로 사용자 조회
-        User user = userRepository.findByUserId(userId)
+        User user = userRepository.findUserByIdAndApprovedIp(userId)
                 .orElseThrow(() -> new CustomException("LOGIN_FAIL", "아이디 또는 비밀번호가 일치하지 않습니다."));
 
         // 2. 패스워드 검증
@@ -59,7 +61,7 @@ public class AuthService {
      * @param requestDto 회원가입 정보 (email, password, name)
      */
     @Transactional
-    public void register(RegisterDto requestDto) {
+    public void register(RegisterDto requestDto, String userip) {
         // 1. 이메일(사용자 ID) 중복 확인
         if (userRepository.findByUserId(requestDto.getId()).isPresent()) {
             log.error("중복아이디. User: {}", requestDto.getId());
@@ -72,7 +74,8 @@ public class AuthService {
                 passwordEncoder.encode(requestDto.getPassword()),
                 requestDto.getName(),
                 "Y",
-                "ROLE_USER"
+                "ROLE_USER",
+                userip
         );
 
         // 3. JPA를 통해 사용자 정보 저장

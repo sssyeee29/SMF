@@ -8,14 +8,14 @@ import java.util.Map;
 
 public interface WarehouseService {
 
-    // ✅ 절대기간 지원 (from/to). 컨트롤러에서 regDays를 from/to로 변환하여 넘기도록 권장
+    // 조회
     List<InventoryItemDto> findItems(
             String search,
             String productType,
             String category,
             String status,
-            LocalDate from,       // null 허용
-            LocalDate to,         // null 허용
+            LocalDate from,
+            LocalDate to,
             int size,
             int offset
     );
@@ -25,17 +25,38 @@ public interface WarehouseService {
             String productType,
             String category,
             String status,
-            LocalDate from,       // null 허용
-            LocalDate to          // null 허용
+            LocalDate from,
+            LocalDate to
     );
 
-    // ✅ 납품(수량 차감) - 100개씩 차감하는 기본 정책
-    // 반환은 프론트가 바로 쓰기 쉽도록 맵/DTO 중 택1. 여기선 간단히 Map을 예시로 사용.
+    // 납품(수량 차감)
     Map<String, Object> deliver(Long id, int amount);
 
+    // 삭제
     void delete(Long id);
 
-    // ⬇️ 하위호환용 오버로드(선택). 기존 호출부가 많다면 유지하고 내부에서 from/to로 위임
+    // ---------------------- ⬇️ 추가 ----------------------
+
+    /** 단건 한도 변경 (limit_qty) */
+    void updateLimit(Long id, int limit);
+
+    /** 여러 건 한도 변경 (배치). 리턴: 실제 업데이트 건수 */
+    int updateLimitsBatch(List<Map<String, Object>> limits);
+
+    /**
+     * 자동 분할 생성:
+     * body 예시
+     * {
+     *   "name":"바나나맛 우유","code":"BAN001","quantity":230,"location":"A-01-01",
+     *   "inDate":"2025-01-15","note":"신선","category":"BANANA","productType":"BASIC","limit":100
+     * }
+     * 반환: 생성된 item_id 목록
+     */
+    List<Long> createWithAutoSplit(Map<String, Object> body);
+
+    // ---------------------- ⬆️ 추가 ----------------------
+
+    // 하위호환용 오버로드(선택)
     default List<InventoryItemDto> findItems(
             String search, String productType, String category, String status,
             Integer regDays, int size, int offset

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import plant.com.cmm.util.ClientIpUtils;
 import plant.com.cmm.util.map.CustomMap;
 import plant.dev.auth.dto.RegisterDto;
 import plant.dev.auth.dto.UserDto;
@@ -35,11 +36,9 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<CustomMap> login(@RequestBody Map<String, String> loginRequest, HttpServletResponse httpServletResponse) {
+    public ResponseEntity<CustomMap> login(@RequestBody Map<String, String> loginRequest, HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest) {
         String userId = loginRequest.get("id");
         String password = loginRequest.get("pw");
-
-        log.info("login request: {}", loginRequest);
 
         // 1. 서비스에서 토큰과 사용자 정보를 받아옵니다.
         CustomMap loginResult = authService.login(userId, password);
@@ -129,8 +128,10 @@ public class AuthController {
      * @return 성공 메시지
      */
     @PostMapping("/register")
-    public ResponseEntity<CustomMap> register(@Valid @RequestBody RegisterDto requestDto) {
-        authService.register(requestDto);
+    public ResponseEntity<CustomMap> register(@Valid @RequestBody RegisterDto requestDto,  HttpServletRequest httpServletRequest) {
+        String userip = ClientIpUtils.getClientIp(httpServletRequest);
+        log.info("register userip: {}", userip);
+        authService.register(requestDto,userip);
 
         CustomMap responseBody = new CustomMap();
         responseBody.put("message", messageSource.getMessage("auth.register.success",null, LocaleContextHolder.getLocale() ));
