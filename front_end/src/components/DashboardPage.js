@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, ComposedChart, PieChart, Pie, Cell, Legend } from 'recharts';
+
 import './DashboardPage.css';
 
 // 샘플 데이터 생성 함수 (최근 7일)
@@ -28,6 +29,7 @@ const generateSampleData = () => {
 };
 
 const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
+
     const [data] = useState(generateSampleData());
 
     const today = new Date().toISOString().split('T')[0];
@@ -44,24 +46,24 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
 
     const updateFilter = (chartId, filterType, value) => {
         setFilters(prev => ({
-            ...prev,
-            [chartId]: {
-                ...prev[chartId],
-                [filterType]: value
-            }
+        ...prev,
+        [chartId]: {
+            ...prev[chartId],
+            [filterType]: value
+        }
         }));
     };
 
     const prepareAreaData = (data) => {
-        if (data.length === 1) {
-            const item = data[0];
-            // 같은 값을 가진 두 점을 만들어 수평선 효과
-            return [
-                { ...item, date: item.date + '_start' },
-                { ...item, date: item.date + '_end' }
-            ];
-        }
-        return data;
+    if (data.length === 1) {
+        const item = data[0];
+        // 같은 값을 가진 두 점을 만들어 수평선 효과
+        return [
+        { ...item, date: item.date + '_start' },
+        { ...item, date: item.date + '_end' }
+        ];
+    }
+    return data;
     };
 
 
@@ -70,35 +72,35 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
         let filteredData = [...data];
 
         if (filter.startDate && filter.endDate) {
-            filteredData = filteredData.filter(item =>
-                item.date >= filter.startDate && item.date <= filter.endDate
-            );
+        filteredData = filteredData.filter(item => 
+            item.date >= filter.startDate && item.date <= filter.endDate
+        );
         }
 
         if (filter.period === 'monthly') {
-            const monthlyData = {};
-            filteredData.forEach(item => {
-                const month = item.date.substring(0, 7);
-                if (!monthlyData[month]) {
-                    monthlyData[month] = { date: month, normal: 0, defective: 0, deliveryCount: 0, deliveryQuantity: 0, lidDefect: 0, daisyDefect: 0, banana: 0, strawberry: 0, melon: 0 };
-                }
-                Object.keys(item).forEach(key => {
-                    if (key !== 'date') monthlyData[month][key] += item[key];
-                });
+        const monthlyData = {};
+        filteredData.forEach(item => {
+            const month = item.date.substring(0, 7);
+            if (!monthlyData[month]) {
+            monthlyData[month] = { date: month, normal: 0, defective: 0, deliveryCount: 0, deliveryQuantity: 0, lidDefect: 0, daisyDefect: 0, banana: 0, strawberry: 0, melon: 0 };
+            }
+            Object.keys(item).forEach(key => {
+            if (key !== 'date') monthlyData[month][key] += item[key];
             });
-            filteredData = Object.values(monthlyData);
+        });
+        filteredData = Object.values(monthlyData);
         } else if (filter.period === 'yearly') {
-            const yearlyData = {};
-            filteredData.forEach(item => {
-                const year = item.date.substring(0, 4);
-                if (!yearlyData[year]) {
-                    yearlyData[year] = { date: year, normal: 0, defective: 0, deliveryCount: 0, deliveryQuantity: 0, lidDefect: 0, daisyDefect: 0, banana: 0, strawberry: 0, melon: 0 };
-                }
-                Object.keys(item).forEach(key => {
-                    if (key !== 'date') yearlyData[year][key] += item[key];
-                });
+        const yearlyData = {};
+        filteredData.forEach(item => {
+            const year = item.date.substring(0, 4);
+            if (!yearlyData[year]) {
+            yearlyData[year] = { date: year, normal: 0, defective: 0, deliveryCount: 0, deliveryQuantity: 0, lidDefect: 0, daisyDefect: 0, banana: 0, strawberry: 0, melon: 0 };
+            }
+            Object.keys(item).forEach(key => {
+            if (key !== 'date') yearlyData[year][key] += item[key];
             });
-            filteredData = Object.values(yearlyData);
+        });
+        filteredData = Object.values(yearlyData);
         }
 
         return filteredData;
@@ -107,57 +109,57 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
     const chart4Data = useMemo(() => {
         const filteredData = filterData('chart4');
         const totals = filteredData.reduce((acc, item) => {
-            acc.banana += item.banana;
-            acc.strawberry += item.strawberry;
-            acc.melon += item.melon;
-            return acc;
+        acc.banana += item.banana;
+        acc.strawberry += item.strawberry;
+        acc.melon += item.melon;
+        return acc;
         }, { banana: 0, strawberry: 0, melon: 0 });
 
         return [
-            { name: '바나나', value: totals.banana, color: '#FFD700' },
-            { name: '딸기', value: totals.strawberry, color: '#FF6B6B' },
-            { name: '멜론', value: totals.melon, color: '#4ECDC4' }
+        { name: '바나나', value: totals.banana, color: '#FFD700' },
+        { name: '딸기', value: totals.strawberry, color: '#FF6B6B' },
+        { name: '멜론', value: totals.melon, color: '#4ECDC4' }
         ];
     }, [filterData]);
 
     const FilterComponent = ({ chartId, showComparison = false }) => (
         <div className="chart-filter-container">
-            <div className="chart-filter-row">
-                <select
-                    value={filters[chartId].period}
-                    onChange={(e) => updateFilter(chartId, 'period', e.target.value)}
-                    className="chart-filter-select"
-                >
-                    <option value="daily">주별</option>
-                    <option value="monthly">월별</option>
-                    <option value="yearly">년별</option>
-                </select>
-
-                <input
-                    type="date"
-                    value={filters[chartId].startDate}
-                    onChange={(e) => updateFilter(chartId, 'startDate', e.target.value)}
-                    className="chart-filter-date"
-                />
-
-                <input
-                    type="date"
-                    value={filters[chartId].endDate}
-                    onChange={(e) => updateFilter(chartId, 'endDate', e.target.value)}
-                    className="chart-filter-date"
-                />
-
-                {showComparison && (
-                    <select
-                        value={filters[chartId].comparison}
-                        onChange={(e) => updateFilter(chartId, 'comparison', e.target.value)}
-                        className="chart-filter-select"
-                    >
-                        <option value="none">비교없음</option>
-                        <option value="monthly">월별비교</option>
-                    </select>
-                )}
-            </div>
+        <div className="chart-filter-row">
+            <select 
+            value={filters[chartId].period}
+            onChange={(e) => updateFilter(chartId, 'period', e.target.value)}
+            className="chart-filter-select"
+            >
+            <option value="daily">주별</option>
+            <option value="monthly">월별</option>
+            <option value="yearly">년별</option>
+            </select>
+            
+            <input
+            type="date"
+            value={filters[chartId].startDate}
+            onChange={(e) => updateFilter(chartId, 'startDate', e.target.value)}
+            className="chart-filter-date"
+            />
+            
+            <input
+            type="date"
+            value={filters[chartId].endDate}
+            onChange={(e) => updateFilter(chartId, 'endDate', e.target.value)}
+            className="chart-filter-date"
+            />
+            
+            {showComparison && (
+            <select 
+                value={filters[chartId].comparison}
+                onChange={(e) => updateFilter(chartId, 'comparison', e.target.value)}
+                className="chart-filter-select"
+            >
+                <option value="none">비교없음</option>
+                <option value="monthly">월별비교</option>
+            </select>
+            )}
+        </div>
         </div>
     );
 
@@ -193,6 +195,7 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                                     <YAxis />
                                     <Tooltip />
                                     <Legend />
+
                                     <Bar dataKey="normal" fill="#4CAF50" name="정상" />
                                     <Bar dataKey="defective" fill="#FF5722" name="불량" />
                                 </BarChart>
@@ -299,7 +302,7 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                             <div className="chart-donut-legend">
                                 {chart4Data.map((item, index) => (
                                     <div key={index} className="chart-legend-item">
-                                        <div className="chart-legend-color" style={{ backgroundColor: item.color }}></div>
+                                        <div className="chart-legend-color" style={{backgroundColor: item.color}}></div>
                                         <span>{item.name}: {item.value}</span>
                                     </div>
                                 ))}

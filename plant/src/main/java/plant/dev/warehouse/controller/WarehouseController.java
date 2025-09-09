@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import plant.dev.warehouse.service.WarehouseService;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -58,8 +59,38 @@ public class WarehouseController {
             @RequestBody Map<String, Integer> body
     ) {
         int amount = body.getOrDefault("amount", 100);
-        var updated = service.deliver(id, amount); // 업데이트 후 엔티티/DTO 반환
-        // 200으로 변경 결과를 주거나, 필요 시 204로 본문 없이 응답해도 OK(프론트는 둘 다 대응)
+        var updated = service.deliver(id, amount); // 업데이트 후 DTO 반환
         return ResponseEntity.ok(updated);
+    }
+
+    // ✅ 한도 변경 (단건) — JSX 모달에서 저장 시 개별 호출
+    //   프론트: PATCH /api/warehouse/items/{id}/limit?limit=120
+    @PatchMapping("/items/{id}/limit")
+    public Map<String, Object> updateLimit(@PathVariable Long id,
+                                           @RequestParam int limit) {
+        service.updateLimit(id, limit);
+        return Map.of("ok", true);
+    }
+
+    // ✅ 한도 변경 (배치) — 여러 개를 한 번에 변경하고 싶을 때
+    //   요청 바디 예:
+    //   { "limits": [ { "id": 1, "limit": 120 }, { "id": 5, "limit": 80 } ] }
+    @PatchMapping("/items/limits")
+    public Map<String, Object> updateLimits(@RequestBody Map<String, List<Map<String, Object>>> payload) {
+        var list = payload.getOrDefault("limits", List.of());
+        int updated = service.updateLimitsBatch(list); // 각 원소: {id, limit}
+        return Map.of("ok", true, "updated", updated);
+    }
+
+    // (옵션) ✅ 자동 분할 생성 — 한번에 들어온 수량을 limit 단위로 여러 행 INSERT
+    //   요청 바디 예:
+    //   {
+    //     "name":"바나나맛 우유","code":"BAN001","quantity":230,"location":"A-01-01",
+    //     "inDate":"2025-01-15","note":"신선","category":"BANANA","productType":"BASIC","limit":100
+    //   }
+    @PostMapping("/items")
+    public Map<String, Object> createWithAutoSplit(@RequestBody Map<String, Object> body) {
+        var createdIds = service.createWithAutoSplit(body); // 서비스에서 DTO 변환/검증 처리
+        return Map.of("createdIds", createdIds, "count", createdIds.size());
     }
 }

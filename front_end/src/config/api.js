@@ -1,6 +1,6 @@
 // API 설정 파일
 export const apiConfig = {
-  baseURL: 'http://localhost:8080',
+  baseURL: 'http://127.0.0.1:8080/',
   timeout: 10000,
 };
 

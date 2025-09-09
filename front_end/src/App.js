@@ -131,57 +131,52 @@ const App = () => {
 
   return (
     <div className="app-container">
-      {/* 하단 네비게이션 바 */}
-      <div className="app-bottom-nav">
-        <div className="app-nav-buttons">
-          <button
-            onClick={() => setCurrentPage('home')}
-            className={`app-nav-button ${currentPage === 'home' ? 'active' : ''}`}
-            aria-label={t('nav.home')}
-          >
-            <Home className="app-nav-icon" />
-            <span className="app-nav-text">{t('nav.home')}</span>
-          </button>
-          <button
-            onClick={() => setCurrentPage('dashboard')}
-            className={`app-nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
-            aria-label={t('nav.dashboard')}
-          >
-            <LayoutDashboard className="app-nav-icon" />
-            <span className="app-nav-text">{t('nav.dashboard')}</span>
-          </button>
-          <button
-            onClick={() => setCurrentPage('camera')}
-            className={`app-nav-button ${currentPage === 'camera' ? 'active' : ''}`}
-            aria-label={t('nav.camera')}
-          >
-            <Camera className="app-nav-icon" />
-            <span className="app-nav-text">{t('nav.camera')}</span>
-          </button>
-          <button
-            onClick={() => setCurrentPage('log')}
-            className={`app-nav-button ${currentPage === 'log' ? 'active' : ''}`}
-            aria-label={t('nav.log')}
-          >
-            <FileText className="app-nav-icon" />
-            <span className="app-nav-text">{t('nav.log')}</span>
-          </button>
-          <button
-            onClick={() => setCurrentPage('warehouse')}
-            className={`app-nav-button ${currentPage === 'warehouse' ? 'active' : ''}`}
-            aria-label={t('nav.warehouse')}
-          >
-            <Package className="app-nav-icon" />
-            <span className="app-nav-text">{t('nav.warehouse')}</span>
-          </button>
-          <button
-            onClick={() => setCurrentPage('settings')}
-            className={`app-nav-button ${currentPage === 'settings' ? 'active' : ''}`}
-            aria-label={t('nav.settings')}
-          >
-            <Cog className="app-nav-icon" />
-            <span className="app-nav-text">{t('nav.settings')}</span>
-          </button>
+        {/* 하단 네비게이션 바 */}
+        <div className="app-bottom-nav">
+          <div className="app-nav-buttons">
+            <button 
+              onClick={() => setCurrentPage('home')}
+              className={`app-nav-button ${currentPage === 'home' ? 'active' : ''}`}
+            >
+              <Home className="app-nav-icon" />
+              <span className="app-nav-text">홈</span>
+            </button>
+            <button 
+                onClick={() => setCurrentPage('dashboard')}
+                className={`app-nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
+              >
+                <LayoutDashboard className="app-nav-icon" />
+                <span className="app-nav-text">대시보드</span>
+            </button>
+            <button 
+              onClick={() => setCurrentPage('camera')}
+              className={`app-nav-button ${currentPage === 'camera' ? 'active' : ''}`}
+            >
+              <Camera className="app-nav-icon" />
+              <span className="app-nav-text">카메라</span>
+            </button>
+            <button 
+              onClick={() => setCurrentPage('log')}
+              className={`app-nav-button ${currentPage === 'log' ? 'active' : ''}`}
+            >
+              <FileText className="app-nav-icon" />
+              <span className="app-nav-text">로그</span>
+            </button>
+            <button 
+              onClick={() => setCurrentPage('warehouse')}
+              className={`app-nav-button ${currentPage === 'warehouse' ? 'active' : ''}`}
+            >
+              <Package className="app-nav-icon" />
+              <span className="app-nav-text">창고</span>
+            </button>
+            <button 
+              onClick={() => setCurrentPage('settings')}
+              className={`app-nav-button ${currentPage === 'settings' ? 'active' : ''}`}
+            >
+              <Cog className="app-nav-icon" />
+              <span className="app-nav-text">설정</span>
+            </button>
+          </div>
         </div>
       </div>
 
