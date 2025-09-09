@@ -17,8 +17,9 @@
         out_date         AS outDate,
         note,
         category,
-        product_type     AS productType,   -- ✅ DTO 매핑 보강
-        delivery_status  AS status         -- ✅ DTO 매핑 보강
+        product_type     AS productType,
+        delivery_status  AS status,
+        limit_qty        AS `limit`
         FROM inventory_tbl
         WHERE 1=1
         <if test="search != null and search != ''">
@@ -34,17 +35,12 @@
         <if test="status != null and status != ''">
             AND delivery_status = #{status}
         </if>
-
-        <!-- ✅ 상대기간: 최근 N일 -->
-        <if test="regDays != null">
-            AND in_date BETWEEN DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY) AND CURDATE()
-        </if>
-
-        <!-- ✅ 절대기간(from/to): 둘 다 있을 때만 적용 -->
         <if test="from != null and to != null">
             AND in_date BETWEEN #{from} AND #{to}
         </if>
-
+        <if test="from == null and to == null and regDays != null">
+            AND in_date BETWEEN DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY) AND CURDATE()
+        </if>
         ORDER BY item_id DESC
         LIMIT #{size} OFFSET #{offset}
     </select>
@@ -67,19 +63,15 @@
         <if test="status != null and status != ''">
             AND delivery_status = #{status}
         </if>
-
-        <!-- ✅ regDays -->
-        <if test="regDays != null">
-            AND in_date BETWEEN DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY) AND CURDATE()
-        </if>
-
-        <!-- ✅ from/to -->
         <if test="from != null and to != null">
             AND in_date BETWEEN #{from} AND #{to}
         </if>
+        <if test="from == null and to == null and regDays != null">
+            AND in_date BETWEEN DATE_SUB(CURDATE(), INTERVAL #{regDays} DAY) AND CURDATE()
+        </if>
     </select>
 
-    <!-- ✅ 단건 조회: 납품 시 현재 수량/상태 확인 -->
+    <!-- 단건 조회 -->
     <select id="findById" parameterType="long"
             resultType="plant.dev.warehouse.dto.InventoryItemDto">
         SELECT
@@ -93,21 +85,42 @@
             note,
             category,
             product_type     AS productType,
-            delivery_status  AS status
+            delivery_status  AS status,
+            limit_qty        AS `limit`
         FROM inventory_tbl
         WHERE item_id = #{id}
     </select>
 
-    <!-- ✅ 납품 업데이트: 수량/상태/출고일 갱신 -->
+    <!-- 납품 업데이트: qty/status/outDate -->
     <!-- params: id, qty, status, outDate -->
     <update id="updateDelivery" parameterType="map">
         UPDATE inventory_tbl
         SET
-            quantity       = #{qty},
-            delivery_status= #{status},
-            out_date       = #{outDate}
+            quantity         = #{qty},
+            delivery_status  = #{status},
+            out_date         = #{outDate}
         WHERE item_id = #{id}
     </update>
+
+    <!-- 한도 변경 -->
+    <!-- params: id, limit -->
+    <update id="updateLimit">
+        UPDATE inventory_tbl
+        SET limit_qty = #{limit}
+        WHERE item_id = #{id}
+    </update>
+
+    <!-- 신규 INSERT (자동 분할 생성에서 사용) -->
+    <insert id="insertItem"
+            parameterType="plant.dev.warehouse.dto.InventoryItemDto"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO inventory_tbl
+        (item_name, item_code, product_type, category, quantity, location,
+         delivery_status, in_date, out_date, note, limit_qty)
+        VALUES
+            (#{name}, #{code}, #{productType}, #{category}, #{quantity}, #{location},
+             #{status}, #{inDate}, #{outDate}, #{note}, #{limit})
+    </insert>
 
     <!-- 삭제 -->
     <delete id="deleteItem" parameterType="long">
