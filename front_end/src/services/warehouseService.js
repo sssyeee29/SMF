@@ -72,21 +72,50 @@ export async function deliverItem(id, amount) {
     `/api/warehouse/items/${id}/deliver`,
     { amount }
   );
-  // axios는 204에서도 에러를 던지지 않음
   return res.data ?? { id, amount };
 }
 
+/**
+ * 아이템 생성
+ * POST /api/warehouse/items
+ * payload 예:
+ * {
+ *   name, code, quantity, location, inDate, note,
+ *   category, productType, (옵션) limit
+ * }
+ * 서버가 자동 분할 생성(수량/limit 기준으로 여러 행 INSERT)하도록 구현되어 있다면
+ * limit을 함께 보내면 됨(미전송 시 서버 기본값 사용).
+ */
 export async function createItem(payload) {
-  const res = await fetch('/api/warehouse/items', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (res.status === 204) return true;
-  if (!res.ok) throw new Error(`createItem failed: ${res.status}`);
-  try {
-    return await res.json();
-  } catch {
-    return true;
-  }
+  const { data, status } = await api.post('/api/warehouse/items', payload);
+  if (status === 204) return true;
+  return data ?? true;
+}
+
+/**
+ * 한도 변경(단건)
+ * PATCH /api/warehouse/items/:id/limit?limit=값
+ * 컨트롤러: @PatchMapping("/items/{id}/limit") + @RequestParam int limit
+ */
+export async function updateLimit(itemId, limit) {
+  const { data } = await api.patch(
+    `/api/warehouse/items/${itemId}/limit`,
+    null,
+    { params: { limit } }
+  );
+  return data ?? { ok: true };
+}
+
+/**
+ * 한도 변경(배치) - 선택
+ * PATCH /api/warehouse/items/limits
+ * body: { limits: [ { id, limit }, ... ] }
+ * 컨트롤러 구현 시에만 사용 가능.
+ */
+export async function updateLimitsBatch(list) {
+  const { data } = await api.patch(
+    '/api/warehouse/items/limits',
+    { limits: list }
+  );
+  return data ?? { ok: true, updated: 0 };
 }

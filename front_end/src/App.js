@@ -1,6 +1,6 @@
 // App.js - 메인 애플리케이션 컴포넌트
 import React, {useEffect, useState} from 'react';
-import {Camera, Cog, FileText, Home, Package} from 'lucide-react';
+import {LayoutDashboard,Camera, Cog, FileText, Home, Package} from 'lucide-react';
 import './App.css';
 
 // 페이지 컴포넌트들 import
@@ -11,7 +11,7 @@ import CameraPage from './components/CameraPage';
 import LogPage from './components/LogPage';
 import WarehousePage from './components/WarehousePage';
 import SettingsPage from './components/SettingsPage';
-
+import DashboardPage from './components/DashboardPage';
 // 백엔드 부분
 import {loginUser, logoutUser, register} from './services/login';
 
@@ -197,6 +197,13 @@ const App = () => {
               <span className="app-nav-text">홈</span>
             </button>
             <button 
+                onClick={() => setCurrentPage('dashboard')}
+                className={`app-nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
+              >
+                <LayoutDashboard className="app-nav-icon" />
+                <span className="app-nav-text">대시보드</span>
+            </button>
+            <button 
               onClick={() => setCurrentPage('camera')}
               className={`app-nav-button ${currentPage === 'camera' ? 'active' : ''}`}
             >
@@ -230,6 +237,7 @@ const App = () => {
       {/* 메인 컨텐츠 */}
       <div className="app-main-content">
         {currentPage === 'home' && <HomePage {...pageProps} />}
+        {currentPage === 'dashboard' && <DashboardPage {...pageProps} />}
         {currentPage === 'camera' && <CameraPage {...pageProps} />}
         {currentPage === 'log' && <LogPage {...pageProps} />}
         {currentPage === 'warehouse' && <WarehousePage {...pageProps} />}

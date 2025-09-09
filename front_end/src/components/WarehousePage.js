@@ -3,12 +3,16 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, Search, Plus, X, Package } from 'lucide-react';
 import './WarehousePage.css';
 
-// ⬇️ 서버 연동 서비스 (미리 만들어둔 파일)
+// ⬇️ 서버 연동 서비스
 import {
   fetchInventory,
   createItem,
   deliverItem,
+  updateLimit, // ✅ 추가: 한도 변경 API
 } from '../services/warehouseService';
+
+// ⬇️ 3D 미니맵
+import Warehouse3D from './Warehouse3D';
 
 // 서버와 연동할지 여부 (true면 로컬 더미데이터 사용)
 const USE_LOCAL_DATA = false;
@@ -81,7 +85,7 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
       page: 1,
       size: 9999, // 이 화면은 페이징 UI가 고정이라 일단 크게 받아옴(필요시 조절)
       search: searchTerm.trim(),
-      productType: productTypeMap[productType] ?? '', // 서버가 한글이면 서비스/서버에서 한글로 자동 변환되도록 되어 있음
+      productType: productTypeMap[productType] ?? '',
       category: categoryMap[subCategory] ?? '',
       status: statusMap[deliveryStatus] ?? '',
       regDays: isCustom ? null : (regDaysMap[registrationDate] ?? null),
@@ -98,7 +102,6 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
     abortRef.current = controller;
     try {
       const { items } = await fetchInventory(buildFiltersForServer(), { signal: controller.signal });
-      // 서버 응답 필드 → 서비스에서 이미 UI형태로 매핑됨
       // limit 값이 서버에 없으면 기본 100으로 세팅
       setInventoryData(items.map(it => ({ ...it, limit: it.limit ?? 100 })));
     } catch (e) {
@@ -152,7 +155,7 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
 
     try {
       setLoading(true);
-      // 이 화면은 "전체 납품" 로직(=수량을 0으로) → 서버에 amount=현재수량 전달
+      // "전체 납품"(수량을 0으로) → 서버에 amount=현재수량 전달
       await deliverItem(itemId, item.quantity);
       await loadFromServer();
     } catch (e) {
@@ -196,9 +199,10 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
           location: newItem.location || '-',
           inDate: newItem.inDate || new Date().toISOString().slice(0, 10),
           note: newItem.note || '-',
-          // 서버가 영문 ENUM이면 아래 매핑, 한글 ENUM이면 서버에서 보정되도록 구현되어 있음
+          // 서버가 영문 ENUM이면 아래 매핑, 한글이면 서버에서 보정되도록 구현되어 있음
           category: categoryMap[newItem.category] || newItem.category,
           productType: productTypeMap[newItem.productType] || newItem.productType,
+          // 👉 (옵션) 서버에서 자동분할 쓰면 limit도 함께 전달 가능: limit: 100,
         });
         await loadFromServer();
       } catch (e) {
@@ -230,13 +234,32 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
     setShowLimitModal(true);
   };
 
-  const saveLimits = () => {
-    // 현재는 프론트만 반영(로컬 상태 변경)
-    // 서버에 저장하려면 PATCH /api/inventory/limits (itemId→limit 맵) 엔드포인트 추가 후 호출
-    setInventoryData(prev =>
-      prev.map(item => ({ ...item, limit: editingLimits[item.id] || 100 }))
-    );
-    setShowLimitModal(false);
+  // ✅ 서버에 한도 저장 → 재조회
+  const saveLimits = async () => {
+    if (USE_LOCAL_DATA) {
+      // 로컬 모드: 상태만 반영
+      setInventoryData(prev =>
+        prev.map(item => ({ ...item, limit: editingLimits[item.id] || 100 }))
+      );
+      setShowLimitModal(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await Promise.all(
+        Object.entries(editingLimits).map(([id, limit]) =>
+          updateLimit(Number(id), Number(limit))
+        )
+      );
+      await loadFromServer();
+    } catch (e) {
+      console.error('한도 업데이트 실패', e);
+      alert('한도 업데이트에 실패했습니다.');
+    } finally {
+      setLoading(false);
+      setShowLimitModal(false);
+    }
   };
 
   return (
@@ -438,6 +461,18 @@ const WarehousePage = ({ setCurrentPage, username, handleLogout }) => {
               </div>
               <div className="wh-stat-label">납품 대기</div>
             </div>
+          </div>
+
+          {/* 3D 창고 미니맵 */}
+          <div style={{ margin: '12px 0' }}>
+            <Warehouse3D
+              data={inventoryData}
+              threshold={100} // (아이템별 limit을 쓰고 싶으면 컴포넌트 개조 필요)
+              onSelect={(item) => {
+                console.log('picked:', item);
+              }}
+              style={{ height: 360 }}
+            />
           </div>
 
           {/* 메인 테이블 영역 */}
