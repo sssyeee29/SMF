@@ -2,8 +2,11 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Camera, ArrowLeft } from 'lucide-react';
 import './CameraPage.css';
 import axios from "axios";
+import { useTranslation } from 'react-i18next';
 
 const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, username, handleLogout }) => {
+  const { t } = useTranslation();
+
   const [selectedImage, setSelectedImage] = useState([]);
   const [detectionResult, setDetectionResult] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -33,7 +36,6 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
 
   const [wifiCamActive1, setWifiCamActive1] = useState(false); // IP캠 연결 활성화 여부
 
-
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices().then(allDevices => {
       const videoDevices = allDevices.filter(d => d.kind === "videoinput");
@@ -41,7 +43,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
     });
   }, []);
 
-  //아마도 카메라 연동이 안되면 해당 alert가 뜸...
+  // 카메라 시작
   const startCamera = async (deviceId, setStream, videoRef) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -52,7 +54,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
         videoRef.current.srcObject = stream;
       }
     } catch {
-      alert("카메라를 열 수 없습니다.");
+      alert(t('camera_error'));
     }
   };
 
@@ -119,7 +121,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
       setIsConveyorOn(!isConveyorOn);
     } catch (err) {
       console.error("컨베이어 제어 실패", err);
-      alert("컨베이어 제어에 실패했습니다.");
+      alert(t('conveyor_error'));
     }
   };
 
@@ -132,12 +134,12 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
           <button onClick={() => setCurrentPage('home')} className="back-button">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="header-title">컨테이너 검사 페이지</h1>
+          <h1 className="header-title">{t('container_check_page')}</h1>
         </div>
         <div className="header-right">
-          {username && <span className="username">{username} 님</span>}
+          {username && <span className="username">{t('user_greeting', { name: username })}</span>}
           <button onClick={handleLogout} className="logout-button">
-            로그아웃
+            {t('logout')}
           </button>
         </div>
       </div>{/* 헤더 건들지 말기 */}
@@ -149,11 +151,11 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
         <div className="camera-section">
           {/* 카메라 1 */}
           <div className="camera-container">
-            <div className="camera-title">실시간 상단 카메라</div>
+            <div className="camera-title">{t('top_camera')}</div>
 
             <input
               type="text"
-              placeholder="Wi-Fi 카메라 URL (예: http://IP:PORT/video)"
+              placeholder={t('wifi_placeholder')}
               value={wifiCamUrl1}
               onChange={e => setWifiCamUrl1(e.target.value)}
               className="wifi-input"
@@ -164,7 +166,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
               onChange={e => setSelectedDeviceId1(e.target.value)}
               className="device-select"
             >
-              <option value="">PC 카메라 선택</option>
+              <option value="">{t('select_pc_camera')}</option>
               {devices.map(cam => <option key={cam.deviceId} value={cam.deviceId}>{cam.label}</option>)}
             </select>
 
@@ -187,7 +189,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
                 <div className="camera-off-placeholder">
                   <div className="camera-off-content">
                     <Camera className="camera-icon" />
-                    <div className="camera-off-text">카메라 OFF</div>
+                    <div className="camera-off-text">{t('camera_off')}</div>
                   </div>
                 </div>
               )}
@@ -198,25 +200,25 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
                 onClick={toggleConveyor}
                 className={isConveyorOn ? "btn-camera-off" : "btn-camera-on"}
               >
-                {isConveyorOn ? "컨베이어 정지" : "컨베이어 작동"}
+                {isConveyorOn ? t('conveyor_stop') : t('conveyor_start')}
               </button>
 
               {/* 카메라 ON/OFF (로컬캠 제어) */}
               {wifiCamUrl1 ? (
                 wifiCamActive1 ? (
                   <>
-                    <button className="btn-camera-on" disabled>IP캠 ON</button>
-                    <button onClick={() => setWifiCamActive1(false)} className="btn-camera-off">IP캠 OFF</button>
+                    <button className="btn-camera-on" disabled>{t('ipcam_on')}</button>
+                    <button onClick={() => setWifiCamActive1(false)} className="btn-camera-off">{t('ipcam_off')}</button>
                   </>
                 ) : (
-                  <button onClick={() => setWifiCamActive1(true)} className="btn-camera-on">IP캠 ON</button>
+                  <button onClick={() => setWifiCamActive1(true)} className="btn-camera-on">{t('ipcam_on')}</button>
                 )
               ) : !cameraStream1 ? (
                 <button
                   onClick={() => startCamera(selectedDeviceId1, setCameraStream1, videoRef1)}
                   className="btn-camera-on"
                 >
-                  카메라 ON
+                  {t('camera_on')}
                 </button>
               ) : (
                 <button
@@ -227,21 +229,18 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
                   }}
                   className="btn-camera-off"
                 >
-                  카메라 OFF
+                  {t('camera_off')}
                 </button>
               )}
-
-
-  
             </div>
           </div>
 
           {/* 카메라 2 */}
           <div className="camera-container">
-            <div className="camera-title">실시간 측면 카메라</div>
+            <div className="camera-title">{t('side_camera')}</div>
             <input
               type="text"
-              placeholder="Wi-Fi 카메라 URL"
+              placeholder={t('wifi_placeholder_short')}
               value={wifiCamUrl2}
               onChange={e => setWifiCamUrl2(e.target.value)}
               className="wifi-input"
@@ -252,7 +251,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
               onChange={e => setSelectedDeviceId2(e.target.value)}
               className="device-select"
             >
-              <option value="">PC 카메라 선택</option>
+              <option value="">{t('select_pc_camera')}</option>
               {devices.map(cam => <option key={cam.deviceId} value={cam.deviceId}>{cam.label}</option>)}
             </select>
 
@@ -270,14 +269,13 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
                 <div className="camera-off-placeholder">
                   <div className="camera-off-content">
                     <Camera className="camera-icon" />
-                    <div className="camera-off-text">카메라 OFF</div>
+                    <div className="camera-off-text">{t('camera_off')}</div>
                   </div>
                 </div>
               )}
             </div>
 
             <div className="camera-controls">
-              {/* 카메라 2 컨트롤 - 모두 cameraStream2, videoRef2, isPaused2로 수정 */}
               <button
                 onClick={() => {
                   if (!cameraStream2) {
@@ -294,7 +292,7 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
                 }}
                 className={!cameraStream2 || isPaused2 ? "btn-camera-on" : "btn-camera-off"}
               >
-                {!cameraStream2 || isPaused2 ? '시작' : '중지'}
+                {!cameraStream2 || isPaused2 ? t('start') : t('pause')}
               </button>
 
               {!cameraStream2 ? (
@@ -302,27 +300,23 @@ const CameraPage = ({ setCurrentPage, detectionHistory, setDetectionHistory, use
                   onClick={() => startCamera(selectedDeviceId2, setCameraStream2, videoRef2)}
                   className="btn-camera-on"
                 >
-                  카메라 ON
+                  {t('camera_on')}
                 </button>
               ) : (
                 <button
                   onClick={() => { cameraStream2.getTracks().forEach(t => t.stop()); setCameraStream2(null); setIsPaused2(false); }}
                   className="btn-camera-off"
                 >
-                  카메라 OFF
+                  {t('camera_off')}
                 </button>
               )}
-
-             
             </div>
           </div>
         </div>
-
 
         <canvas ref={canvasRef} className="hidden-canvas" />
       </div>
     </div>
   );
-
 };
 export default CameraPage;

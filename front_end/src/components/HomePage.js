@@ -1,9 +1,11 @@
 import React from 'react';
 import './HomePage.css';
 import smfLogo from '../logo/smf.svg';
-
+import { useTranslation } from 'react-i18next';
 
 const HomePage = ({ setCurrentPage, handleLogout, username }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="home-page">
       {/* 상단 헤더 */}
@@ -12,15 +14,19 @@ const HomePage = ({ setCurrentPage, handleLogout, username }) => {
           <div className="p-4">
             <img src={smfLogo} alt="SMF Logo" className="h-16" />
           </div>
-          <h1 className="home-title">불량품 검출 프로그램</h1>
+          <h1 className="home-title">{t("home.title")}</h1>
           <div className="home-header-right">
             {/* ✅ 로그인한 사용자 이름 */}
-            {username && <span className="home-username">{username} 님</span>}
+            {username && (
+              <span className="home-username">
+                {t("home.username", { name: username })}
+              </span>
+            )}
             <button
               onClick={handleLogout}
               className="home-logout-button"
             >
-              로그아웃
+              {t("home.logout")}
             </button>
           </div>
         </div>
@@ -28,30 +34,28 @@ const HomePage = ({ setCurrentPage, handleLogout, username }) => {
 
       {/* 메인 컨텐츠 */}
       <div className="home-main-content">
-        {/* 메뉴 버튼 */}
         <div className="menu-container">
           <button
             onClick={() => setCurrentPage('camera')}
             className="menu-button"
           >
-            실시간 카메라
+            {t("home.camera")}
           </button>
 
           <button
             onClick={() => setCurrentPage('log')}
             className="menu-button"
           >
-            로그 게시판
+            {t("home.log")}
           </button>
 
           <button
             onClick={() => setCurrentPage('warehouse')}
             className="menu-button"
           >
-            창고 관리
+            {t("home.warehouse")}
           </button>
         </div>
-
       </div>
     </div>
   );

@@ -1,0 +1,339 @@
+/* 로딩 상태를 위한 스타일 (추후 사용 가능) *//* 기존 스타일들 - 절대 수정하지 않음 */
+.dashboard-main-container {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+}
+
+/* 헤더 */
+.dashboard-header {
+  background-color: white;
+  border-bottom: 1px solid #d1d5db;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-back-btn {
+  margin-right: 1rem;
+  color: #4b5563;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.dashboard-back-btn:hover {
+  color: #1f2937;
+}
+
+.dashboard-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.dashboard-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin: 0;
+}
+
+.dashboard-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dashboard-username {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.dashboard-logout-btn {
+  background-color: white;
+  border: 1px solid #d1d5db;
+  color: black;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.dashboard-logout-btn:hover {
+  background-color: #f9fafb;
+}
+
+.log-main-content {
+  padding: 1.5rem;
+  padding-bottom: 3rem;
+}
+
+/* ========== 새로 추가된 그래프 영역 스타일 ========== */
+
+.dashboard-main-content {
+  padding: 1.5rem;
+  background-color: #f3f4f6;
+  height: 1350px;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 1.5rem;
+  height: calc(100vh - 140px);
+}
+
+.chart-card {
+  height: 600px;
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.3s ease;
+}
+
+.chart-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.chart-card-header {
+  padding: 1.25rem;
+  background-color: #fafbfc;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.chart-card-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.chart-filter-container {
+  margin-top: 0.75rem;
+}
+
+.chart-filter-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.chart-filter-select,
+.chart-filter-date {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.chart-filter-select:focus,
+.chart-filter-date:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.chart-filter-select {
+  min-width: 90px;
+}
+
+.chart-filter-date {
+  min-width: 140px;
+}
+
+.chart-card-content {
+  flex: 1;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 도넛 그래프 범례 스타일 */
+.chart-donut-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.chart-legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, auto);
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    height: auto;
+  }
+  
+  .dashboard-main-content {
+    padding: 1rem;
+  }
+  
+  .chart-filter-row {
+    flex-direction: column;
+  }
+  
+  .chart-filter-select,
+  .chart-filter-date {
+    width: 100%;
+  }
+  
+  .chart-card-header {
+    padding: 1rem;
+  }
+  
+  .chart-card-content {
+    padding: 1rem;
+  }
+  
+  .chart-card-title {
+    font-size: 1rem;
+  }
+}
+
+/* 로딩 상태를 위한 스타일 (추후 사용 가능) */
+.chart-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* 차트 툴팁 커스터마이징 */
+.recharts-tooltip-wrapper {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* 애니메이션 효과 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chart-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ========== 다크 모드 스타일 ========== */
+
+/* 전체 배경 */
+.dark .dashboard-main-container {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+/* 헤더 */
+.dark .dashboard-header {
+  background-color: #1f2937;
+  border-bottom: 1px solid #374151;
+}
+.dark .dashboard-back-btn {
+  color: #9ca3af;
+}
+.dark .dashboard-back-btn:hover {
+  color: #d1d5db;
+}
+.dark .dashboard-title {
+  color: #f9fafb;
+}
+.dark .dashboard-username {
+  color: #9ca3af;
+}
+.dark .dashboard-logout-btn {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+.dark .dashboard-logout-btn:hover {
+  background-color: #4b5563;
+}
+
+/* 메인 컨텐츠 */
+.dark .dashboard-main-content {
+  background-color: #111827;
+}
+
+/* 카드 */
+.dark .chart-card {
+  background-color: #1f2937;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+.dark .chart-card:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+}
+.dark .chart-card-header {
+  background-color: #1f2937;
+  border-bottom: 1px solid #374151;
+}
+.dark .chart-card-title {
+  color: #f9fafb;
+}
+
+/* 필터 select, input */
+.dark .chart-filter-select,
+.dark .chart-filter-date {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+.dark .chart-filter-select:focus,
+.dark .chart-filter-date:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+/* 도넛 범례 */
+.dark .chart-legend-item {
+  color: #9ca3af;
+}
+
+/* 로딩 텍스트 */
+.dark .chart-loading {
+  color: #9ca3af;
+}

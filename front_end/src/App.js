@@ -1,76 +1,46 @@
 // App.js - 메인 애플리케이션 컴포넌트
-import React, {useEffect, useState} from 'react';
-import {Camera, Cog, FileText, Home, Package} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Home, LayoutDashboard, Camera, FileText, Package, Cog } from 'lucide-react';
 import './App.css';
 
 // 페이지 컴포넌트들 import
 import LoginPage from './components/LoginPage';
-import SignupPage from './components/SignupPage'; //회원가입 페이지
+import SignupPage from './components/SignupPage';
 import HomePage from './components/HomePage';
 import CameraPage from './components/CameraPage';
 import LogPage from './components/LogPage';
 import WarehousePage from './components/WarehousePage';
 import SettingsPage from './components/SettingsPage';
+import DashboardPage from './components/DashboardPage';
 
 // 백엔드 부분
-import {loginUser, logoutUser, register} from './services/login';
+import { loginUser, logoutUser, register } from './services/login';
 
+// ✅ i18n
+import { useTranslation } from 'react-i18next';
 
 const App = () => {
+  const { t } = useTranslation();
 
-    useEffect(() => {
-        handleLogout();
-    }, []);
-
+  useEffect(() => {
+    handleLogout();
+  }, []);
 
   // ✅ 로그인 관리
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState(""); // 로그인한 사용자 이름 저장
+  const [username, setUsername] = useState("");
 
   // ✅ 현재 페이지 상태
   const [currentPage, setCurrentPage] = useState('login');
   const [authPage, setAuthPage] = useState('login'); // login 또는 signup
 
-
-  // ✅ 사용자 데이터 관리 (실제로는 데이터베이스나 서버에 저장)
+  // ✅ 사용자 데이터 (예시)
   const [users, setUsers] = useState([]);
 
-
-  // ✅ 미리 지정한 아이디/비번
   const validId = "";
   const validPw = "";
 
-  const [detectionHistory, setDetectionHistory] = useState([
-    /*
-    { id: 1, timestamp: '2025-08-25 14:30', result: '불량품', type: '뚜껑 손상', confidence: '87.3%' },
-    { id: 2, timestamp: '2025-08-25 14:28', result: '보류', type: '-', confidence: '94.1%' },
-    { id: 3, timestamp: '2025-08-25 14:25', result: '보류', type: '-', confidence: '91.7%' },
-    { id: 4, timestamp: '2025-08-25 14:30', result: '불량품', type: '뚜껑 손상', confidence: '87.3%' },
-    { id: 5, timestamp: '2025-08-26 13:28', result: '양품', type: '-', confidence: '98.1%' },
-    { id: 6, timestamp: '2025-08-26 13:25', result: '양품', type: '-', confidence: '95.7%' },
-    { id: 7, timestamp: '2025-08-26 15:30', result: '양품', type: '-', confidence: '97.3%' },
-    { id: 8, timestamp: '2025-08-26 12:28', result: '양품', type: '-', confidence: '94.1%' },
-    { id: 9, timestamp: '2025-08-24 17:25', result: '양품', type: '-', confidence: '99.7%' },
-    { id: 10, timestamp: '2025-08-24 12:30', result: '양품', type: '-', confidence: '97.3%' },
-    { id: 11, timestamp: '2025-08-23 12:28', result: '양품', type: '-', confidence: '98.1%' },
-    { id: 12, timestamp: '2025-08-22 17:25', result: '불량품', type: '데미지', confidence: '91.7%' },
-    { id: 13, timestamp: '2025-08-26 15:30', result: '양품', type: '-', confidence: '97.3%' },
-    { id: 14, timestamp: '2025-08-26 12:28', result: '양품', type: '-', confidence: '94.1%' },
-    { id: 15, timestamp: '2025-08-24 17:25', result: '양품', type: '-', confidence: '99.7%' },
-    { id: 16, timestamp: '2025-08-24 12:30', result: '양품', type: '-', confidence: '97.3%' },
-    { id: 17, timestamp: '2025-08-23 12:28', result: '양품', type: '-', confidence: '98.1%' },
-    { id: 18, timestamp: '2025-08-22 17:25', result: '불량품', type: '용량 부족', confidence: '91.7%' },
-    { id: 19, timestamp: '2025-08-22 17:25', result: '불량품', type: '데미지', confidence: '91.6%' },
-    { id: 20, timestamp: '2025-08-26 15:30', result: '양품', type: '-', confidence: '97.3%' },
-    { id: 21, timestamp: '2025-08-26 12:28', result: '양품', type: '-', confidence: '94.1%' },
-    { id: 22, timestamp: '2025-08-24 17:25', result: '양품', type: '-', confidence: '99.7%' },
-    { id: 23, timestamp: '2025-08-24 12:30', result: '양품', type: '-', confidence: '97.3%' },
-    { id: 24, timestamp: '2025-08-23 12:28', result: '양품', type: '-', confidence: '98.1%' },
-    { id: 25, timestamp: '2025-08-22 17:25', result: '불량품', type: '데미지', confidence: '91.7%' },
-    { id: 26, timestamp: '2025-08-22 17:25', result: '불량품', type: '데미지', confidence: '91.7%' },
-     */
-  ]);
-
+  const [detectionHistory, setDetectionHistory] = useState([]);
   const [inventory, setInventory] = useState([
     { id: 1, name: '제품 A', good: 145, defective: 12, total: 157 },
     { id: 2, name: '제품 B', good: 223, defective: 8, total: 231 },
@@ -81,7 +51,6 @@ const App = () => {
   useEffect(() => {
     const savedLogin = localStorage.getItem("isLoggedIn");
     const savedUser = localStorage.getItem("username");
-
     if (savedLogin === "true" && savedUser) {
       setIsLoggedIn(true);
       setUsername(savedUser);
@@ -89,71 +58,48 @@ const App = () => {
     }
   }, []);
 
-  // ✅ 로그인 함수
+  // ✅ 로그인
   const handleLogin = (id, pw) => {
-
-    // 여기서 있는 아이디 확인 
     loginUser(id, pw)
-    .then(user => {
-      console.log("로그인 성공:", user);
-      setIsLoggedIn(true);
-      setUsername(user.name); // 백엔드에서 받은 이름 사용
-      setCurrentPage("home");
-      localStorage.setItem("isLoggedIn", "true"); 
-      localStorage.setItem("username", user.name); // 유저이름도 저장
-    })
-    .catch(error => {
-      console.error("로그인 실패:", error.message);
-      alert(error.message);
-    });
-/*
-    if (id === validId && pw === validPw) {
-      setIsLoggedIn(true);
-      setUsername(id); // 아이디 저장
-      setCurrentPage("home");
-      localStorage.setItem("isLoggedIn", "true"); 
-      localStorage.setItem("username", id); // 유저이름도 저장
-    } else {
-      alert("아이디 또는 비밀번호가 틀렸습니다!");
-    }
-*/
+      .then(user => {
+        setIsLoggedIn(true);
+        setUsername(user.name);
+        setCurrentPage("home");
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("username", user.name);
+      })
+      .catch(error => {
+        alert(error.message);
+      });
   };
-    // ✅ 회원가입 함수
-    const handleSignup = (id, pw, name) => {
-        // 회원가입
-        register(id, pw , name)
-            .then(user => {
-                console.log("가입 성공:", user);
-                alert(user.message);
-                setAuthPage('login');
-            })
-            .catch(error => {
-                console.error("가입 실패:", error.message);
-                alert(error.message);
-            });
 
-        return true;
-    };
+  // ✅ 회원가입
+  const handleSignup = (id, pw, name) => {
+    register(id, pw, name)
+      .then(user => {
+        alert(user.message);
+        setAuthPage('login');
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+    return true;
+  };
 
-  // ✅ 로그아웃 함수
+  // ✅ 로그아웃
   const handleLogout = () => {
     logoutUser();
     setIsLoggedIn(false);
-    setUsername(""); 
+    setUsername("");
     setCurrentPage("login");
     localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("username"); 
-  };
-    // ✅ 회원가입 페이지 이동
-  const handleSignupClick = () => {
-      setAuthPage('signup');
+    localStorage.removeItem("username");
   };
 
-  // ✅ 로그인 페이지로 돌아가기
-  const handleBackToLogin = () => {
-      setAuthPage('login');
-  };
-  // 전역 상태와 함수들을 props로 전달
+  // ✅ 회원가입/로그인 페이지 전환
+  const handleSignupClick = () => setAuthPage('signup');
+  const handleBackToLogin = () => setAuthPage('login');
+
   const pageProps = {
     currentPage,
     setCurrentPage,
@@ -165,71 +111,84 @@ const App = () => {
     username,
   };
 
-  // ✅ 로그인 안됐을 때는 로그인 화면만 보임
-    // ✅ 로그인 안됐을 때는 로그인/회원가입 화면만 보임
-    if (!isLoggedIn) {
-        if (authPage === 'signup') {
-            return (
-                <SignupPage
-                    onSignup={handleSignup}
-                    onBackToLogin={handleBackToLogin}
-                />
-            );
-        }
-        return (
-            <LoginPage
-                onLogin={handleLogin}
-                onSignupClick={handleSignupClick}
-            />
-        );
+  // ✅ 비로그인 시
+  if (!isLoggedIn) {
+    if (authPage === 'signup') {
+      return (
+        <SignupPage
+          onSignup={handleSignup}
+          onBackToLogin={handleBackToLogin}
+        />
+      );
     }
+    return (
+      <LoginPage
+        onLogin={handleLogin}
+        onSignupClick={handleSignupClick}
+      />
+    );
+  }
 
   return (
     <div className="app-container">
-        {/* 하단 네비게이션 바 */}
-        <div className="app-bottom-nav">
-          <div className="app-nav-buttons">
-            <button 
-              onClick={() => setCurrentPage('home')}
-              className={`app-nav-button ${currentPage === 'home' ? 'active' : ''}`}
-            >
-              <Home className="app-nav-icon" />
-              <span className="app-nav-text">홈</span>
-            </button>
-            <button 
-              onClick={() => setCurrentPage('camera')}
-              className={`app-nav-button ${currentPage === 'camera' ? 'active' : ''}`}
-            >
-              <Camera className="app-nav-icon" />
-              <span className="app-nav-text">카메라</span>
-            </button>
-            <button 
-              onClick={() => setCurrentPage('log')}
-              className={`app-nav-button ${currentPage === 'log' ? 'active' : ''}`}
-            >
-              <FileText className="app-nav-icon" />
-              <span className="app-nav-text">로그</span>
-            </button>
-            <button 
-              onClick={() => setCurrentPage('warehouse')}
-              className={`app-nav-button ${currentPage === 'warehouse' ? 'active' : ''}`}
-            >
-              <Package className="app-nav-icon" />
-              <span className="app-nav-text">창고</span>
-            </button>
-            <button 
-              onClick={() => setCurrentPage('settings')}
-              className={`app-nav-button ${currentPage === 'settings' ? 'active' : ''}`}
-            >
-              <Cog className="app-nav-icon" />
-              <span className="app-nav-text">설정</span>
-            </button>
-          </div>
+      {/* 하단 네비게이션 바 */}
+      <div className="app-bottom-nav">
+        <div className="app-nav-buttons">
+          <button
+            onClick={() => setCurrentPage('home')}
+            className={`app-nav-button ${currentPage === 'home' ? 'active' : ''}`}
+            aria-label={t('nav.home')}
+          >
+            <Home className="app-nav-icon" />
+            <span className="app-nav-text">{t('nav.home')}</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('dashboard')}
+            className={`app-nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
+            aria-label={t('nav.dashboard')}
+          >
+            <LayoutDashboard className="app-nav-icon" />
+            <span className="app-nav-text">{t('nav.dashboard')}</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('camera')}
+            className={`app-nav-button ${currentPage === 'camera' ? 'active' : ''}`}
+            aria-label={t('nav.camera')}
+          >
+            <Camera className="app-nav-icon" />
+            <span className="app-nav-text">{t('nav.camera')}</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('log')}
+            className={`app-nav-button ${currentPage === 'log' ? 'active' : ''}`}
+            aria-label={t('nav.log')}
+          >
+            <FileText className="app-nav-icon" />
+            <span className="app-nav-text">{t('nav.log')}</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('warehouse')}
+            className={`app-nav-button ${currentPage === 'warehouse' ? 'active' : ''}`}
+            aria-label={t('nav.warehouse')}
+          >
+            <Package className="app-nav-icon" />
+            <span className="app-nav-text">{t('nav.warehouse')}</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('settings')}
+            className={`app-nav-button ${currentPage === 'settings' ? 'active' : ''}`}
+            aria-label={t('nav.settings')}
+          >
+            <Cog className="app-nav-icon" />
+            <span className="app-nav-text">{t('nav.settings')}</span>
+          </button>
         </div>
+      </div>
 
       {/* 메인 컨텐츠 */}
       <div className="app-main-content">
         {currentPage === 'home' && <HomePage {...pageProps} />}
+        {currentPage === 'dashboard' && <DashboardPage {...pageProps} />}
         {currentPage === 'camera' && <CameraPage {...pageProps} />}
         {currentPage === 'log' && <LogPage {...pageProps} />}
         {currentPage === 'warehouse' && <WarehousePage {...pageProps} />}
