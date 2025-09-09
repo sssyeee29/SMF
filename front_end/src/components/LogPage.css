@@ -52,7 +52,7 @@
 }
 
 .log-username {
-    font-size: 0.875rem;
+  font-size: 0.875rem;
   color: #4b5563;
 }
 
@@ -121,20 +121,20 @@
   margin-bottom: 0.5rem;
 }
 
-.log-stat-number.log-total { 
-  color: #6b7280; 
+.log-stat-number.log-total {
+  color: #6b7280;
 }
 
-.log-stat-number.log-good { 
-  color: #10b981; 
+.log-stat-number.log-good {
+  color: #10b981;
 }
 
-.log-stat-number.log-defective { 
-  color: #ef4444; 
+.log-stat-number.log-defective {
+  color: #ef4444;
 }
 
-.log-stat-number.log-pending { 
-  color: #f59e0b; 
+.log-stat-number.log-pending {
+  color: #f59e0b;
 }
 
 .log-stat-label {
@@ -158,20 +158,20 @@
   transition: width 0.3s ease;
 }
 
-.log-progress-fill.log-total { 
-  background-color: #6b7280; 
+.log-progress-fill.log-total {
+  background-color: #6b7280;
 }
 
-.log-progress-fill.log-good { 
-  background-color: #10b981; 
+.log-progress-fill.log-good {
+  background-color: #10b981;
 }
 
-.log-progress-fill.log-defective { 
-  background-color: #ef4444; 
+.log-progress-fill.log-defective {
+  background-color: #ef4444;
 }
 
-.log-progress-fill.log-pending { 
-  background-color: #f59e0b; 
+.log-progress-fill.log-pending {
+  background-color: #f59e0b;
 }
 
 /* 테이블 카드 */
@@ -456,7 +456,7 @@
 
 .log-info-label {
   font-weight: 500;
-  color: #6b7280;
+  color: #111827;
   min-width: 5rem;
   flex-shrink: 0;
 }
@@ -487,6 +487,260 @@
   background-color: #374151;
 }
 
+/* ===== Dark Mode Overrides for LogPage (match SettingsPage palette) ===== */
+
+.dark .log-main-container {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+/* Header */
+.dark .log-header {
+  background-color: #1f2937;
+  border-bottom: 1px solid #374151;
+}
+
+.dark .log-title {
+  color: #f9fafb;
+}
+
+.dark .log-username {
+  color: #9ca3af;
+}
+
+.dark .log-back-button,
+.dark .log-logout-button {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.dark .log-back-button:hover,
+.dark .log-logout-button:hover {
+  background-color: #4b5563;
+}
+
+/* Stats card */
+.dark .log-stats-card {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+
+.dark .log-stats-header {
+  border-bottom: 1px solid #374151;
+}
+
+.dark .log-stats-title {
+  color: #f9fafb;
+}
+
+.dark .log-stat-label {
+  color: #f9fafb;
+  background: none;
+  /* 라벨 뒤 배경 제거 */
+}
+
+.dark .log-progress-bar {
+  background-color: #374151;
+  /* 트랙만 회색 유지(또는 더 어둡게 원하면 #2b3444) */
+}
+
+.dark .log-stat-number.log-total {
+  color: #9ca3af;
+}
+
+/* Table */
+.dark .log-table-card {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+
+.dark .log-table-header {
+  border-bottom: 1px solid #374151;
+}
+
+.dark .log-table-title {
+  color: #f9fafb;
+}
+
+.dark .log-table-head {
+  background-color: #1f2937;
+}
+
+.dark .log-table-header-cell {
+  color: #9ca3af;
+  border-bottom: 1px solid #374151;
+}
+
+.dark .log-table-body {
+  background-color: #1f2937;
+}
+
+.dark .log-table-row {
+  border-bottom: 1px solid #374151;
+}
+
+.dark .log-table-row:hover {
+  background-color: #111827;
+}
+
+.dark .log-table-cell {
+  color: #f9fafb;
+}
+
+/* Status badges */
+.dark .log-status-good {
+  background-color: #064e3b;
+  color: #a7f3d0;
+}
+
+.dark .log-status-defective {
+  background-color: #7f1d1d;
+  color: #fecaca;
+}
+
+.dark .log-status-pending {
+  background-color: #78350f;
+  color: #fef3c7;
+}
+
+.dark .log-export-button,
+.dark .log-page-button {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.dark .log-detail-button {
+  background: none;
+  border: none;
+  color: #f9fafb;
+  text-decoration: underline;
+}
+.dark .log-detail-button:hover {
+  color: #2563eb;
+}
+
+.dark .log-export-button:hover,
+.dark .log-page-button:hover:not(:disabled) {
+  background-color: #4b5563;
+}
+
+.dark .log-page-button:disabled {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #9ca3af;
+}
+
+/* Active page button (accent) */
+.dark .log-page-button.log-active {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+.dark .log-page-button.log-active:hover {
+  background-color: #2563eb;
+}
+
+/* Modal */
+.dark .log-modal-content {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+.dark .log-modal-header,
+.dark .log-modal-footer {
+  border-color: #374151;
+}
+
+.dark .log-modal-title {
+  color: #f9fafb;
+}
+
+.dark .log-close-button {
+  color: #9ca3af;
+}
+
+.dark .log-close-button:hover {
+  color: #f9fafb;
+}
+
+.dark .log-section-title {
+  color: #9ca3af;
+}
+
+.dark .log-info-label {
+  color: #9ca3af;
+}
+
+.dark .log-info-value {
+  color: #f9fafb;
+}
+
+.dark .log-image-container {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+}
+
+.dark .log-image-placeholder {
+  background-color: #111827;
+  color: #9ca3af;
+}
+
+/* Lightbox keeps its dim overlay; no change needed */
+
+/* Empty/Loading states */
+.dark .log-loading,
+.dark .log-empty-state,
+.dark .log-empty-state p {
+  color: #9ca3af;
+}
+
+.dark .log-empty-state h3 {
+  color: #f9fafb;
+}
+
+/* Scrollbars */
+.dark .log-table-wrapper::-webkit-scrollbar-track,
+.dark .log-modal-body::-webkit-scrollbar-track {
+  background: #111827;
+}
+
+.dark .log-table-wrapper::-webkit-scrollbar-thumb,
+.dark .log-modal-body::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark .log-table-wrapper::-webkit-scrollbar-thumb:hover,
+.dark .log-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Focus outline (accent) */
+.dark .log-back-button:focus,
+.dark .log-logout-button:focus,
+.dark .log-export-button:focus,
+.dark .log-detail-button:focus,
+.dark .log-page-button:focus,
+.dark .log-close-button:focus,
+.dark .log-close-modal-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Close modal button (footer) */
+.dark .log-close-modal-button {
+  background-color: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+
+.dark .log-close-modal-button:hover {
+  background-color: #4b5563;
+}
+
+
 /* 반응형 디자인 */
 @media (max-width: 1024px) {
   .log-stats-grid {
@@ -501,36 +755,36 @@
     gap: 1rem;
     align-items: stretch;
   }
-  
+
   .log-header-right {
     justify-content: space-between;
   }
-  
+
   .log-main-content {
     padding: 1rem;
   }
-  
+
   .log-stats-content {
     padding: 1rem;
   }
-  
+
   .log-table-header {
     padding: 0.75rem;
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
   }
-  
+
   .log-table-header-cell,
   .log-table-cell {
     padding: 0.5rem 0.75rem;
   }
-  
+
   .log-modal-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .log-modal-content {
     margin: 0.5rem;
     max-width: calc(100vw - 1rem);
@@ -542,25 +796,25 @@
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }
-  
+
   .log-stat-number {
     font-size: 2rem;
   }
-  
+
   .log-pagination {
     padding: 0.75rem;
     gap: 0.25rem;
   }
-  
+
   .log-page-button {
     padding: 0.25rem 0.5rem;
     min-width: 1.75rem;
   }
-  
+
   .log-table-wrapper {
     font-size: 0.75rem;
   }
-  
+
   .log-table-header-cell,
   .log-table-cell {
     padding: 0.375rem 0.5rem;
@@ -571,19 +825,19 @@
   .log-main-content {
     padding: 0.5rem;
   }
-  
+
   .log-header {
     padding: 0.75rem;
   }
-  
+
   .log-stats-content {
     padding: 0.75rem;
   }
-  
+
   .log-modal-body {
     padding: 1rem;
   }
-  
+
   .log-modal-header,
   .log-modal-footer {
     padding: 1rem;
@@ -632,6 +886,7 @@
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -672,33 +927,35 @@
 
 /* --- 신규 추가: 라이트박스 스타일 --- */
 .log-product-image {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .log-lightbox-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100; /* 기존 모달(z-index: 50)보다 위에 표시 */
-    cursor: pointer;
-    animation: log-fadeIn 0.2s ease-out; /* 부드러운 등장 효과 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  /* 기존 모달(z-index: 50)보다 위에 표시 */
+  cursor: pointer;
+  animation: log-fadeIn 0.2s ease-out;
+  /* 부드러운 등장 효과 */
 }
 
 .log-lightbox-content {
-    position: relative;
-    max-width: 90vw;
-    max-height: 90vh;
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
 }
 
 .log-lightbox-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: 0.5rem;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0.5rem;
 }

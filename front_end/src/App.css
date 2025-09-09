@@ -49,3 +49,22 @@
 .app-main-content {
   padding-bottom: 4rem;
 }
+
+/* 다크 모드 전용 */
+.dark .app-container {
+  background-color: #111827; /* 다크 배경 */
+  color: #f9fafb;
+}
+
+.dark .app-bottom-nav {
+  background-color: #1f2937; /* 카드 톤 */
+  border-top: 1px solid #374151;
+}
+
+.dark .app-nav-button {
+  color: #9ca3af;
+}
+
+.dark .app-nav-button.active {
+  color: #3b82f6; /* 다크 모드 포커스 색상 */
+}

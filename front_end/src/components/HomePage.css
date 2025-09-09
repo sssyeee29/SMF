@@ -86,3 +86,51 @@
   padding: 0.5rem;
   border-radius: 0.25rem;
 }
+
+/* ===== Dark Mode Overrides for HomePage ===== */
+.dark .home-page {
+  background-color: #111827; /* 진한 다크 배경 */
+  color: #f9fafb; /* 기본 텍스트 흰색 */
+}
+
+/* 헤더 */
+.dark .home-header {
+  background-color: #1f2937;
+  border-bottom: 1px solid #374151;
+}
+
+.dark .home-title {
+  color: #f9fafb;
+}
+
+.dark .home-username {
+  color: #9ca3af;
+}
+
+.dark .home-logout-button {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.dark .home-logout-button:hover {
+  background-color: #4b5563;
+}
+
+/* 메뉴 버튼 */
+.dark .menu-button {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  color: #f9fafb;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.dark .menu-button:hover {
+  background-color: #374151;
+}
+
+/* 설명 박스 (라이트에서도 이미 다크 톤이라 그대로 둬도 되지만 일관성 위해 수정) */
+.dark .description-box {
+  background-color: #374151;
+  color: #f9fafb;
+}

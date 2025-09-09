@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, ComposedChart, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, ComposedChart, PieChart, Pie, Cell, Legend } from 'recharts';
+
 import './DashboardPage.css';
 
 // 샘플 데이터 생성 함수 (최근 7일)
@@ -25,9 +26,10 @@ const generateSampleData = () => {
         strawberry: Math.floor(Math.random() * 80) + 40,
         melon: Math.floor(Math.random() * 60) + 30
     }));
-    };
+};
 
-    const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
+const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
+
     const [data] = useState(generateSampleData());
 
     const today = new Date().toISOString().split('T')[0];
@@ -192,6 +194,8 @@ const generateSampleData = () => {
                                     <XAxis dataKey="date" />
                                     <YAxis />
                                     <Tooltip />
+                                    <Legend />
+
                                     <Bar dataKey="normal" fill="#4CAF50" name="정상" />
                                     <Bar dataKey="defective" fill="#FF5722" name="불량" />
                                 </BarChart>
@@ -201,70 +205,70 @@ const generateSampleData = () => {
 
                     {/* 2번 그래프: 납품 현황 */}
                     <div className="chart-card">
-                    <div className="chart-card-header">
-                        <h3 className="chart-card-title">납품 현황</h3>
-                        <FilterComponent chartId="chart2" />
-                    </div>
-                    <div className="chart-card-content">
-                        <ResponsiveContainer width="100%" height={300}>
-                            <ComposedChart data={filterData('chart2')}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
-                                <YAxis yAxisId="left" />
-                                <YAxis yAxisId="right" orientation="right" />
-                                <Tooltip />
-                                <Bar 
-                                    yAxisId="left"
-                                    dataKey="deliveryQuantity" 
-                                    fill="#2196F3" 
-                                    name="납품 수량"
-                                />
-                                <Line 
-                                    yAxisId="right" 
-                                    type="monotone" 
-                                    dataKey="deliveryCount" 
-                                    stroke="#FF9800" 
-                                    strokeWidth={3} 
-                                    name="납품 건수"
-                                />
-                            </ComposedChart>
-                        </ResponsiveContainer>
-                    </div>
+                        <div className="chart-card-header">
+                            <h3 className="chart-card-title">납품 현황</h3>
+                            <FilterComponent chartId="chart2" />
+                        </div>
+                        <div className="chart-card-content">
+                            <ResponsiveContainer width="100%" height={300}>
+                                <ComposedChart data={filterData('chart2')}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis yAxisId="left" />
+                                    <YAxis yAxisId="right" orientation="right" />
+                                    <Tooltip />
+                                    <Bar
+                                        yAxisId="left"
+                                        dataKey="deliveryQuantity"
+                                        fill="#2196F3"
+                                        name="납품 수량"
+                                    />
+                                    <Line
+                                        yAxisId="right"
+                                        type="monotone"
+                                        dataKey="deliveryCount"
+                                        stroke="#FF9800"
+                                        strokeWidth={3}
+                                        name="납품 건수"
+                                    />
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
 
                     {/* 3번 그래프: 불량 원인 분석 */}
                     <div className="chart-card">
-                    <div className="chart-card-header">
-                        <h3 className="chart-card-title">불량 원인 분석</h3>
-                        <FilterComponent chartId="chart3" showComparison={true} />
-                    </div>
-                    <div className="chart-card-content">
-                        <ResponsiveContainer width="100%" height={300}>
-                            <AreaChart data={prepareAreaData(filterData('chart3'))}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
-                                <YAxis />
-                                <Tooltip />
-                                <Area
-                                    type="monotone"
-                                    dataKey="lidDefect"
-                                    stroke="#E91E63"
-                                    fill="#E91E63"
-                                    fillOpacity={0.2}
-                                    name="뚜껑 불량"
-                                />
-                                <Area
-                                    type="monotone"
-                                    dataKey="daisyDefect"
-                                    stroke="#9C27B0"
-                                    fill="#9C27B0"
-                                    fillOpacity={0.2}
-                                    name="데이지 불량"
-                                />
+                        <div className="chart-card-header">
+                            <h3 className="chart-card-title">불량 원인 분석</h3>
+                            <FilterComponent chartId="chart3" showComparison={true} />
+                        </div>
+                        <div className="chart-card-content">
+                            <ResponsiveContainer width="100%" height={300}>
+                                <AreaChart data={prepareAreaData(filterData('chart3'))}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="lidDefect"
+                                        stroke="#E91E63"
+                                        fill="#E91E63"
+                                        fillOpacity={0.2}
+                                        name="뚜껑 불량"
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="daisyDefect"
+                                        stroke="#9C27B0"
+                                        fill="#9C27B0"
+                                        fillOpacity={0.2}
+                                        name="데이지 불량"
+                                    />
                                 </AreaChart>
                             </ResponsiveContainer>
 
-                    </div>
+                        </div>
                     </div>
 
                     {/* 4번 그래프 */}
@@ -278,18 +282,21 @@ const generateSampleData = () => {
                                 <PieChart>
                                     <Pie
                                         data={chart4Data}
-                                            cx="50%"         // 그래프 중심 x 좌표
-                                            cy="50%"         // 그래프 중심 y 좌표
-                                            innerRadius={70} // 안쪽 원 반지름 (도넛 속 비움)
-                                            outerRadius={150} // 바깥쪽 원 반지름 (크기)
-                                            paddingAngle={0}
-                                            dataKey="value"
-                                        >
-                                            {chart4Data.map((entry, index) => (
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={130}
+                                        paddingAngle={0}
+                                        dataKey="value"
+                                    >
+                                        {chart4Data.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={entry.color} />
-                                            ))}
+                                        ))}
                                     </Pie>
                                     <Tooltip />
+                                    <Legend wrapperStyle={{
+                                        transform: "translateY(20px)", // 살짝 내렸습니다.
+                                    }} />
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="chart-donut-legend">

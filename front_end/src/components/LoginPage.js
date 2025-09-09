@@ -1,8 +1,9 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import './LoginPage.css';
 
-
-const LoginPage = ({ onLogin , onSignupClick }) => {
+const LoginPage = ({ onLogin, onSignupClick }) => {
+  const { t } = useTranslation();
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
 
@@ -14,32 +15,29 @@ const LoginPage = ({ onLogin , onSignupClick }) => {
   return (
     <div className="login-page">
       <div className="login-container">
-        <h2 className="login-title">로그인</h2>
+        <h2 className="login-title">{t("login.title")}</h2>
         <form onSubmit={handleSubmit} className="login-form">
           <input
             type="text"
-            placeholder="아이디"
+            placeholder={t("login.username")}
             value={id}
             onChange={(e) => setId(e.target.value)}
             className="login-input"
           />
           <input
             type="password"
-            placeholder="비밀번호"
+            placeholder={t("login.password")}
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             className="login-input"
           />
-          <button
-            type="submit"
-            className="login-button"
-          >
-            로그인
+          <button type="submit" className="login-button">
+            {t("login.button")}
           </button>
         </form>
-          <div className="signup-link" onClick={onSignupClick}>
-              회원가입
-          </div>
+        <div className="signup-link" onClick={onSignupClick}>
+          {t("login.signup")}
+        </div>
       </div>
     </div>
   );

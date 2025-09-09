@@ -259,3 +259,84 @@
 .chart-card {
   animation: fadeIn 0.3s ease-out;
 }
+
+/* ========== 다크 모드 스타일 ========== */
+
+/* 전체 배경 */
+.dark .dashboard-main-container {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+/* 헤더 */
+.dark .dashboard-header {
+  background-color: #1f2937;
+  border-bottom: 1px solid #374151;
+}
+.dark .dashboard-back-btn {
+  color: #9ca3af;
+}
+.dark .dashboard-back-btn:hover {
+  color: #d1d5db;
+}
+.dark .dashboard-title {
+  color: #f9fafb;
+}
+.dark .dashboard-username {
+  color: #9ca3af;
+}
+.dark .dashboard-logout-btn {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+.dark .dashboard-logout-btn:hover {
+  background-color: #4b5563;
+}
+
+/* 메인 컨텐츠 */
+.dark .dashboard-main-content {
+  background-color: #111827;
+}
+
+/* 카드 */
+.dark .chart-card {
+  background-color: #1f2937;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+.dark .chart-card:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+}
+.dark .chart-card-header {
+  background-color: #1f2937;
+  border-bottom: 1px solid #374151;
+}
+.dark .chart-card-title {
+  color: #f9fafb;
+}
+
+/* 필터 select, input */
+.dark .chart-filter-select,
+.dark .chart-filter-date {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+.dark .chart-filter-select:focus,
+.dark .chart-filter-date:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+/* 도넛 범례 */
+.dark .chart-legend-item {
+  color: #9ca3af;
+}
+
+/* 로딩 텍스트 */
+.dark .chart-loading {
+  color: #9ca3af;
+}
+
+
+

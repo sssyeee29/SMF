@@ -188,6 +188,104 @@
   display: none;
 }
 
+/* ===== CameraPage Dark Mode (SettingsPage와 동일 팔레트 사용) ===== */
+
+.dark .camera-page {
+  background-color: #111827; /* page bg */
+  color: #f9fafb;            /* main text */
+}
+
+/* 헤더 */
+.dark .camera-header {
+  background-color: #1f2937;     /* card bg */
+  border-bottom: 1px solid #374151; /* border */
+}
+.dark .header-title,
+.dark .username {
+  color: #f9fafb; /* main text */
+}
+.dark .back-button,
+.dark .logout-button {
+  background-color: #374151; /* neutral button */
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+.dark .back-button:hover,
+.dark .logout-button:hover {
+  background-color: #4b5563;
+}
+
+/* 본문 컨테이너/카드 */
+.dark .camera-container {
+  background-color: #1f2937;      /* card bg */
+  border: 1px solid #374151;      /* border */
+}
+.dark .camera-title {
+  color: #f9fafb;                 /* main text */
+}
+
+/* 비디오 영역 */
+.dark .video-container {
+  background-color: #1f2937;      /* card bg */
+  border: 1px solid #374151;
+}
+.dark .camera-off-placeholder {
+  background-color: #111827;      /* page bg */
+  border: 1px dashed #374151;
+}
+.dark .camera-off-text {
+  color: #9ca3af;                 /* muted text */
+}
+
+/* 입력류 (IP카메라 URL, 장치 선택 등) */
+.dark .wifi-input,
+.dark .device-select {
+  background-color: #374151;      /* input bg */
+  border: 1px solid #4b5563;      /* input border */
+  color: #f9fafb;                 /* input text */
+}
+.dark .wifi-input:focus,
+.dark .device-select:focus {
+  outline: none;
+  border-color: #60a5fa;          /* focus border */
+  box-shadow: 0 0 0 1px #60a5fa;  /* focus ring */
+}
+
+/* 카메라 컨트롤 버튼들
+   - on: Settings의 primary 버튼(파랑) 톤 적용
+   - off: Settings의 neutral(회색) 톤 적용 (일관성 유지)
+*/
+.dark .btn-camera-on {
+  background-color: #3b82f6;  /* primary */
+  color: #ffffff;
+  border: none;
+}
+.dark .btn-camera-on:hover {
+  background-color: #2563eb;  /* primary hover */
+}
+
+.dark .btn-camera-off {
+  background-color: #374151;  /* neutral */
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+.dark .btn-camera-off:hover {
+  background-color: #4b5563;
+}
+
+/* 보조 텍스트/아이콘 */
+.dark .camera-icon {
+  color: #9ca3af;             /* muted text */
+}
+
+/* 캔버스(숨김용) 배경 대비 */
+.dark .hidden-canvas {
+  background-color: #111827;
+}
+
+
+
+
 
 
 
