@@ -28,4 +28,14 @@ public interface WarehouseMapper {
 
     // ✅ 신규 아이템 INSERT (자동 분할 생성에서 사용)
     int insertItem(InventoryItemDto dto);
+
+    int sumReadyQtyAtLocation(@Param("loc") String loc);
+
+    void markDone(Map<String, Object> p);
+
+    int sumReadyQtyAtLocationForCode(Map<String, String> loc);
+
+    InventoryItemDto findReadyRowForMerge(Map<String, String> loc);
+
+    void addQuantity(Map<String,? extends Number> id);
 }
