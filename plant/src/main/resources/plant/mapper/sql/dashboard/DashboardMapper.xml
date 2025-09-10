@@ -6,7 +6,7 @@
 <mapper namespace="plant.dev.dashboard.mapper.DashboardMapper">
 
     <!-- G1: 정상/불량 건수 (불량률 포함) -->
-    <select id="selectQualityTrend" resultType="plant.dev.dashboard.dto.DashboardDTO.QualityTrendRow">
+    <select id="selectQualityTrend" resultType="plant.dev.dashboard.dto.DashboardDTO$QualityTrendRow">
         SELECT
             DATE_FORMAT(
                     inspect_date,
@@ -28,8 +28,8 @@
         ORDER BY period;
     </select>
 
-    <!-- G2: 납품 현황 (납품 건수 + 납품 수량) - inventory_tbl 사용 -->
-    <select id="selectDeliveryStatus" resultType="plant.dev.dashboard.dto.DashboardDTO.DeliveryComboRow">
+    <!-- G2: 납품 현황 (납품 건수 + 납품 수량) -->
+    <select id="selectDeliveryStatus" resultType="plant.dev.dashboard.dto.DashboardDTO$DeliveryComboRow">
         SELECT
             DATE_FORMAT(
                     out_date,
@@ -39,8 +39,8 @@
                         WHEN 'year'  THEN '%Y'
                         END
             ) AS period,
-            COUNT(*)      AS deliveredCount,  -- 납품 건수(행 수)
-            SUM(quantity) AS deliveredQty     -- 납품 수량 합계
+            COUNT(*)      AS deliveredCount,
+            SUM(quantity) AS deliveredQty
         FROM inventory_tbl
         WHERE out_date IS NOT NULL
           AND UPPER(delivery_status) = 'DONE'
@@ -48,9 +48,8 @@
         ORDER BY period;
     </select>
 
-    <!-- G3: 불량 원인 분석 (뚜껑 손상 vs 몸통 찌그러짐) -->
-    <!-- 서브쿼리에서 기간/원인별 불량건 집계 후, 바깥에서 기간별 합으로 비중 계산 -->
-    <select id="selectDefectCause" resultType="plant.dev.dashboard.dto.DashboardDTO.DefectCauseRow">
+    <!-- G3: 불량 원인 분석 -->
+    <select id="selectDefectCause" resultType="plant.dev.dashboard.dto.DashboardDTO$DefectCauseRow">
         SELECT
             t.period,
             t.causeCode,
@@ -70,7 +69,7 @@
                                  WHEN 'year'  THEN '%Y'
                                  END
                      ) AS period,
-                     defect_cause AS causeCode,   -- 예: '뚜껑 손상', '몸통 찌그러짐'
+                     defect_cause AS causeCode,
                      COUNT(*)     AS defectCount
                  FROM inspection_tbl
                  WHERE UPPER(result) = 'DEFECT'
@@ -79,8 +78,8 @@
         ORDER BY t.period, t.causeCode;
     </select>
 
-    <!-- G4: 제품별 납품 현황 (바나나/딸기/메로나) - inventory_tbl 사용 -->
-    <select id="selectProductDelivery" resultType="plant.dev.dashboard.dto.DashboardDTO.ProductDeliveryRow">
+    <!-- G4: 제품별 납품 현황 -->
+    <select id="selectProductDelivery" resultType="plant.dev.dashboard.dto.DashboardDTO$ProductDeliveryRow">
         SELECT
             DATE_FORMAT(
                     out_date,
