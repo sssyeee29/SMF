@@ -339,4 +339,162 @@
 }
 
 
+/* ========== 블루 모드 스타일 ========== */
+
+/* 전체 배경 */
+.blue .dashboard-main-container {
+  background-color: #e0f2fe; /* page bg */
+  color: #1e3a8a;            /* main text */
+}
+
+/* 헤더 */
+.blue .dashboard-header {
+  background-color: #bfdbfe; /* header bg */
+  border-bottom: 1px solid #93c5fd;
+}
+.blue .dashboard-back-btn {
+  color: #1e40af;
+}
+.blue .dashboard-back-btn:hover {
+  color: #1e3a8a;
+}
+.blue .dashboard-title {
+  color: #1e3a8a;
+}
+.blue .dashboard-username {
+  color: #1e40af;
+}
+.blue .dashboard-logout-btn {
+  background-color: #bfdbfe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+.blue .dashboard-logout-btn:hover {
+  background-color: #93c5fd;
+}
+
+/* 메인 컨텐츠 */
+.blue .dashboard-main-content {
+  background-color: #e0f2fe;
+}
+
+/* 카드 */
+.blue .chart-card {
+  background-color: #dbeafe; /* card bg */
+  border: 1px solid #93c5fd;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+.blue .chart-card:hover {
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+.blue .chart-card-header {
+  background-color: #bfdbfe;
+  border-bottom: 1px solid #93c5fd;
+}
+.blue .chart-card-title {
+  color: #1e3a8a;
+}
+
+/* 필터 select, input */
+.blue .chart-filter-select,
+.blue .chart-filter-date {
+  background-color: #eff6ff;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+.blue .chart-filter-select:focus,
+.blue .chart-filter-date:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* 도넛 범례 */
+.blue .chart-legend-item {
+  color: #1e3a8a;
+}
+
+/* 로딩 텍스트 */
+.blue .chart-loading {
+  color: #1e40af;
+}
+
+/* ===== Sepia Mode Overrides for Dashboard ===== */
+.sepia .dashboard-main-container {
+  background-color: #fdf6e3;
+  color: #3b2f2f;
+}
+
+/* Header */
+.sepia .dashboard-header {
+  background-color: #fefcf5;
+  border-bottom: 1px solid #e2d9c8;
+}
+.sepia .dashboard-title { color: #3b2f2f; }
+.sepia .dashboard-username { color: #5c5040; }
+.sepia .dashboard-back-btn,
+.sepia .dashboard-logout-btn {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .dashboard-back-btn:hover,
+.sepia .dashboard-logout-btn:hover {
+  background-color: #f5edd7;
+}
+
+/* Content & cards */
+.sepia .dashboard-main-content {
+  background-color: #fdf6e3;
+}
+.sepia .chart-card {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .chart-card-title { color: #3b2f2f; }
+.sepia .chart-card-header {
+  background-color: #fffaf0;
+  border-bottom: 1px solid #e2d9c8;
+}
+
+/* Filter */
+.sepia .chart-filter-select,
+.sepia .chart-filter-date {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .chart-filter-select:focus,
+.sepia .chart-filter-date:focus {
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.3);
+}
+
+/* Legends */
+.sepia .chart-legend-item {
+  color: #5c5040;
+}
+
+/* ===== 보강: Sepia Mode 누락 요소 ===== */
+
+/* 카드 hover */
+.sepia .chart-card:hover {
+  box-shadow: 0 4px 10px rgba(59, 45, 0, 0.2);
+}
+
+/* 로딩 텍스트 */
+.sepia .chart-loading {
+  color: #5c5040;
+}
+
+/* 차트 툴팁 */
+.sepia .recharts-tooltip-wrapper {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(59, 45, 0, 0.15);
+  background-color: #fffaf0;
+  color: #3b2f2f;
+}
+
+
+
+
 

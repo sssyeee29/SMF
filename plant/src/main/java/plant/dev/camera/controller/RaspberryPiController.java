@@ -1,5 +1,6 @@
 package plant.dev.camera.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -8,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import plant.dev.camera.dto.SettingDTO;
 import plant.dev.camera.service.DetectionLogService;
+import plant.dev.camera.service.SettingService;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -17,39 +20,32 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@RequestMapping("/api/pi")  // ✅ Raspberry Pi에서 전송하는 데이터는 모두 /api/pi 이하에서 처리
+@RequestMapping("/api/pi")
+@RequiredArgsConstructor
 public class RaspberryPiController {
 
-    // 🔸 추론 결과를 임시로 저장할 메모리 맵 (나중에 DB로 교체 가능)
+    private final DetectionLogService detectionLogService;
+    private final SettingService settingService;
+
     private final Map<String, JSONObject> inferenceMap = new ConcurrentHashMap<>();
     private static final String FLASK_SERVER_URL = "http://192.168.10.243:5000";
 
-    // 🔸 이미지 저장 경로 (실제 운영 환경에서는 config 파일로 분리 추천)
-    private static final String SAVE_DIR = "C:/ingest_frames";
-    private final DetectionLogService detectionLogService;
-
-    public RaspberryPiController(DetectionLogService detectionLogService) {
-        this.detectionLogService = detectionLogService;
-    }
-
-    /**
-     * ✅ [1] Raspberry Pi로부터 이미지 프레임을 수신하고 저장하는 API
-     * - content-type: multipart/form-data
-     * - 이미지 파일은 {capture_id}.jpg 로 저장됨
-     */
+    /** ✅ [1] 이미지 프레임 수신 */
     @PostMapping("/frame")
     public ResponseEntity<?> uploadFrame(
-            @RequestParam("image") MultipartFile image,         // JPG 이미지 파일
-            @RequestParam("capture_id") String captureId,       // 고유 ID
-            @RequestParam("camera_id") String cameraId,         // 카메라 구분용 (예: pi-left)
-            @RequestParam(value = "seq", required = false) Long seq  // 선택적: 시퀀스 번호
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("capture_id") String captureId,
+            @RequestParam("camera_id") String cameraId,
+            @RequestParam(value = "seq", required = false) Long seq
     ) {
         try {
-            // 저장 폴더가 없다면 생성
-            Files.createDirectories(Paths.get(SAVE_DIR));
+            SettingDTO settings = settingService.getSettings();
+            String saveDir = (settings != null && settings.getLogStoragePath() != null)
+                    ? settings.getLogStoragePath()
+                    : "C:/ingest_frames";
 
-            // {capture_id}.jpg 형태로 저장
-            Path savePath = Paths.get(SAVE_DIR, captureId + ".jpg");
+            Files.createDirectories(Paths.get(saveDir));
+            Path savePath = Paths.get(saveDir, captureId + ".jpg");
             image.transferTo(savePath.toFile());
 
             System.out.println("[FRAME] Saved → " + savePath);
@@ -60,11 +56,7 @@ public class RaspberryPiController {
         }
     }
 
-    /**
-     * ✅ [2] Raspberry Pi로부터 추론 결과(JSON)를 수신하는 API
-     * - content-type: application/x-www-form-urlencoded
-     * - 추론 결과는 메모리에 저장 (나중에 DB 저장으로 확장 가능)
-     */
+    /** ✅ [2] 추론 결과 수신 */
     @PostMapping("/infer")
     public ResponseEntity<?> uploadInfer(
             @RequestParam("capture_id") String captureId,
@@ -72,17 +64,11 @@ public class RaspberryPiController {
             @RequestParam(value = "seq", required = false) Long seq
     ) {
         try {
-            // 1. 원본 추론 결과 JSON 파싱
             JSONObject json = new JSONObject(resultJson);
-
-            // 2. 이미지 URL 생성
             String imageUrl = "http://192.168.10.79:8080/static/frames/" + captureId + ".jpg";
-            json.put("image_url", imageUrl);  // ✅ 여기가 핵심 한 줄
+            json.put("image_url", imageUrl);
 
-            // 3. DB 저장 (image_url 포함된 JSON 넘김)
             detectionLogService.saveInferJson(captureId, json.toString(), seq);
-
-            // 4. 추론 결과 메모리 저장
             inferenceMap.put(captureId, json);
 
             return ResponseEntity.ok().build();
@@ -92,54 +78,54 @@ public class RaspberryPiController {
         }
     }
 
+    /** ✅ [3] 추론 결과 조회 */
     @GetMapping("/result/{id}")
     public ResponseEntity<?> getResult(@PathVariable("id") String captureId) {
         JSONObject result = inferenceMap.get(captureId);
-
-        // 추론 결과가 없을 경우
         if (result == null) {
             return ResponseEntity.status(404).body("결과 없음");
         }
-
-        // 프론트에서 접근 가능한 이미지 경로 (정적 매핑 필요)
         String imageUrl = "/static/frames/" + captureId + ".jpg";
-
-        return ResponseEntity.ok(Map.of(
-                "result", result.toMap(),    // JSON 객체 → Map 변환
-                "image_url", imageUrl        // 프론트에서 <img src=...> 가능
-        ));
+        return ResponseEntity.ok(Map.of("result", result.toMap(), "image_url", imageUrl));
     }
 
+    /** ✅ [4] 설정 저장 (DB + Flask 전달) */
     @PostMapping("/settings")
-    public ResponseEntity<?> updateAISettings(@RequestBody Map<String, Object> settings) {
+    public ResponseEntity<?> updateSettings(@RequestBody SettingDTO settingsDTO) {
         try {
-            String flaskUrl = FLASK_SERVER_URL + "/api/pi/settings";
+            // 1) DB 저장 (AI + 저장 설정 전체)
+            settingService.saveSettings(settingsDTO);
 
-            // Flask에서 인식 가능한 키로 재매핑
+            // 2) Flask로 AI 관련 설정만 전달
+            String flaskUrl = FLASK_SERVER_URL + "/api/pi/settings";
             Map<String, Object> flaskSettings = new HashMap<>();
-            if (settings.containsKey("confidenceThreshold"))
-                flaskSettings.put("confidence", settings.get("confidenceThreshold"));
-            if (settings.containsKey("sensitivity"))
-                flaskSettings.put("sensitivity", settings.get("sensitivity"));
-            if (settings.containsKey("tolerance"))
-                flaskSettings.put("tolerance", settings.get("tolerance"));
+            flaskSettings.put("confidenceThreshold", settingsDTO.getConfidenceThreshold());
+            flaskSettings.put("sensitivity", settingsDTO.getSensitivity());
+            flaskSettings.put("tolerance", settingsDTO.getTolerance());
+            flaskSettings.put("captureResolution", settingsDTO.getCaptureResolution());
+            flaskSettings.put("imageQuality", settingsDTO.getImageQuality());
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(flaskSettings, headers);
+
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<Map> response = restTemplate.postForEntity(flaskUrl, requestEntity, Map.class);
+            restTemplate.postForEntity(flaskUrl, requestEntity, Map.class);
 
-
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+            return ResponseEntity.ok(Map.of("ok", true, "msg", "설정(DB+Flask) 반영됨", "data", settingsDTO));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("ok", false, "msg", "Flask 서버 전송 실패"));
+            return ResponseEntity.status(500).body(Map.of("ok", false, "msg", "설정 저장 실패"));
         }
     }
 
-
-
-
+    /** ✅ [5] 현재 설정 조회 */
+    @GetMapping("/settings")
+    public ResponseEntity<?> getSettings() {
+        SettingDTO settings = settingService.getSettings();
+        if (settings == null) {
+            return ResponseEntity.status(404).body(Map.of("ok", false, "msg", "설정 없음"));
+        }
+        return ResponseEntity.ok(Map.of("ok", true, "data", settings));
+    }
 }

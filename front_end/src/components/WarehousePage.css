@@ -1182,7 +1182,427 @@
   font-weight: bold;
 }
 
+/* ===== Blue Theme Overrides for Warehouse (wh-) ===== */
+.blue .wh-container {
+  background-color: #e0f2fe; /* 연한 하늘색 배경 */
+  color: #0c4a6e; /* 진한 청색 텍스트 */
+}
+
+/* 헤더 */
+.blue .wh-header {
+  background-color: #38bdf8; /* 하늘색 */
+  border-bottom: 1px solid #0284c7;
+}
+.blue .wh-title { color: #0c4a6e; }
+.blue .wh-username { color: #075985; }
+
+.blue .wh-logout-btn,
+.blue .wh-back-btn {
+  background-color: #0ea5e9;
+  border: 1px solid #0284c7;
+  color: #ffffff;
+}
+.blue .wh-logout-btn:hover,
+.blue .wh-back-btn:hover {
+  background-color: #0369a1;
+}
+
+/* 사이드바 */
+.blue .wh-sidebar {
+  background-color: #bae6fd;
+  border-right: 1px solid #7dd3fc;
+}
+.blue .wh-section-title { color: #075985; }
+.blue .wh-chart-name { color: #0c4a6e; }
+.blue .wh-chart-quantity { color: #0c4a6e; }
+
+.blue .wh-progress-bar { background-color: #7dd3fc; }
+.blue .wh-progress-fill { background-color: #0284c7; }
+.blue .wh-progress-fill.wh-progress-full { background-color: #0369a1; }
+
+/* 창고 구역 버튼 */
+.blue .wh-section-blue    { background-color: #bfdbfe; color: #1e3a8a; }
+.blue .wh-section-green   { background-color: #a7f3d0; color: #065f46; }
+.blue .wh-section-yellow  { background-color: #fef9c3; color: #92400e; }
+.blue .wh-section-purple  { background-color: #ddd6fe; color: #5b21b6; }
+.blue .wh-section-name  { color: #0c4a6e; }
+.blue .wh-section-count { color: #075985; }
+
+/* 메인 */
+.blue .wh-main { color: #0c4a6e; }
+
+/* 필터 카드 */
+.blue .wh-filter-container {
+  background-color: #e0f2fe;
+  border: 1px solid #7dd3fc;
+}
+.blue .wh-filter-label { color: #075985; }
+.blue .wh-search-icon { color: #0284c7; }
+
+/* 인풋/셀렉트/검색 */
+.blue .wh-search-input,
+.blue .wh-filter-select,
+.blue .wh-date-input,
+.blue .wh-select-small,
+.blue .wh-select-medium {
+  background-color: #ffffff;
+  border: 1px solid #7dd3fc;
+  color: #0c4a6e;
+}
+.blue .wh-search-input::placeholder,
+.blue .wh-date-input::placeholder {
+  color: #0284c7;
+}
+
+/* 버튼(필터/적용 등) */
+.blue .wh-btn { color: #ffffff; }
+.blue .wh-btn-secondary { background-color: #38bdf8; }
+.blue .wh-btn-secondary:hover { background-color: #0ea5e9; }
+.blue .wh-btn-apply { background-color: #0284c7; }
+.blue .wh-btn-apply:hover { background-color: #0369a1; }
+
+/* 날짜 영역 */
+.blue .wh-date-range { border-top: 1px solid #7dd3fc; }
+.blue .wh-date-separator { color: #0284c7; }
+
+/* 요약 통계 카드 */
+.blue .wh-summary-stats {
+  background-color: #bae6fd;
+  border: 1px solid #7dd3fc;
+}
+.blue .wh-stat-label { color: #075985; }
+
+/* 테이블 카드 */
+.blue .wh-table-container {
+  background-color: #ffffff;
+  border: 1px solid #7dd3fc;
+}
+.blue .wh-table-header { border-bottom: 1px solid #7dd3fc; }
+.blue .wh-table-title { color: #0c4a6e; }
+.blue .wh-table-count { color: #075985; }
+
+.blue .wh-table-head { background-color: #e0f2fe; }
+.blue .wh-th {
+  color: #075985;
+  border-bottom: 1px solid #7dd3fc;
+}
+.blue .wh-table-body { background-color: #ffffff; }
+.blue .wh-table-row:hover { background-color: #bae6fd; }
+
+.blue .wh-td { color: #0c4a6e; }
+.blue .wh-checkbox { border-color: #0284c7; }
+.blue .wh-product-name { color: #0c4a6e; }
+.blue .wh-product-code { color: #075985; }
+
+.blue .wh-quantity { color: #0c4a6e; }
+.blue .wh-quantity-bar { background-color: #7dd3fc; }
+.blue .wh-quantity-fill { background-color: #0284c7; }
+.blue .wh-quantity-fill.wh-fill-full { background-color: #16a34a; }
+.blue .wh-quantity-fill.wh-fill-empty { background-color: #dc2626; }
+
+.blue .wh-location,
+.blue .wh-date,
+.blue .wh-note { color: #0c4a6e; }
+
+.blue .wh-delivery-badge {
+  background-color: #0284c7;
+  color: #ffffff;
+}
+
+/* 납품 버튼 상태 */
+.blue .wh-delivery-btn.wh-delivery-ready {
+  color: #ffffff;
+  background-color: #0ea5e9;
+  border-color: #0284c7;
+}
+.blue .wh-delivery-btn.wh-delivery-ready:hover {
+  background-color: #0369a1;
+}
+.blue .wh-delivery-btn.wh-delivery-disabled {
+  color: #9ca3af;
+  background-color: #e0f2fe;
+  border-color: #7dd3fc;
+}
+
+/* 페이지네이션 */
+.blue .wh-pagination { border-top: 1px solid #7dd3fc; background-color: #e0f2fe; }
+.blue .wh-page-btn {
+  background-color: #38bdf8;
+  border: 1px solid #0284c7;
+  color: #ffffff;
+}
+.blue .wh-page-btn:hover {
+  background-color: #0369a1;
+}
+.blue .wh-page-btn-active {
+  background-color: #0284c7;
+  color: #ffffff;
+  border-color: #0369a1;
+}
+
+/* 모달 */
+.blue .wh-modal-overlay { background-color: rgba(14, 165, 233, 0.3); }
+
+.blue .wh-modal {
+  background-color: #e0f2fe;
+  color: #0c4a6e;
+}
+.blue .wh-modal-header {
+  border-bottom: 1px solid #7dd3fc;
+  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+}
+.blue .wh-modal-title { color: #0c4a6e; }
+.blue .wh-modal-close { color: #075985; }
+.blue .wh-modal-close:hover {
+  background-color: #7dd3fc;
+  color: #0c4a6e;
+}
+
+/* 모달 내 폼 */
+.blue .wh-form-row label { color: #075985; }
+.blue .wh-form-row input,
+.blue .wh-form-row select {
+  background-color: #ffffff;
+  border: 1.5px solid #7dd3fc;
+  color: #0c4a6e;
+}
+.blue .wh-form-row input::placeholder { color: #0284c7; }
+.blue .wh-form-buttons { border-top: 1px solid #7dd3fc; }
+
+.blue .wh-btn-cancel {
+  background-color: #bae6fd;
+  color: #0c4a6e;
+  border: 1.5px solid #7dd3fc;
+}
+.blue .wh-btn-cancel:hover {
+  background-color: #7dd3fc;
+  border-color: #0284c7;
+}
+
+.blue .wh-btn-primary {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(14, 165, 233, 0.25);
+}
+.blue .wh-btn-primary:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+}
+
+/* 수량조절 버튼 */
+.blue .wh-btn.wh-btn-quantity-control {
+  background-color: #bae6fd;
+  color: #0c4a6e;
+  border: 1px solid #7dd3fc;
+}
+.blue .wh-btn.wh-btn-quantity-control:hover {
+  background-color: #0284c7;
+  color: #ffffff;
+}
+
+/* 비디오 */
+.blue .wh-video { background-color: #bae6fd; }
+
+/* ===== Sepia Mode Overrides for Warehouse ===== */
+.sepia .wh-container {
+  background-color: #fdf6e3;
+  color: #3b2f2f;
+}
+
+/* Header */
+.sepia .wh-header {
+  background-color: #fefcf5;
+  border-bottom: 1px solid #e2d9c8;
+}
+.sepia .wh-title { color: #3b2f2f; }
+.sepia .wh-username { color: #5c5040; }
+.sepia .wh-logout-btn,
+.sepia .wh-back-btn {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .wh-logout-btn:hover,
+.sepia .wh-back-btn:hover {
+  background-color: #f5edd7;
+}
+
+/* Sidebar */
+.sepia .wh-sidebar {
+  background-color: #fefcf5;
+  border-right: 1px solid #e2d9c8;
+}
+.sepia .wh-section-title { color: #3b2f2f; }
+.sepia .wh-chart-name { color: #5c5040; }
+.sepia .wh-chart-quantity { color: #3b2f2f; }
+.sepia .wh-progress-bar { background-color: #e2d9c8; }
+.sepia .wh-progress-fill { background-color: #d97706; }
+
+/* Section buttons */
+.sepia .wh-section-blue    { background-color: #fef3c7; color: #92400e; }
+.sepia .wh-section-green   { background-color: #ecfdf5; color: #065f46; }
+.sepia .wh-section-yellow  { background-color: #fff7ed; color: #92400e; }
+.sepia .wh-section-purple  { background-color: #ede9fe; color: #4c1d95; }
+
+/* Filter */
+.sepia .wh-filter-container {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .wh-filter-label { color: #5c5040; }
+.sepia .wh-search-input,
+.sepia .wh-filter-select,
+.sepia .wh-date-input {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .wh-search-input::placeholder,
+.sepia .wh-date-input::placeholder {
+  color: #a68b6a;
+}
+
+/* Stats & table */
+.sepia .wh-summary-stats {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .wh-stat-label { color: #5c5040; }
+
+.sepia .wh-table-container {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .wh-table-title { color: #3b2f2f; }
+.sepia .wh-th { color: #5c5040; }
+.sepia .wh-td { color: #3b2f2f; }
+
+/* Buttons */
+.sepia .wh-btn-primary {
+  background-color: #d97706;
+  color: #fff;
+}
+.sepia .wh-btn-primary:hover {
+  background-color: #b45309;
+}
+.sepia .wh-btn-secondary {
+  background-color: #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .wh-btn-secondary:hover {
+  background-color: #c8bda8;
+}
+
+/* ===== 보강: Sepia Mode 누락 요소 ===== */
+
+/* 메인 */
+.sepia .wh-main { color: #3b2f2f; }
+
+/* Section name/count */
+.sepia .wh-section-name { color: #3b2f2f; }
+.sepia .wh-section-count { color: #5c5040; }
+
+/* Quantity */
+.sepia .wh-quantity { color: #3b2f2f; }
+.sepia .wh-quantity-fill { background-color: #d97706; }
+.sepia .wh-quantity-fill.wh-fill-full { background-color: #16a34a; }
+.sepia .wh-quantity-fill.wh-fill-empty { background-color: #dc2626; }
+.sepia .wh-delivery-badge {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+/* 납품 버튼 */
+.sepia .wh-delivery-btn.wh-delivery-ready {
+  color: #065f46;
+  background-color: #ecfdf5;
+  border-color: #16a34a;
+}
+.sepia .wh-delivery-btn.wh-delivery-ready:hover {
+  background-color: #d1fae5;
+}
+.sepia .wh-delivery-btn.wh-delivery-disabled {
+  color: #9ca3af;
+  background-color: #fefcf5;
+  border-color: #e2d9c8;
+}
+
+/* 페이지네이션 */
+.sepia .wh-pagination { border-top: 1px solid #e2d9c8; background-color: #fefcf5; }
+.sepia .wh-page-btn {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .wh-page-btn:hover {
+  background-color: #d97706;
+  color: #ffffff;
+}
+.sepia .wh-page-btn-active {
+  background-color: #d97706;
+  color: #ffffff;
+  border-color: #b45309;
+}
+
+/* 모달 */
+.sepia .wh-modal {
+  background-color: #fefcf5;
+  color: #3b2f2f;
+}
+.sepia .wh-modal-header {
+  border-bottom: 1px solid #e2d9c8;
+  background: linear-gradient(135deg, #fffaf0 0%, #fdf6e3 100%);
+}
+.sepia .wh-modal-title { color: #3b2f2f; }
+.sepia .wh-modal-close { color: #5c5040; }
+.sepia .wh-modal-close:hover {
+  background-color: #f5edd7;
+  color: #3b2f2f;
+}
+.sepia .wh-modal-content { background-color: #fefcf5; }
+
+/* 폼 */
+.sepia .wh-form-row label { color: #5c5040; }
+.sepia .wh-form-row input,
+.sepia .wh-form-row select {
+  background-color: #fffaf0;
+  border: 1.5px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .wh-form-row input::placeholder { color: #a68b6a; }
+.sepia .wh-form-buttons { border-top: 1px solid #e2d9c8; }
+.sepia .wh-btn-cancel {
+  background-color: #fffaf0;
+  color: #5c5040;
+  border: 1.5px solid #e2d9c8;
+}
+.sepia .wh-btn-cancel:hover {
+  background-color: #f5edd7;
+  border-color: #d1c7b3;
+}
+.sepia .wh-btn-primary {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  color: #ffffff;
+}
+.sepia .wh-btn-primary:hover {
+  background: linear-gradient(135deg, #b45309 0%, #92400e 100%);
+}
+
+/* 수량조절 버튼 */
+.sepia .wh-btn.wh-btn-quantity-control {
+  background-color: #fffaf0;
+  color: #3b2f2f;
+  border: 1px solid #e2d9c8;
+}
+.sepia .wh-btn.wh-btn-quantity-control:hover {
+  background-color: #d97706;
+  color: #ffffff;
+}
+
+/* 비디오 */
+.sepia .wh-video { background-color: #f5edd7; }
+
 /* 하단 바 색 */
 .wh-fill-done {
   background-color: #f97316;  /* 주황색 */
 }
+

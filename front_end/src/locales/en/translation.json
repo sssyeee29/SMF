@@ -43,6 +43,8 @@
   "theme": "Theme",
   "light_mode": "Light Mode",
   "dark_mode": "Dark Mode",
+  "blue_mode": "Blue Mode",
+  "sepia_mode": "Sepia Mode",
 
   "system_info": "System Info",
   "system_version": "System Version",
@@ -137,7 +139,33 @@
   "nav.camera": "Camera",
   "nav.log": "Log",
   "nav.warehouse": "Warehouse",
-  "nav.settings": "Settings"
+  "nav.settings": "Settings",
+
+
+  "dashboard.title": "Dashboard Page",
+  "dashboard.normal_defect_count": "Normal / Defective Count",
+  "dashboard.delivery_status": "Delivery Status",
+  "dashboard.delivery_quantity": "Delivery Quantity",
+  "dashboard.delivery_count": "Delivery Count",
+  "dashboard.defect_cause_analysis": "Defect Cause Analysis",
+  "dashboard.lid_defect": "Lid Defect",
+  "dashboard.daisy_defect": "Daisy Defect",
+  "dashboard.product_delivery_status": "Product Delivery Status",
+  "dashboard.banana": "Banana",
+  "dashboard.strawberry": "Strawberry",
+  "dashboard.melon": "Melon",
+
+  "status.normal": "Normal",
+  "status.defective": "Defective",
+
+  "filter.daily": "Daily",
+  "filter.monthly": "Monthly",
+  "filter.yearly": "Yearly",
+  "filter.none": "No Comparison",
+  "filter.monthly_compare": "Monthly Comparison",
+
+  "common.suffix": "",
+  "common.logout": "Logout"
 
 
 

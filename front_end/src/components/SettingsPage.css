@@ -347,10 +347,7 @@
   color: #9ca3af;
 }
 
-/* 시스템 정보 섹션 */
-.set-system-info {
-  /* 빈 배경 - 시스템 정보는 카드 배경 없음 */
-}
+
 
 .set-system-title {
   font-weight: 500;
@@ -445,4 +442,183 @@
 
 .dark .set-save-button:hover {
   background-color: #2563eb;
+}
+
+
+/* ===== Blue Theme Overrides for SettingsPage ===== */
+.blue .set-container {
+  background-color: #e0f2fe; /* 밝은 파랑 배경 */
+}
+
+/* 상단 헤더 */
+.blue .set-header {
+  background-color: #bfdbfe;
+  border-bottom: 1px solid #93c5fd;
+}
+
+.blue .set-title {
+  color: #1e3a8a;
+}
+
+.blue .set-back-button {
+  color: #1e40af;
+}
+
+.blue .set-back-button:hover {
+  color: #1e3a8a;
+}
+
+.blue .set-username {
+  color: #1e3a8a;
+}
+
+.blue .set-logout-button {
+  background-color: #bfdbfe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.blue .set-logout-button:hover {
+  background-color: #93c5fd;
+}
+
+/* 카드 */
+.blue .set-card {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+
+.blue .set-card-title {
+  color: #1e3a8a;
+}
+
+.blue .set-card-icon {
+  color: #1e40af;
+}
+
+/* 설정 항목 */
+.blue .set-setting-label,
+.blue .set-range-label,
+.blue .set-input-label,
+.blue .set-select-label,
+.blue .set-color-label,
+.blue .set-range-value,
+.blue .set-input-hint,
+.blue .set-color-value {
+  color: #1e3a8a;
+}
+
+/* 입력 요소 */
+.blue .set-text-input {
+  background-color: #eff6ff;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.blue .set-text-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.blue .set-select-input {
+  background-color: #eff6ff;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.blue .set-select-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.blue .set-color-input {
+  border: 1px solid #93c5fd;
+}
+
+/* 시스템 정보 */
+.blue .set-system-title {
+  color: #1e3a8a;
+}
+
+.blue .set-system-label {
+  color: #1e40af;
+}
+
+.blue .set-system-value {
+  color: #1e3a8a;
+}
+
+/* 버튼 */
+.blue .set-cancel-button {
+  background-color: #bfdbfe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.blue .set-cancel-button:hover {
+  background-color: #93c5fd;
+}
+
+.blue .set-save-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.blue .set-save-button:hover {
+  background-color: #2563eb;
+}
+
+/* ===== Sepia Mode Overrides for SettingsPage ===== */
+.sepia .set-container {
+  background-color: #fdf6e3;
+  color: #3b2f2f;
+}
+
+.sepia .set-header {
+  background-color: #fefcf5;
+  border-bottom: 1px solid #e2d9c8;
+}
+.sepia .set-title { color: #3b2f2f; }
+.sepia .set-username { color: #5c5040; }
+
+.sepia .set-logout-button,
+.sepia .set-back-button {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .set-logout-button:hover,
+.sepia .set-back-button:hover {
+  background-color: #f5edd7;
+}
+
+/* 카드 */
+.sepia .set-card {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .set-card-title { color: #3b2f2f; }
+.sepia .set-card-icon { color: #5c5040; }
+.sepia .set-setting-label { color: #5c5040; }
+.sepia .set-range-value { color: #5c5040; }
+
+/* 입력 */
+.sepia .set-text-input,
+.sepia .set-select-input {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .set-text-input:focus,
+.sepia .set-select-input:focus {
+  border-color: #d97706;
+  box-shadow: 0 0 0 1px #d97706;
+}
+
+.sepia .set-save-button {
+  background-color: #d97706;
+  color: #fff;
+}
+.sepia .set-save-button:hover {
+  background-color: #b45309;
 }

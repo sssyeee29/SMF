@@ -134,3 +134,92 @@
   background-color: #374151;
   color: #f9fafb;
 }
+
+/* ===== Blue Mode Overrides for HomePage ===== */
+.blue .home-page {
+  background-color: #e0f2fe; /* 밝은 파랑 배경 */
+  color: #1e3a8a;            /* 기본 텍스트 */
+}
+
+/* 헤더 */
+.blue .home-header {
+  background-color: #bfdbfe; /* header bg */
+  border-bottom: 1px solid #93c5fd;
+}
+
+.blue .home-title {
+  color: #1e3a8a;
+}
+
+.blue .home-username {
+  color: #1e40af;
+}
+
+.blue .home-logout-button {
+  background-color: #bfdbfe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.blue .home-logout-button:hover {
+  background-color: #93c5fd;
+}
+
+/* 메뉴 버튼 */
+.blue .menu-button {
+  background-color: #dbeafe; /* card bg */
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+  box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.25);
+}
+
+.blue .menu-button:hover {
+  background-color: #bfdbfe;
+}
+
+/* 설명 박스 */
+.blue .description-box {
+  background-color: #bfdbfe;
+  color: #1e3a8a;
+}
+
+/* ===== Sepia Mode Overrides for HomePage ===== */
+.sepia .home-page {
+  background-color: #fdf6e3; /* 따뜻한 베이지 배경 */
+  color: #3b2f2f;           /* 기본 텍스트 */
+}
+
+/* 헤더 */
+.sepia .home-header {
+  background-color: #fefcf5;
+  border-bottom: 1px solid #e2d9c8;
+}
+.sepia .home-title { color: #3b2f2f; }
+.sepia .home-username { color: #5c5040; }
+
+.sepia .home-logout-button {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .home-logout-button:hover {
+  background-color: #f5edd7;
+}
+
+/* 메뉴 버튼 */
+.sepia .menu-button {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+  box-shadow: 0 25px 50px -12px rgba(107, 83, 42, 0.25);
+}
+.sepia .menu-button:hover {
+  background-color: #f5edd7;
+}
+
+/* 설명 박스 */
+.sepia .description-box {
+  background-color: #e2d9c8;
+  color: #3b2f2f;
+}
+

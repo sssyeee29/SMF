@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="plant.dev.camera.mapper.SettingMapper">
+
+    <!-- ✅ upsert: id=1 고정으로 관리 -->
+    <insert id="upsertSettings" parameterType="plant.dev.camera.dto.SettingDTO">
+        INSERT INTO settings_tbl (
+            setting_id,
+            confidence_threshold, sensitivity, tolerance,
+            capture_resolution, image_quality,
+            auto_save_results, save_images, save_defect_data,
+            log_storage_path, retention_period,
+            theme, language
+        ) VALUES (
+                     1,
+                     #{confidenceThreshold}, #{sensitivity}, #{tolerance},
+                     #{captureResolution}, #{imageQuality},
+                     #{autoSaveResults}, #{saveImages}, #{saveDefectData},
+                     #{logStoragePath}, #{retentionPeriod},
+                     #{theme}, #{language}
+                 )
+            ON DUPLICATE KEY UPDATE
+                                 confidence_threshold = VALUES(confidence_threshold),
+                                 sensitivity = VALUES(sensitivity),
+                                 tolerance = VALUES(tolerance),
+                                 capture_resolution = VALUES(capture_resolution),
+                                 image_quality = VALUES(image_quality),
+                                 auto_save_results = VALUES(auto_save_results),
+                                 save_images = VALUES(save_images),
+                                 save_defect_data = VALUES(save_defect_data),
+                                 log_storage_path = VALUES(log_storage_path),
+                                 retention_period = VALUES(retention_period),
+                                 theme = VALUES(theme),
+                                 language = VALUES(language),
+                                 updated_at = CURRENT_TIMESTAMP
+    </insert>
+
+    <select id="getSettings" resultType="plant.dev.camera.dto.SettingDTO">
+        SELECT
+            setting_id,
+            confidence_threshold,
+            sensitivity,
+            tolerance,
+            capture_resolution,
+            image_quality,
+            auto_save_results,
+            save_images,
+            save_defect_data,
+            log_storage_path,
+            retention_period,
+            theme,
+            language,
+            updated_at
+        FROM settings_tbl
+        WHERE setting_id = 1
+    </select>
+
+</mapper>

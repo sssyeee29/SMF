@@ -69,3 +69,122 @@
 .signup-link:hover {
     color: #2563eb;
 }
+
+/* ===== Dark Mode Overrides for LoginPage ===== */
+.dark .login-page {
+  background-color: #111827; /* 진한 다크 배경 */
+  color: #f9fafb;
+}
+
+.dark .login-container {
+  background-color: #1f2937;
+  color: #f9fafb;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+              0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+.dark .login-input {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.dark .login-input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+}
+
+.dark .login-button {
+  background-color: #2563eb;
+}
+
+.dark .login-button:hover {
+  background-color: #1d4ed8;
+}
+
+.dark .signup-link {
+  color: #60a5fa;
+}
+
+.dark .signup-link:hover {
+  color: #3b82f6;
+}
+
+/* ===== Blue Mode Overrides for LoginPage ===== */
+.blue .login-page {
+  background-color: #e0f2fe; /* 밝은 파랑 배경 */
+  color: #1e3a8a;
+}
+
+.blue .login-container {
+  background-color: #dbeafe; /* 카드 배경 */
+  color: #1e3a8a;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3),
+              0 4px 6px -2px rgba(59, 130, 246, 0.2);
+}
+
+.blue .login-input {
+  background-color: #eff6ff;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.blue .login-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.blue .login-button {
+  background-color: #3b82f6; /* primary */
+  color: #ffffff;
+}
+
+.blue .login-button:hover {
+  background-color: #2563eb;
+}
+
+.blue .signup-link {
+  color: #1e40af;
+}
+
+.blue .signup-link:hover {
+  color: #1e3a8a;
+}
+
+/* ===== Sepia Mode Overrides for LoginPage ===== */
+.sepia .login-page {
+  background-color: #fdf6e3;
+  color: #3b2f2f;
+}
+
+.sepia .login-container {
+  background-color: #fefcf5;
+  color: #3b2f2f;
+  box-shadow: 0 10px 15px -3px rgba(107, 83, 42, 0.2),
+              0 4px 6px -2px rgba(107, 83, 42, 0.15);
+}
+
+.sepia .login-input {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .login-input:focus {
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.3);
+}
+
+.sepia .login-button {
+  background-color: #d97706;
+  color: #fff;
+}
+.sepia .login-button:hover {
+  background-color: #b45309;
+}
+
+.sepia .signup-link {
+  color: #b45309;
+}
+.sepia .signup-link:hover {
+  color: #92400e;
+}

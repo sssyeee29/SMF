@@ -44,6 +44,8 @@
   "theme": "テーマ",
   "light_mode": "ライトモード",
   "dark_mode": "ダークモード",
+  "blue_mode": "ブルーモード",
+  "sepia_mode": "セピアモード",
 
   "system_info": "システム情報",
   "system_version": "システムバージョン",
@@ -138,5 +140,30 @@
   "nav.camera": "カメラ",
   "nav.log": "ログ",
   "nav.warehouse": "倉庫",
-  "nav.settings": "設定"
+  "nav.settings": "設定",
+
+  "dashboard.title": "ダッシュボードページ",
+  "dashboard.normal_defect_count": "正常 / 不良 件数",
+  "dashboard.delivery_status": "納品状況",
+  "dashboard.delivery_quantity": "納品数量",
+  "dashboard.delivery_count": "納品件数",
+  "dashboard.defect_cause_analysis": "不良原因分析",
+  "dashboard.lid_defect": "キャップ不良",
+  "dashboard.daisy_defect": "デイジー不良",
+  "dashboard.product_delivery_status": "製品別納品状況",
+  "dashboard.banana": "バナナ",
+  "dashboard.strawberry": "イチゴ",
+  "dashboard.melon": "メロン",
+
+  "status.normal": "正常",
+  "status.defective": "不良",
+
+  "filter.daily": "日別",
+  "filter.monthly": "月別",
+  "filter.yearly": "年別",
+  "filter.none": "比較なし",
+  "filter.monthly_compare": "月別比較",
+
+  "common.suffix": "様",
+  "common.logout": "ログアウト"
 }

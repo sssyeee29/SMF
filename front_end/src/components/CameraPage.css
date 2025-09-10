@@ -285,6 +285,181 @@
 
 
 
+/* ===== CameraPage Blue Theme (SettingsPage Blue 팔레트 맞춤) ===== */
+
+.blue .camera-page {
+  background-color: #e0f2fe; /* page bg */
+  color: #1e3a8a;            /* main text */
+}
+
+/* 헤더 */
+.blue .camera-header {
+  background-color: #bfdbfe;      /* header bg */
+  border-bottom: 1px solid #93c5fd;
+}
+.blue .header-title,
+.blue .username {
+  color: #1e3a8a;
+}
+.blue .back-button,
+.blue .logout-button {
+  background-color: #bfdbfe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+.blue .back-button:hover,
+.blue .logout-button:hover {
+  background-color: #93c5fd;
+}
+
+/* 본문 컨테이너/카드 */
+.blue .camera-container {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+.blue .camera-title {
+  color: #1e3a8a;
+}
+
+/* 비디오 영역 */
+.blue .video-container {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+.blue .camera-off-placeholder {
+  background-color: #bfdbfe;
+  border: 1px dashed #93c5fd;
+}
+.blue .camera-off-text {
+  color: #1e3a8a;
+}
+
+/* 입력류 (IP카메라 URL, 장치 선택 등) */
+.blue .wifi-input,
+.blue .device-select {
+  background-color: #eff6ff;      /* input bg */
+  border: 1px solid #93c5fd;      /* input border */
+  color: #1e3a8a;                 /* input text */
+}
+.blue .wifi-input:focus,
+.blue .device-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+/* 카메라 컨트롤 버튼들 */
+.blue .btn-camera-on {
+  background-color: #3b82f6;  /* primary */
+  color: #ffffff;
+  border: none;
+}
+.blue .btn-camera-on:hover {
+  background-color: #2563eb;
+}
+
+.blue .btn-camera-off {
+  background-color: #bfdbfe;  /* neutral */
+  color: #1e3a8a;
+  border: 1px solid #93c5fd;
+}
+.blue .btn-camera-off:hover {
+  background-color: #93c5fd;
+}
+
+/* 보조 텍스트/아이콘 */
+.blue .camera-icon {
+  color: #1e40af;
+}
+
+/* 캔버스(숨김용) 배경 대비 */
+.blue .hidden-canvas {
+  background-color: #e0f2fe;
+}
+
+/* ===== Sepia Mode Overrides for CameraPage ===== */
+/* ===== Sepia Mode Overrides for CameraPage (SettingsPage Sepia 팔레트 맞춤) ===== */
+.sepia .camera-page {
+  background-color: #fdf6e3; /* page bg */
+  color: #3b2f2f;            /* main text */
+}
+
+/* 헤더 */
+.sepia .camera-header {
+  background-color: #fefcf5;      /* header bg */
+  border-bottom: 1px solid #e2d9c8;
+}
+.sepia .header-title,
+.sepia .username { color: #3b2f2f; }
+.sepia .back-button,
+.sepia .logout-button {
+  background-color: #fffaf0;      /* neutral btn */
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .back-button:hover,
+.sepia .logout-button:hover {
+  background-color: #f5edd7;
+}
+
+/* 본문 컨테이너/카드 */
+.sepia .camera-container {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .camera-title { color: #3b2f2f; }
+
+/* 비디오 영역 */
+.sepia .video-container {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .camera-off-placeholder {
+  background-color: #fffaf0;
+}
+.sepia .camera-off-text { color: #5c5040; }
+
+/* 입력류 */
+.sepia .wifi-input,
+.sepia .device-select {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .wifi-input:focus,
+.sepia .device-select:focus {
+  outline: none;
+  border-color: #d97706;
+  box-shadow: 0 0 0 1px #d97706;
+}
+
+/* 카메라 컨트롤 버튼 */
+.sepia .btn-camera-on {
+  background-color: #d97706;  /* accent */
+  color: #ffffff;
+  border: none;
+}
+.sepia .btn-camera-on:hover { background-color: #b45309; }
+
+.sepia .btn-camera-off {
+  background-color: #e2d9c8;  /* neutral */
+  color: #3b2f2f;
+  border: 1px solid #d6cdbb;
+}
+.sepia .btn-camera-off:hover { background-color: #c8bda8; }
+
+/* 보조 텍스트/아이콘 */
+.sepia .camera-icon {
+  color: #5c5040;
+}
+
+/* 캔버스(숨김용) 배경 */
+.sepia .hidden-canvas {
+  background-color: #fdf6e3;
+}
+
+
+
 
 
 
