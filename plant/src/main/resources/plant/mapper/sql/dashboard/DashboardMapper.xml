@@ -8,94 +8,114 @@
     <!-- G1: 정상/불량 건수 (불량률 포함) -->
     <select id="selectQualityTrend" resultType="plant.dev.dashboard.dto.DashboardDTO$QualityTrendRow">
         SELECT
-            DATE_FORMAT(
-                    inspect_date,
-                    CASE #{periodType}
-                        WHEN 'week'  THEN '%x-W%v'
-                        WHEN 'month' THEN '%Y-%m'
-                        WHEN 'year'  THEN '%Y'
-                        END
-            ) AS period,
-            SUM(CASE WHEN UPPER(result) = 'NORMAL' THEN 1 ELSE 0 END) AS normal,
-            SUM(CASE WHEN UPPER(result) = 'DEFECT' THEN 1 ELSE 0 END) AS defect,
-            ROUND(
-                    SUM(CASE WHEN UPPER(result) = 'DEFECT' THEN 1 ELSE 0 END) * 100.0
-                        / NULLIF(COUNT(*), 0),
-                    2
-            ) AS defectRatePct
-        FROM inspection_tbl
+        CASE #{periodType}
+        WHEN 'week'  THEN CONCAT(LEFT(YEARWEEK(input_date, 3), 4), '-W', LPAD(MOD(YEARWEEK(input_date, 3), 100), 2, '0'))
+        WHEN 'month' THEN DATE_FORMAT(input_date, '%Y-%m')
+        WHEN 'year'  THEN DATE_FORMAT(input_date, '%Y')
+        END AS period,
+        SUM(CASE WHEN UPPER(product_result) = 'NORMAL' THEN 1 ELSE 0 END) AS normal,
+        SUM(CASE WHEN UPPER(product_result) = 'DEFECT' THEN 1 ELSE 0 END) AS defect,
+        ROUND(
+        SUM(CASE WHEN UPPER(product_result) = 'DEFECT' THEN 1 ELSE 0 END) * 100.0 / NULLIF(COUNT(*), 0),
+        2
+        ) AS defectRatePct
+        FROM detection_log_tbl
+        <where>
+            <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                input_date &gt;= #{startDate}
+                AND input_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+            </if>
+        </where>
         GROUP BY period
         ORDER BY period;
     </select>
+
 
     <!-- G2: 납품 현황 (납품 건수 + 납품 수량) -->
     <select id="selectDeliveryStatus" resultType="plant.dev.dashboard.dto.DashboardDTO$DeliveryComboRow">
         SELECT
-            DATE_FORMAT(
-                    out_date,
-                    CASE #{periodType}
-                        WHEN 'week'  THEN '%x-W%v'
-                        WHEN 'month' THEN '%Y-%m'
-                        WHEN 'year'  THEN '%Y'
-                        END
-            ) AS period,
-            COUNT(*)      AS deliveredCount,
-            SUM(quantity) AS deliveredQty
+        CASE #{periodType}
+        WHEN 'week'  THEN CONCAT(LEFT(YEARWEEK(out_date, 3), 4), '-W', LPAD(MOD(YEARWEEK(out_date, 3), 100), 2, '0'))
+        WHEN 'month' THEN DATE_FORMAT(out_date, '%Y-%m')
+        WHEN 'year'  THEN DATE_FORMAT(out_date, '%Y')
+        END AS period,
+        COUNT(*)      AS deliveredCount,
+        SUM(quantity) AS deliveredQty
         FROM inventory_tbl
         WHERE out_date IS NOT NULL
-          AND UPPER(delivery_status) = 'DONE'
+        AND UPPER(delivery_status) = 'DONE'
+        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+            AND out_date &gt;= #{startDate}
+            AND out_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+        </if>
         GROUP BY period
         ORDER BY period;
     </select>
 
+
     <!-- G3: 불량 원인 분석 -->
     <select id="selectDefectCause" resultType="plant.dev.dashboard.dto.DashboardDTO$DefectCauseRow">
         SELECT
-            t.period,
-            t.causeCode,
-            t.defectCount,
-            ROUND(
-                    t.defectCount * 100.0
-                        / NULLIF(SUM(t.defectCount) OVER (PARTITION BY t.period), 0),
-                    2
-            ) AS sharePct
+        c.period,
+        c.causeCode,
+        c.defectCount,
+        ROUND(c.defectCount * 100.0 / NULLIF(t.totalCount, 0), 2) AS sharePct
         FROM (
-                 SELECT
-                     DATE_FORMAT(
-                             inspect_date,
-                             CASE #{periodType}
-                                 WHEN 'week'  THEN '%x-W%v'
-                                 WHEN 'month' THEN '%Y-%m'
-                                 WHEN 'year'  THEN '%Y'
-                                 END
-                     ) AS period,
-                     defect_cause AS causeCode,
-                     COUNT(*)     AS defectCount
-                 FROM inspection_tbl
-                 WHERE UPPER(result) = 'DEFECT'
-                 GROUP BY period, defect_cause
-             ) t
-        ORDER BY t.period, t.causeCode;
+        SELECT
+        CASE #{periodType}
+        WHEN 'week'  THEN CONCAT(LEFT(YEARWEEK(input_date, 3), 4), '-W', LPAD(MOD(YEARWEEK(input_date, 3), 100), 2, '0'))
+        WHEN 'month' THEN DATE_FORMAT(input_date, '%Y-%m')
+        WHEN 'year'  THEN DATE_FORMAT(input_date, '%Y')
+        END AS period,
+        defect_type AS causeCode,
+        COUNT(*)    AS defectCount
+        FROM detection_log_tbl
+        WHERE UPPER(product_result) = 'DEFECT'
+        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+            AND input_date &gt;= #{startDate}
+            AND input_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+        </if>
+        GROUP BY period, defect_type
+        ) c
+        JOIN (
+        SELECT
+        CASE #{periodType}
+        WHEN 'week'  THEN CONCAT(LEFT(YEARWEEK(input_date, 3), 4), '-W', LPAD(MOD(YEARWEEK(input_date, 3), 100), 2, '0'))
+        WHEN 'month' THEN DATE_FORMAT(input_date, '%Y-%m')
+        WHEN 'year'  THEN DATE_FORMAT(input_date, '%Y')
+        END AS period,
+        COUNT(*) AS totalCount
+        FROM detection_log_tbl
+        WHERE UPPER(product_result) = 'DEFECT'
+        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+            AND input_date &gt;= #{startDate}
+            AND input_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+        </if>
+        GROUP BY period
+        ) t ON c.period = t.period
+        ORDER BY c.period, c.causeCode;
     </select>
+
 
     <!-- G4: 제품별 납품 현황 -->
     <select id="selectProductDelivery" resultType="plant.dev.dashboard.dto.DashboardDTO$ProductDeliveryRow">
         SELECT
-            DATE_FORMAT(
-                    out_date,
-                    CASE #{periodType}
-                        WHEN 'week'  THEN '%x-W%v'
-                        WHEN 'month' THEN '%Y-%m'
-                        WHEN 'year'  THEN '%Y'
-                        END
-            ) AS period,
-            item_name  AS productName,
-            item_code  AS productCode,
-            COUNT(*)   AS deliveredCount,
-            SUM(quantity) AS deliveredQty
+        CASE #{periodType}
+        WHEN 'week'  THEN CONCAT(LEFT(YEARWEEK(out_date, 3), 4), '-W', LPAD(MOD(YEARWEEK(out_date, 3), 100), 2, '0'))
+        WHEN 'month' THEN DATE_FORMAT(out_date, '%Y-%m')
+        WHEN 'year'  THEN DATE_FORMAT(out_date, '%Y')
+        END AS period,
+        item_name  AS productName,
+        item_code  AS productCode,
+        COUNT(*)   AS deliveredCount,
+        SUM(quantity) AS deliveredQty
         FROM inventory_tbl
         WHERE out_date IS NOT NULL
-          AND UPPER(delivery_status) = 'DELIVERED'
+        AND UPPER(delivery_status) = 'DONE'
+        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+            AND out_date &gt;= #{startDate}
+            AND out_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+        </if>
         GROUP BY period, item_code, item_name
         ORDER BY period, item_code;
     </select>
