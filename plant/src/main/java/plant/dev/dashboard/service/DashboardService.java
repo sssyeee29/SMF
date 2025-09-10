@@ -19,14 +19,14 @@ import java.util.List;
 public interface DashboardService {
 
     /** G1: 정상/불량 건수(불량률 포함) */
-    List<QualityTrendRow> getQualityTrend(String periodType);
+    List<QualityTrendRow> getQualityTrend(String periodType, String startDate, String endDate);
 
     /** G2: 납품 현황(건수 + 수량) */
-    List<DeliveryComboRow> getDeliveryStatus(String periodType);
+    List<DeliveryComboRow> getDeliveryStatus(String periodType, String startDate, String endDate);
 
     /** G3: 불량 원인 분석(뚜껑 손상 vs 몸통 찌그러짐) */
-    List<DefectCauseRow> getDefectCause(String periodType);
+    List<DefectCauseRow> getDefectCause(String periodType, String startDate, String endDate);
 
     /** G4: 제품별 납품 현황(바나나/딸기/메로나) */
-    List<ProductDeliveryRow> getProductDelivery(String periodType);
+    List<ProductDeliveryRow> getProductDelivery(String periodType, String startDate, String endDate);
 }
