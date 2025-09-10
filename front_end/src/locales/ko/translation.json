@@ -43,6 +43,9 @@
   "theme": "테마",
   "light_mode": "라이트 모드",
   "dark_mode": "다크 모드",
+  "blue_mode": "블루 모드",
+  "sepia_mode": "세피아 모드",
+
 
   "system_info": "시스템 정보",
   "system_version": "시스템 버전",
@@ -139,6 +142,32 @@
   "nav.camera": "카메라",
   "nav.log": "로그",
   "nav.warehouse": "창고",
-  "nav.settings": "설정"
+  "nav.settings": "설정",
+
+
+  "dashboard.title": "대시보드 페이지",
+  "dashboard.normal_defect_count": "정상/불량 건수",
+  "dashboard.delivery_status": "납품 현황",
+  "dashboard.delivery_quantity": "납품 수량",
+  "dashboard.delivery_count": "납품 건수",
+  "dashboard.defect_cause_analysis": "불량 원인 분석",
+  "dashboard.lid_defect": "뚜껑 불량",
+  "dashboard.daisy_defect": "데이지 불량",
+  "dashboard.product_delivery_status": "제품별 납품 현황",
+  "dashboard.banana": "바나나",
+  "dashboard.strawberry": "딸기",
+  "dashboard.melon": "멜론",
+
+  "status.normal": "정상",
+  "status.defective": "불량",
+
+  "filter.daily": "주별",
+  "filter.monthly": "월별",
+  "filter.yearly": "년별",
+  "filter.none": "비교없음",
+  "filter.monthly_compare": "월별비교",
+
+  "common.suffix": "님",
+  "common.logout": "로그아웃"
   
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Cog, Save, Bell, Image, CheckSquare } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -8,10 +8,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const SettingsPage = ({ setCurrentPage, username, handleLogout }) => {
   const { t } = useTranslation();
-
-    // ✅ 전역 테마 사용 (ThemeContext)
   const { theme, setTheme } = useTheme();
-
   const { language, setLanguage } = useLanguage();
 
   const [settings, setSettings] = useState({
@@ -30,37 +27,82 @@ const SettingsPage = ({ setCurrentPage, username, handleLogout }) => {
     autoSaveResults: true,
     saveImages: true,
     saveDefectData: true,
-    logStoragePath: '/logs',
+    logStoragePath: 'C:/ingest_frames',
     retentionPeriod: 30,
     language: 'korean',
     theme: 'light',
     systemNotifications: true,
-    emailNotifications: false
+    emailNotifications: false,
   });
+
+  // ✅ 페이지 진입 시 DB에 저장된 설정 불러오기
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/pi/settings');
+        if (!res.ok) throw new Error('Failed to load settings');
+        const data = await res.json();
+        if (data.ok && data.data) {
+          const s = data.data;
+          setSettings(prev => ({
+            ...prev,
+            confidenceThreshold: Math.round((s.confidenceThreshold || 0.85) * 100),
+            detectionSensitivity: Math.round((s.sensitivity || 0.7) * 100),
+            allowableTolerance: Math.round((s.tolerance || 0.05) * 100),
+            captureResolution: s.captureResolution || 'high',
+            imageQuality: s.imageQuality || 80,
+            autoSaveResults: s.autoSaveResults ?? true,
+            saveImages: s.saveImages ?? true,
+            saveDefectData: s.saveDefectData ?? true,
+            logStoragePath: s.logStoragePath || 'C:/ingest_frames',
+            retentionPeriod: s.retentionPeriod || 30,
+          }));
+        }
+      } catch (err) {
+        console.error('[ERROR] 설정 불러오기 실패:', err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const handleSettingChange = (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }));
   };
 
+  // ✅ 저장 버튼 → Spring Boot로 전송 (Spring Boot가 Flask까지 중계)
   const handleSave = async () => {
     try {
-      const response = await fetch('/api/pi/settings', {
+      const res = await fetch('/api/pi/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          confidence: settings.confidenceThreshold / 100,
+          confidenceThreshold: settings.confidenceThreshold / 100,
           sensitivity: settings.detectionSensitivity / 100,
-          tolerance: settings.allowableTolerance / 100
-        })
+          tolerance: settings.allowableTolerance / 100,
+          captureResolution: settings.captureResolution,
+          imageQuality: settings.imageQuality,
+          autoSaveResults: settings.autoSaveResults,
+          saveImages: settings.saveImages,
+          saveDefectData: settings.saveDefectData,
+          logStoragePath: settings.logStoragePath,
+          retentionPeriod: settings.retentionPeriod,
+          theme,
+          language,
+        }),
       });
 
-      const data = await response.json();
-      alert(data.ok ? t('save_success') : t('save_fail') + data.msg);
+      const data = await res.json();
+      if (data.ok) {
+        alert(t('save_success'));
+      } else {
+        alert(t('save_fail') + (data.msg || ''));
+      }
     } catch (err) {
       console.error(err);
       alert(t('server_error'));
     }
   };
+
 
   return (
     <div className="set-container">
@@ -332,6 +374,8 @@ const SettingsPage = ({ setCurrentPage, username, handleLogout }) => {
                   >
                     <option value="light">{t('light_mode')}</option>
                     <option value="dark">{t('dark_mode')}</option>
+                    <option value="blue">{t('blue_mode')}</option>     {/* 새 테마 */}
+                    <option value="sepia">{t('sepia_mode')}</option>   {/* 새 테마 */}
                   </select>
                 </div>
               </div>

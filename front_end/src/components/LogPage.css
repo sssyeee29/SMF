@@ -740,6 +740,406 @@
   background-color: #4b5563;
 }
 
+/* ===== Blue Mode Overrides for LogPage ===== */
+
+/* 메인 컨테이너 */
+.blue .log-main-container {
+  background-color: #e0f2fe;
+  color: #1e3a8a;
+}
+
+/* Header */
+.blue .log-header {
+  background-color: #bfdbfe;
+  border-bottom: 1px solid #93c5fd;
+}
+
+.blue .log-title {
+  color: #1e3a8a;
+}
+
+.blue .log-username {
+  color: #1e40af;
+}
+
+.blue .log-back-button,
+.blue .log-logout-button {
+  background-color: #bfdbfe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.blue .log-back-button:hover,
+.blue .log-logout-button:hover {
+  background-color: #93c5fd;
+}
+
+/* Stats card */
+.blue .log-stats-card {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+
+.blue .log-stats-header {
+  border-bottom: 1px solid #93c5fd;
+}
+
+.blue .log-stats-title {
+  color: #1e3a8a;
+}
+
+.blue .log-stat-label {
+  color: #1e40af;
+}
+
+.blue .log-progress-bar {
+  background-color: #bfdbfe;
+}
+
+.blue .log-stat-number.log-total {
+  color: #1e40af;
+}
+
+/* Table */
+.blue .log-table-card {
+  background-color: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+
+.blue .log-table-header {
+  border-bottom: 1px solid #93c5fd;
+}
+
+.blue .log-table-title {
+  color: #1e3a8a;
+}
+
+.blue .log-table-head {
+  background-color: #bfdbfe;
+}
+
+.blue .log-table-header-cell {
+  color: #1e40af;
+  border-bottom: 1px solid #93c5fd;
+}
+
+.blue .log-table-body {
+  background-color: #dbeafe;
+}
+
+.blue .log-table-row {
+  border-bottom: 1px solid #93c5fd;
+}
+
+.blue .log-table-row:hover {
+  background-color: #bfdbfe;
+}
+
+.blue .log-table-cell {
+  color: #1e3a8a;
+}
+
+/* Status badges */
+.blue .log-status-good {
+  background-color: #bbf7d0;
+  color: #166534;
+}
+
+.blue .log-status-defective {
+  background-color: #fecaca;
+  color: #991b1b;
+}
+
+.blue .log-status-pending {
+  background-color: #fde68a;
+  color: #92400e;
+}
+
+.blue .log-export-button,
+.blue .log-page-button {
+  background-color: #bfdbfe;
+  border: 1px solid #93c5fd;
+  color: #1e3a8a;
+}
+
+.blue .log-export-button:hover,
+.blue .log-page-button:hover:not(:disabled) {
+  background-color: #93c5fd;
+}
+
+/* Active page button (accent) */
+.blue .log-page-button.log-active {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+.blue .log-page-button.log-active:hover {
+  background-color: #2563eb;
+}
+
+.blue .log-detail-button {
+  color: #1e40af;
+}
+.blue .log-detail-button:hover {
+  color: #1e3a8a;
+}
+
+/* Modal */
+.blue .log-modal-content {
+  background-color: #dbeafe;
+  color: #1e3a8a;
+}
+
+.blue .log-modal-header,
+.blue .log-modal-footer {
+  border-color: #93c5fd;
+}
+
+.blue .log-modal-title {
+  color: #1e3a8a;
+}
+
+.blue .log-close-button {
+  color: #1e40af;
+}
+
+.blue .log-close-button:hover {
+  color: #1e3a8a;
+}
+
+.blue .log-section-title {
+  color: #1e40af;
+}
+
+.blue .log-info-label {
+  color: #1e40af;
+}
+
+.blue .log-info-value {
+  color: #1e3a8a;
+}
+
+.blue .log-image-container {
+  background-color: #bfdbfe;
+  border: 1px solid #93c5fd;
+}
+
+.blue .log-image-placeholder {
+  background-color: #e0f2fe;
+  color: #1e40af;
+}
+
+/* 로딩/빈 상태 */
+.blue .log-loading,
+.blue .log-empty-state,
+.blue .log-empty-state p {
+  color: #1e40af;
+}
+
+.blue .log-empty-state h3 {
+  color: #1e3a8a;
+}
+
+/* Scrollbars */
+.blue .log-table-wrapper::-webkit-scrollbar-track,
+.blue .log-modal-body::-webkit-scrollbar-track {
+  background: #e0f2fe;
+}
+
+.blue .log-table-wrapper::-webkit-scrollbar-thumb,
+.blue .log-modal-body::-webkit-scrollbar-thumb {
+  background: #93c5fd;
+}
+
+.blue .log-table-wrapper::-webkit-scrollbar-thumb:hover,
+.blue .log-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #60a5fa;
+}
+
+/* Close modal button (footer) */
+.blue .log-close-modal-button {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+}
+
+.blue .log-close-modal-button:hover {
+  background-color: #2563eb;
+}
+
+/* ===== Sepia Mode Overrides for LogPage ===== */
+.sepia .log-main-container {
+  background-color: #fdf6e3;
+  color: #3b2f2f;
+}
+
+/* Header */
+.sepia .log-header {
+  background-color: #fefcf5;
+  border-bottom: 1px solid #e2d9c8;
+}
+.sepia .log-title { color: #3b2f2f; }
+.sepia .log-username { color: #5c5040; }
+
+.sepia .log-back-button,
+.sepia .log-logout-button {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .log-back-button:hover,
+.sepia .log-logout-button:hover {
+  background-color: #f5edd7;
+}
+
+/* Stats */
+.sepia .log-stats-card {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .log-stats-title { color: #3b2f2f; }
+.sepia .log-stat-label { color: #5c5040; }
+.sepia .log-progress-bar { background-color: #e2d9c8; }
+
+/* Table */
+.sepia .log-table-card {
+  background-color: #fefcf5;
+  border: 1px solid #e2d9c8;
+}
+.sepia .log-table-title { color: #3b2f2f; }
+.sepia .log-table-header-cell { color: #5c5040; }
+.sepia .log-table-cell { color: #3b2f2f; }
+.sepia .log-table-row:hover { background-color: #f5edd7; }
+
+/* Status badges */
+.sepia .log-status-good {
+  background-color: #f0fdf4;
+  color: #065f46;
+}
+.sepia .log-status-defective {
+  background-color: #fef2f2;
+  color: #7f1d1d;
+}
+.sepia .log-status-pending {
+  background-color: #fff7ed;
+  color: #92400e;
+}
+
+/* Pagination */
+.sepia .log-page-button {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .log-page-button:hover {
+  background-color: #d97706;
+  color: #fff;
+}
+.sepia .log-page-button.log-active {
+  background-color: #d97706;
+  border-color: #d97706;
+  color: #fff;
+}
+
+/* Modal */
+.sepia .log-modal-content {
+  background-color: #fefcf5;
+  color: #3b2f2f;
+}
+.sepia .log-modal-title { color: #3b2f2f; }
+.sepia .log-close-button { color: #5c5040; }
+.sepia .log-close-button:hover { color: #3b2f2f; }
+.sepia .log-section-title { color: #5c5040; }
+.sepia .log-info-label { color: #5c5040; }
+.sepia .log-info-value { color: #3b2f2f; }
+
+/* ===== Sepia Mode - 누락된 요소 보강 ===== */
+
+/* Export 버튼 */
+.sepia .log-export-button {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .log-export-button:hover {
+  background-color: #d97706;
+  color: #fff;
+  border-color: #d97706;
+}
+
+/* Detail 버튼 */
+.sepia .log-detail-button {
+  color: #b45309;
+  background: none;
+  border: none;
+  text-decoration: underline;
+}
+.sepia .log-detail-button:hover {
+  color: #92400e;
+}
+
+/* Close Modal Button (footer) */
+.sepia .log-close-modal-button {
+  background-color: #fffaf0;
+  border: 1px solid #e2d9c8;
+  color: #3b2f2f;
+}
+.sepia .log-close-modal-button:hover {
+  background-color: #d97706;
+  color: #fff;
+  border-color: #d97706;
+}
+
+/* 라이트박스 */
+.sepia .log-lightbox-overlay {
+  background-color: rgba(59, 47, 47, 0.85); /* 기본 검정보다 부드러운 세피아 톤 */
+}
+.sepia .log-lightbox-image {
+  border: 2px solid #e2d9c8;
+  background-color: #fefcf5;
+}
+
+/* 로딩/빈 상태 */
+.sepia .log-loading,
+.sepia .log-empty-state,
+.sepia .log-empty-state p {
+  color: #5c5040;
+}
+.sepia .log-empty-state h3 {
+  color: #3b2f2f;
+}
+
+/* 스크롤바 */
+.sepia .log-table-wrapper::-webkit-scrollbar-track,
+.sepia .log-modal-body::-webkit-scrollbar-track {
+  background: #fefcf5;
+}
+.sepia .log-table-wrapper::-webkit-scrollbar-thumb,
+.sepia .log-modal-body::-webkit-scrollbar-thumb {
+  background: #e2d9c8;
+}
+.sepia .log-table-wrapper::-webkit-scrollbar-thumb:hover,
+.sepia .log-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #d6c9b4;
+}
+
+/* 접근성 포커스 아웃라인 */
+.sepia .log-back-button:focus,
+.sepia .log-logout-button:focus,
+.sepia .log-export-button:focus,
+.sepia .log-detail-button:focus,
+.sepia .log-page-button:focus,
+.sepia .log-close-button:focus,
+.sepia .log-close-modal-button:focus {
+  outline: 2px solid #d97706;
+  outline-offset: 2px;
+}
+
+
+
+
+
 
 /* 반응형 디자인 */
 @media (max-width: 1024px) {
