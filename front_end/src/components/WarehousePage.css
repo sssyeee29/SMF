@@ -1163,4 +1163,26 @@
 /* 비디오 */
 .dark .wh-video { background-color: #111827; }
 
+/* 납품 완료 뱃지 스타일 */
+.wh-status-done {
+  display: inline-block;
+  background-color: #f97316;  /* 초록색 */
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 12px;        /* pill 모양 */
+  margin-left: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
 
+/* 글자 색 */
+.wh-quantity-done {
+  color: #f97316;  /* Tailwind 주황색 계열 */
+  font-weight: bold;
+}
+
+/* 하단 바 색 */
+.wh-fill-done {
+  background-color: #f97316;  /* 주황색 */
+}

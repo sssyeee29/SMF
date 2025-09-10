@@ -52,23 +52,7 @@ class AuthControllerTest {
     /**
      * 각 테스트가 실행되기 전에 테스트용 사용자 데이터를 DB에 저장합니다.
      */
-    @BeforeEach
-    void setUp() {
-        // 기존에 같은 ID의 사용자가 있을 경우를 대비해 삭제
-        userRepository.deleteById(TEST_USER_ID);
 
-        // 테스트에 사용할 새로운 사용자 생성
-        User testUser = new User(
-                TEST_USER_ID,
-                passwordEncoder.encode(TEST_USER_PASSWORD), // 비밀번호는 반드시 암호화하여 저장
-                "테스트유저",
-                "Y",
-                "ROLE_USER", // 사용자 역할
-                null,
-                null
-        );
-        userRepository.save(testUser);
-    }
 
     @Test
     @DisplayName("로그인 성공 테스트")

@@ -104,7 +104,7 @@
 
     <!-- 한도 변경 -->
     <!-- params: id, limit -->
-    <update id="updateLimit">
+    <update id="updateLimit" parameterType="map">
         UPDATE inventory_tbl
         SET limit_qty = #{limit}
         WHERE item_id = #{id}
@@ -126,5 +126,66 @@
     <delete id="deleteItem" parameterType="long">
         DELETE FROM inventory_tbl WHERE item_id = #{id}
     </delete>
+
+    <!-- 위치 기준 READY 수량 합 -->
+    <!-- params: loc -->
+    <select id="sumReadyQtyAtLocation" parameterType="map" resultType="int">
+        SELECT COALESCE(SUM(quantity), 0)
+        FROM inventory_tbl
+        WHERE location = #{loc}
+          AND UPPER(delivery_status) = 'READY'
+    </select>
+
+    <!-- 상태 DONE 처리 -->
+    <!-- params: id, outDate -->
+    <update id="markDone" parameterType="map">
+        UPDATE inventory_tbl
+        SET delivery_status = 'DONE',
+            out_date = #{outDate}
+        WHERE item_id = #{id}
+    </update>
+
+    <!-- 병합 대상 찾기 (같은 위치, 같은 코드, READY 중 가장 오래된 것 1건) -->
+    <!-- params: loc, code -->
+    <select id="findReadyRowForMerge" parameterType="map"
+            resultType="plant.dev.warehouse.dto.InventoryItemDto">
+        SELECT
+            item_id          AS id,
+            item_name        AS name,
+            item_code        AS code,
+            quantity,
+            location,
+            in_date          AS inDate,
+            out_date         AS outDate,
+            note,
+            category,
+            product_type     AS productType,
+            delivery_status  AS status,
+            limit_qty        AS `limit`
+        FROM inventory_tbl
+        WHERE location = #{loc}
+          AND delivery_status = 'READY'
+          AND item_code = #{code}
+        ORDER BY in_date ASC
+            LIMIT 1
+    </select>
+
+    <!-- 수량 누적 -->
+    <!-- params: id, add -->
+    <update id="addQuantity" parameterType="map">
+        UPDATE inventory_tbl
+        SET quantity = quantity + #{add}
+        WHERE item_id = #{id}
+    </update>
+
+    <!-- 위치/상품 기준 READY 수량 합 -->
+    <!-- params: loc, code -->
+    <select id="sumReadyQtyAtLocationForCode" parameterType="map" resultType="int">
+        SELECT COALESCE(SUM(quantity), 0)
+        FROM inventory_tbl
+        WHERE location = #{loc}
+          AND delivery_status = 'READY'
+          AND item_code = #{code}
+    </select>
 
 </mapper>

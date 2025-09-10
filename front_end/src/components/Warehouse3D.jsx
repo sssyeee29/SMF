@@ -19,17 +19,17 @@ const SECTION_GAP = 1;   // 섹션 사이 통로폭
 // 유틸
 // ─────────────────────────────────────────────────────────────────────────────
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
-const quantityT = (q, threshold) => clamp01((Number(q) || 0) / (threshold || 100));
+const ratioByCap = (q, cap) => clamp01((Number(q) || 0) / (Number(cap) || 100));
 
-function quantityColor(q, threshold) {
-  const t = quantityT(q, threshold);
+function quantityColorByCap(q, cap) {
+  const t = ratioByCap(q, cap);
   if (t < STOCK_WARN_RATIO) return "#ef4444"; // 부족
   if (t < 1.0) return "#f59e0b"; // 주의
   return "#22c55e"; // 충분
 }
 
-function boxHeight(q, threshold) {
-  const t = quantityT(q, threshold);
+function boxHeightByCap(q, cap) {
+  const t = ratioByCap(q, cap);
   return BOX_H_MIN + BOX_H_SPAN * t;
 }
 
@@ -229,7 +229,7 @@ function WarehouseStructure({
 // ─────────────────────────────────────────────────────────────────────────────
 // UI 요소
 // ─────────────────────────────────────────────────────────────────────────────
-function WarehouseTooltip({ item, threshold }) {
+function WarehouseTooltip({ item, cap }) {
   return (
     <Html center distanceFactor={6} transform>
       <div
@@ -248,18 +248,18 @@ function WarehouseTooltip({ item, threshold }) {
         <div style={{ fontWeight: 600, marginBottom: 2 }}>{item.name}</div>
         <div style={{ color: "#94a3b8" }}>코드: {item.code}</div>
         <div style={{ color: "#94a3b8" }}>수량: {item.quantity}개</div>
-        <div style={{ color: item.quantity >= threshold ? "#22c55e" : "#ef4444", fontSize: 10, marginTop: 2 }}>
-          {item.quantity >= threshold ? "✓ 출고가능" : "⚠ 부족"}
+        <div style={{ color: item.quantity >= cap ? "#22c55e" : "#ef4444", fontSize: 10, marginTop: 2 }}>
+          {item.quantity >= cap ? "✓ 출고가능" : "⚠ 부족"} (기준 {cap})
         </div>
       </div>
     </Html>
   );
 }
 
-function ShelfBox({ item, threshold = 100, onSelect, colsCount }) {
+function ShelfBox({ item, cap = 100, onSelect, colsCount }) {
   const q = Number(item.quantity) || 0;
-  const h = boxHeight(q, threshold);
-  const color = quantityColor(q, threshold);
+  const h = boxHeightByCap(q, cap);
+  const color = quantityColorByCap(q, cap);
   const [x, y, z] = toPosition(item.location || "A-01-01", { cell: CELL, sectionGap: SECTION_GAP, colsCount });
   const [hovered, setHovered] = useState(false);
   const ref = useRef();
@@ -297,7 +297,7 @@ function ShelfBox({ item, threshold = 100, onSelect, colsCount }) {
         {item.quantity}
       </Text>
 
-      {hovered && <WarehouseTooltip item={item} threshold={threshold} />}
+      {hovered && <WarehouseTooltip item={item} cap={cap} />}
     </group>
   );
 }
@@ -437,12 +437,12 @@ function WarehouseCeilingLights({ width = 20, depth = 10, sections = 3 }) {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Warehouse3D({
   data = [],
-  threshold = 100,
+  threshold = 100,           // 폴백 값 (item.limit 없을 때만 사용)
   onSelect,
   getCameraStream,
   style,
   layout = "longZ",
-  minSections = 4, // A/B/C/D(불량) 기본 노출
+  minSections = 4,           // A/B/C/D(불량) 기본 노출
   minRows = 2,
   minCols = 3,
 }) {
@@ -477,9 +477,14 @@ export default function Warehouse3D({
     [items, minSections, minRows, minCols]
   );
 
+  // ✅ 부족 항목 계산도 item별 cap 기준
   const stats = useMemo(() => {
     const total = items.length;
-    const lowStock = items.filter((it) => (Number(it.quantity) || 0) < threshold * STOCK_WARN_RATIO).length;
+    const lowStock = items.filter((it) => {
+      const cap = Number(it.limit) || Number(threshold) || 100;
+      const qty = Number(it.quantity) || 0;
+      return qty < cap * STOCK_WARN_RATIO;
+    }).length;
     return { total, lowStock };
   }, [items, threshold]);
 
@@ -505,15 +510,18 @@ export default function Warehouse3D({
         <WarehouseStructure sections={sectionCount} rowsCount={rowsCount} colsCount={colsCount} />
         <WarehouseRacks sections={sectionCount} rowsCount={rowsCount} colsCount={colsCount} />
 
-        {items.map((item, i) => (
-          <ShelfBox
-            key={item.id || i}
-            item={{ ...item, location: item.location || item._autoLoc }}
-            threshold={threshold}
-            onSelect={handleSelect}
-            colsCount={colsCount}          // ★ 좌표 계산에 현재 열 개수 전달
-          />
-        ))}
+        {items.map((item, i) => {
+          const cap = Number(item.limit) || Number(threshold) || 100;   // ✅ 아이템별 cap
+          return (
+            <ShelfBox
+              key={item.id || i}
+              item={{ ...item, location: item.location || item._autoLoc }}
+              cap={cap}
+              onSelect={handleSelect}
+              colsCount={colsCount}          // 좌표 계산에 현재 열 개수 전달
+            />
+          );
+        })}
 
         <OrbitControls
           makeDefault
@@ -568,7 +576,7 @@ export default function Warehouse3D({
         </div>
 
         <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #475569", color: "#94a3b8", fontSize: 10 }}>
-          기준: {threshold}개
+          기준: <b>각 상자별 limit</b> (없으면 {Number(threshold) || 100})
         </div>
       </div>
 
@@ -586,8 +594,8 @@ export default function Warehouse3D({
             <div><strong>코드:</strong> {selected.code}</div>
             <div><strong>수량:</strong> {selected.quantity}개</div>
             {selected.location && <div><strong>위치:</strong> {selected.location}</div>}
-            <div style={{ color: selected.quantity >= threshold ? "#22c55e" : "#ef4444", fontWeight: 600, marginTop: 4 }}>
-              {selected.quantity >= threshold ? "✅출고 가능" : "⚠️ 재고 부족"}
+            <div style={{ color: (Number(selected.quantity)||0) >= (Number(selected.limit)||Number(threshold)||100) ? "#22c55e" : "#ef4444", fontWeight: 600, marginTop: 4 }}>
+              {(Number(selected.quantity)||0) >= (Number(selected.limit)||Number(threshold)||100) ? "✅출고 가능" : "⚠️ 재고 부족"} (기준 {Number(selected.limit)||Number(threshold)||100})
             </div>
           </div>
         </div>
