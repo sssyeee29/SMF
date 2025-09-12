@@ -1,30 +1,81 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import axios from 'axios'; // 서버 연동을 위함 
+import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Line, ComposedChart, PieChart, Pie, Cell, Legend } from 'recharts';
+import {
+    AreaChart,
+    Area,
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    Line,
+    ComposedChart,
+    PieChart,
+    Pie,
+    Cell,
+    Legend
+} from 'recharts';
 
 import './DashboardPage.css';
 
+// ISO 주차, 월별, 년별을 한국어 형식으로 변환하는 통합 함수
+const formatPeriodToKorean = (periodString) => {
+    if (!periodString) {
+        return '';
+    }
+    // 주별 (예: 2025-W36)
+    if (periodString.includes('-W')) {
+        const [year, weekStr] = periodString.split('-W');
+        const week = parseInt(weekStr, 10);
+        const yearInt = parseInt(year, 10);
 
-// 🔹 [추가] 프록시(package.json "proxy": "http://localhost:8080")가 있으니 상대경로로 호출하면 됨.
+        const date = new Date(yearInt, 0, 1 + (week - 1) * 7);
+        const day = date.getDay();
+        const weekStart = new Date(date);
+        weekStart.setDate(date.getDate() - day + (day === 0 ? -6 : 1));
+
+        const month = weekStart.getMonth() + 1;
+        let weekOfMonth = 0;
+        let tempDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1);
+        while (tempDate <= weekStart) {
+            weekOfMonth++;
+            tempDate.setDate(tempDate.getDate() + 7);
+        }
+
+        const weekName = ['', '첫째', '둘째', '셋째', '넷째', '다섯째'][weekOfMonth] || '';
+        return `${yearInt}년 ${month}월 ${weekName} 주`;
+    }
+    // 월별 (예: 2025-09)
+    else if (periodString.includes('-')) {
+        const [year, month] = periodString.split('-');
+        return `${year}년 ${parseInt(month, 10)}월`;
+    }
+    // 년별 (예: 2025)
+    else if (!isNaN(parseInt(periodString, 10))) {
+        return `${periodString}년`;
+    }
+    return periodString;
+};
+
 // 백엔드 period는 week/month/year 이므로, UI 값(daily/monthly/yearly)을 매핑
 const mapPeriod = (uiPeriod) => {
-    if (uiPeriod === 'daily') return 'week';   // UI에서 '주별'을 daily로 쓰고 있어서 week로 보냄
+    if (uiPeriod === 'daily') return 'week';
     if (uiPeriod === 'monthly') return 'month';
     if (uiPeriod === 'yearly') return 'year';
     return 'month';
 };
 
-// 🔹 [추가] 백엔드 DTO → 프론트 차트키로 변환
-// G1: QualityTrendRow { period, normal, defect, defectRatePct }
+// 백엔드 DTO → 프론트 차트키로 변환
 const mapQuality = (rows = []) =>
     rows.map(r => ({
-        date: r.period,      // X축에 쓸 라벨
-        normal: r.normal,    // 정상 건수
-        defective: r.defect, // 불량 건수
+        date: r.period,
+        normal: r.normal,
+        defective: r.defect,
     }));
 
-// G2: DeliveryComboRow { period, deliveredCount, deliveredQty }
 const mapDelivery = (rows = []) =>
     rows.map(r => ({
         date: r.period,
@@ -32,8 +83,6 @@ const mapDelivery = (rows = []) =>
         deliveryQuantity: r.deliveredQty,
     }));
 
-// G3: DefectCauseRow { period, causeCode, defectCount, sharePct }
-// causeCode별(세로형) 데이터를 period 한 줄로 묶어서 {lidDefect, bodyDefect}로 변환
 const mapDefectCause = (rows = []) => {
     const m = new Map();
     rows.forEach(r => {
@@ -52,8 +101,6 @@ const mapDefectCause = (rows = []) => {
     return Array.from(m.values()).sort((a, b) => a.date.localeCompare(b.date));
 };
 
-// G4: ProductDeliveryRow { period, productName, productCode, deliveredCount, deliveredQty }
-// 제품별 행을 period별로 모아 도넛차트용 {banana, strawberry, melon} 형태로 변환
 const mapProductDelivery = (rows = []) => {
     const m = new Map();
     rows.forEach(r => {
@@ -71,11 +118,34 @@ const mapProductDelivery = (rows = []) => {
     return Array.from(m.values()).sort((a, b) => a.date.localeCompare(b.date));
 };
 
+// 월별 목록
+const getMonths = () => {
+    const months = [];
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+
+    for (let i = 0; i < 12; i++) {
+        const date = new Date(currentYear, currentMonth - i, 1);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        months.push({ value: `${year}-${month}`, label: `${year}년 ${parseInt(month, 10)}월` });
+    }
+    return months.reverse();
+};
+
+// 년도 목록
+const getYears = () => {
+    const years = [];
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < 5; i++) {
+        const year = currentYear - i;
+        years.push({ value: `${year}`, label: `${year}년` });
+    }
+    return years.reverse();
+};
+
 const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
-
-    // const [data] = useState(generateSampleData());
-
-    // 서버 데이터 상태를 따로 관리
     const [quality, setQuality] = useState([]);
     const [delivery, setDelivery] = useState([]);
     const [defectCause, setDefectCause] = useState([]);
@@ -85,92 +155,86 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
     const startDate = sevenDaysAgo.toISOString().split('T')[0];
+    const currentYearMonth = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+    const currentYear = `${new Date().getFullYear()}`;
 
     const [filters, setFilters] = useState({
-        chart1: { period: 'monthly', startDate, endDate: today },
-        chart2: { period: 'monthly', startDate, endDate: today },
-        chart3: { period: 'monthly', startDate, endDate: today, comparison: 'none' },
-        chart4: { period: 'monthly', startDate, endDate: today }
+        chart1: { period: 'daily', startDate, endDate: today },
+        chart2: { period: 'daily', startDate, endDate: today },
+        chart3: { period: 'daily', startDate, endDate: today, comparison: 'none' },
+        chart4: { period: 'daily', startDate, endDate: today }
     });
 
     const [loading, setLoading] = useState(false);
-    const [err, setErr] = useState('');
 
     const updateFilter = (chartId, filterType, value) => {
-        setFilters(prev => ({
-            ...prev,
-            [chartId]: {
-                ...prev[chartId],
-                [filterType]: value
+        setFilters(prev => {
+            const newFilters = { ...prev };
+            newFilters[chartId] = { ...newFilters[chartId], [filterType]: value };
+
+            if (filterType === 'period') {
+                if (value === 'daily') {
+                    newFilters[chartId].startDate = startDate;
+                    newFilters[chartId].endDate = today;
+                } else if (value === 'monthly') {
+                    newFilters[chartId].startDate = currentYearMonth;
+                    newFilters[chartId].endDate = currentYearMonth;
+                } else if (value === 'yearly') {
+                    newFilters[chartId].startDate = currentYear;
+                    newFilters[chartId].endDate = currentYear;
+                }
             }
-        }));
+            return newFilters;
+        });
     };
 
-    // 🔹 서버 호출 (startDate, endDate 포함)
-const loadAll = useCallback(async () => {
-    setLoading(true);
-    setErr('');
-    try {
-        const p1 = axios.get('/api/dashboard/quality', {
-            params: {
-                period: mapPeriod(filters.chart1.period),
-                startDate: filters.chart1.startDate,
-                endDate: filters.chart1.endDate,
-            }
-        });
-        const p2 = axios.get('/api/dashboard/delivery', {
-            params: {
-                period: mapPeriod(filters.chart2.period),
-                startDate: filters.chart2.startDate,
-                endDate: filters.chart2.endDate,
-            }
-        });
-        const p3 = axios.get('/api/dashboard/defect-cause', {
-            params: {
-                period: mapPeriod(filters.chart3.period),
-                startDate: filters.chart3.startDate,
-                endDate: filters.chart3.endDate,
-            }
-        });
-        const p4 = axios.get('/api/dashboard/product-delivery', {
-            params: {
-                period: mapPeriod(filters.chart4.period),
-                startDate: filters.chart4.startDate,
-                endDate: filters.chart4.endDate,
-            }
-        });
+    const loadAll = useCallback(async () => {
+        setLoading(true);
+        try {
+            const getParams = (chartId) => {
+                const period = mapPeriod(filters[chartId].period);
+                let startDate = filters[chartId].startDate;
+                let endDate = filters[chartId].endDate;
 
-        const [r1, r2, r3, r4] = await Promise.all([p1, p2, p3, p4]);
+                if (filters[chartId].period === 'yearly') {
+                    return { period: 'year', startDate, endDate };
+                }
+                if (filters[chartId].period === 'monthly') {
+                    return { period: 'month', startDate, endDate };
+                }
+                return { period, startDate, endDate };
+            };
 
-        setQuality(mapQuality(r1.data));
-        setDelivery(mapDelivery(r2.data));
-        setDefectCause(mapDefectCause(r3.data));
-        setProductDelivery(mapProductDelivery(r4.data));
-    } catch (e) {
-        console.error(e);
-        setErr('대시보드 데이터를 불러오는 중 오류가 발생했습니다.');
-    } finally {
-        setLoading(false);
-    }
-}, [filters]); // 필터값이 변경될 때마다 데이터 재호출
+            const [r1, r2, r3, r4] = await Promise.all([
+                axios.get('/api/dashboard/quality', { params: getParams('chart1') }),
+                axios.get('/api/dashboard/delivery', { params: getParams('chart2') }),
+                axios.get('/api/dashboard/defect-cause', { params: getParams('chart3') }),
+                axios.get('/api/dashboard/product-delivery', { params: getParams('chart4') })
+            ]);
 
-    // 🔹 [추가] 최초 마운트/필터 변경 시 서버 호출
+            setQuality(mapQuality(r1.data));
+            setDelivery(mapDelivery(r2.data));
+            setDefectCause(mapDefectCause(r3.data));
+            setProductDelivery(mapProductDelivery(r4.data));
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    }, [filters]);
+
+    // 페이지가 처음 렌더링되거나 filters 상태가 변경될 때마다 실행 
     useEffect(() => { loadAll(); }, [loadAll]);
 
     const prepareAreaData = (data) => {
         if (data.length === 1) {
             const item = data[0];
-            // 같은 값을 가진 두 점을 만들어 수평선 효과
-            return [
-                { ...item, date: item.date + '_start' },
-                { ...item, date: item.date + '_end' }
-            ];
+            return [{ ...item, date: item.date }, { ...item, date: item.date }];
         }
         return data;
     };
 
     const filterData = useCallback((chartId) => {
-        // 서버에서 period 기준으로 이미 집계되어 오므로 그대로 사용 
         if (chartId === 'chart1') return quality;
         if (chartId === 'chart2') return delivery;
         if (chartId === 'chart3') return defectCause;
@@ -178,17 +242,17 @@ const loadAll = useCallback(async () => {
         return [];
     }, [quality, delivery, defectCause, productDelivery]);
 
-
     const chart4Data = useMemo(() => {
-
         const filteredData = filterData('chart4');
-
         const totals = filteredData.reduce((acc, item) => {
             acc.banana += (item.banana ?? 0);
             acc.strawberry += (item.strawberry ?? 0);
             acc.melon += (item.melon ?? 0);
             return acc;
         }, { banana: 0, strawberry: 0, melon: 0 });
+
+        const totalSum = totals.banana + totals.strawberry + totals.melon;
+        if (totalSum === 0) return [];
 
         return [
             { name: '바나나맛', value: totals.banana, color: '#FFD700' },
@@ -197,50 +261,87 @@ const loadAll = useCallback(async () => {
         ];
     }, [filterData]);
 
-    const FilterComponent = ({ chartId, showComparison = false }) => (
-        <div className="chart-filter-container">
-            <div className="chart-filter-row">
-                <select
-                    value={filters[chartId].period}
-                    onChange={(e) => updateFilter(chartId, 'period', e.target.value)}
-                    className="chart-filter-select"
-                >
-                    <option value="daily">주별</option>
-                    <option value="monthly">월별</option>
-                    <option value="yearly">년별</option>
-                </select>
+    // 필터 UI
+    const FilterComponent = ({ chartId, showComparison = false }) => {
+        const period = filters[chartId].period;
 
-                <input
-                    type="date"
-                    value={filters[chartId].startDate}
-                    onChange={(e) => updateFilter(chartId, 'startDate', e.target.value)}
-                    className="chart-filter-date"
-                    max={today} // 시작 날짜 오늘 이전으로 제한
-                />
-
-                <input
-                    type="date"
-                    value={filters[chartId].endDate}
-                    onChange={(e) => updateFilter(chartId, 'endDate', e.target.value)}
-                    className="chart-filter-date"
-                    disabled={!filters[chartId].startDate} // 마감 날짜는 시작 날짜가 있어야 활성화
-                    min={filters[chartId].startDate} // 마감 날짜는 시작 날짜 이후만 선택 가능 
-                    max={today} // 마감 날짜를 오늘 날짜로 제한
-                />
-
-                {showComparison && (
+        const renderPeriodInput = () => {
+            if (period === 'daily') {
+                return (
+                    <>
+                        <input
+                            type="date"
+                            value={filters[chartId].startDate}
+                            onChange={(e) => updateFilter(chartId, 'startDate', e.target.value)}
+                            className="chart-filter-date"
+                            max={today}
+                        />
+                        <input
+                            type="date"
+                            value={filters[chartId].endDate}
+                            onChange={(e) => updateFilter(chartId, 'endDate', e.target.value)}
+                            className="chart-filter-date"
+                            disabled={!filters[chartId].startDate}
+                            min={filters[chartId].startDate}
+                            max={today}
+                        />
+                    </>
+                );
+            } else if (period === 'monthly') {
+                return (
                     <select
-                        value={filters[chartId].comparison}
-                        onChange={(e) => updateFilter(chartId, 'comparison', e.target.value)}
+                        value={filters[chartId].startDate}
+                        onChange={(e) => updateFilter(chartId, 'startDate', e.target.value)}
                         className="chart-filter-select"
                     >
-                        <option value="none">비교없음</option>
-                        <option value="monthly">월별비교</option>
+                        {getMonths().map(m => (
+                            <option key={m.value} value={m.value}>{m.label}</option>
+                        ))}
                     </select>
-                )}
+                );
+            } else if (period === 'yearly') {
+                return (
+                    <select
+                        value={filters[chartId].startDate}
+                        onChange={(e) => updateFilter(chartId, 'startDate', e.target.value)}
+                        className="chart-filter-select"
+                    >
+                        {getYears().map(y => (
+                            <option key={y.value} value={y.value}>{y.label}</option>
+                        ))}
+                    </select>
+                );
+            }
+            return null;
+        };
+
+        return (
+            <div className="chart-filter-container">
+                <div className="chart-filter-row">
+                    <select
+                        value={period}
+                        onChange={(e) => updateFilter(chartId, 'period', e.target.value)}
+                        className="chart-filter-select"
+                    >
+                        <option value="daily">주별</option>
+                        <option value="monthly">월별</option>
+                        <option value="yearly">년별</option>
+                    </select>
+                    {renderPeriodInput()}
+                    {showComparison && (
+                        <select
+                            value={filters[chartId].comparison}
+                            onChange={(e) => updateFilter(chartId, 'comparison', e.target.value)}
+                            className="chart-filter-select"
+                        >
+                            <option value="none">비교없음</option>
+                            <option value="monthly">월별비교</option>
+                        </select>
+                    )}
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="dashboard-container">
@@ -258,7 +359,7 @@ const loadAll = useCallback(async () => {
                 </div>
             </div>
 
-            <div className='dashboard-main-content'>
+            <div className="dashboard-main-content">
                 <div className="charts-grid">
                     {/* 1번 그래프 */}
                     <div className="chart-card">
@@ -267,18 +368,21 @@ const loadAll = useCallback(async () => {
                             <FilterComponent chartId="chart1" />
                         </div>
                         <div className="chart-card-content">
-                            <ResponsiveContainer width="100%" height={350}>
-                                <BarChart data={filterData('chart1')}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="date" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Legend />
-
-                                    <Bar dataKey="normal" fill="#4CAF50" name="정상" />
-                                    <Bar dataKey="defective" fill="#FF5722" name="불량" />
-                                </BarChart>
-                            </ResponsiveContainer>
+                            {filterData('chart1').length > 0 ? (
+                                <ResponsiveContainer width="100%" height={350}>
+                                    <BarChart data={filterData('chart1')}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="date" tickFormatter={formatPeriodToKorean} />
+                                        <YAxis />
+                                        <Tooltip labelFormatter={formatPeriodToKorean} />
+                                        <Legend />
+                                        <Bar dataKey="normal" fill="#4CAF50" name="정상" />
+                                        <Bar dataKey="defective" fill="#FF5722" name="불량" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="no-data-message"><p>조회 데이터가 없습니다.</p></div>
+                            )}
                         </div>
                     </div>
 
@@ -289,29 +393,21 @@ const loadAll = useCallback(async () => {
                             <FilterComponent chartId="chart2" />
                         </div>
                         <div className="chart-card-content">
-                            <ResponsiveContainer width="100%" height={300}>
-                                <ComposedChart data={filterData('chart2')}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="date" />
-                                    <YAxis yAxisId="left" />
-                                    <YAxis yAxisId="right" orientation="right" />
-                                    <Tooltip />
-                                    <Bar
-                                        yAxisId="left"
-                                        dataKey="deliveryQuantity"
-                                        fill="#2196F3"
-                                        name="납품 수량"
-                                    />
-                                    <Line
-                                        yAxisId="right"
-                                        type="monotone"
-                                        dataKey="deliveryCount"
-                                        stroke="#FF9800"
-                                        strokeWidth={3}
-                                        name="납품 건수"
-                                    />
-                                </ComposedChart>
-                            </ResponsiveContainer>
+                            {filterData('chart2').length > 0 ? (
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <ComposedChart data={filterData('chart2')}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="date" tickFormatter={formatPeriodToKorean} />
+                                        <YAxis yAxisId="left" />
+                                        <YAxis yAxisId="right" orientation="right" />
+                                        <Tooltip labelFormatter={formatPeriodToKorean} />
+                                        <Bar yAxisId="left" dataKey="deliveryQuantity" fill="#2196F3" name="납품 수량" />
+                                        <Line yAxisId="right" type="monotone" dataKey="deliveryCount" stroke="#FF9800" strokeWidth={3} name="납품 건수" />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="no-data-message"><p>조회 데이터가 없습니다.</p></div>
+                            )}
                         </div>
                     </div>
 
@@ -322,31 +418,20 @@ const loadAll = useCallback(async () => {
                             <FilterComponent chartId="chart3" showComparison={true} />
                         </div>
                         <div className="chart-card-content">
-                            <ResponsiveContainer width="100%" height={300}>
-                                <AreaChart data={prepareAreaData(filterData('chart3'))}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="date" />
-                                    <YAxis />
-                                    <Tooltip />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="lidDefect"
-                                        stroke="#E91E63"
-                                        fill="#E91E63"
-                                        fillOpacity={0.2}
-                                        name="뚜껑 불량"
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="bodyDefect"
-                                        stroke="#9C27B0"
-                                        fill="#9C27B0"
-                                        fillOpacity={0.2}
-                                        name="데이지 불량"
-                                    />
-                                </AreaChart>
-                            </ResponsiveContainer>
-
+                            {filterData('chart3').length > 0 ? (
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <AreaChart data={prepareAreaData(filterData('chart3'))}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="date" tickFormatter={formatPeriodToKorean} />
+                                        <YAxis />
+                                        <Tooltip labelFormatter={formatPeriodToKorean} />
+                                        <Area type="monotone" dataKey="lidDefect" stroke="#E91E63" fill="#E91E63" fillOpacity={0.2} name="뚜껑 불량" />
+                                        <Area type="monotone" dataKey="bodyDefect" stroke="#9C27B0" fill="#9C27B0" fillOpacity={0.2} name="데이지 불량" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="no-data-message"><p>조회 데이터가 없습니다.</p></div>
+                            )}
                         </div>
                     </div>
 
@@ -357,27 +442,21 @@ const loadAll = useCallback(async () => {
                             <FilterComponent chartId="chart4" />
                         </div>
                         <div className="chart-card-content">
-                            <ResponsiveContainer width="100%" height={300}>
-                                <PieChart>
-                                    <Pie
-                                        data={chart4Data}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={130}
-                                        paddingAngle={0}
-                                        dataKey="value"
-                                    >
-                                        {chart4Data.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip />
-                                    <Legend wrapperStyle={{
-                                        transform: "translateY(20px)", // 살짝 내렸습니다.
-                                    }} />
-                                </PieChart>
-                            </ResponsiveContainer>
+                            {chart4Data.length > 0 ? (
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <PieChart>
+                                        <Pie data={chart4Data} cx="50%" cy="50%" innerRadius={60} outerRadius={130} paddingAngle={0} dataKey="value">
+                                            {chart4Data.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip />
+                                        <Legend wrapperStyle={{ transform: "translateY(20px)" }} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <div className="no-data-message"><p>조회 데이터가 없습니다.</p></div>
+                            )}
                             <div className="chart-donut-legend">
                                 {chart4Data.map((item, index) => (
                                     <div key={index} className="chart-legend-item">

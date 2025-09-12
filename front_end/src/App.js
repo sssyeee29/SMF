@@ -143,14 +143,6 @@ const App = () => {
             <span className="app-nav-text">{t('nav.home')}</span>
           </button>
           <button
-            onClick={() => setCurrentPage('dashboard')}
-            className={`app-nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
-            aria-label={t('nav.dashboard')}
-          >
-            <LayoutDashboard className="app-nav-icon" />
-            <span className="app-nav-text">{t('nav.dashboard')}</span>
-          </button>
-          <button
             onClick={() => setCurrentPage('camera')}
             className={`app-nav-button ${currentPage === 'camera' ? 'active' : ''}`}
             aria-label={t('nav.camera')}
@@ -173,6 +165,14 @@ const App = () => {
           >
             <Package className="app-nav-icon" />
             <span className="app-nav-text">{t('nav.warehouse')}</span>
+          </button>
+          <button
+            onClick={() => setCurrentPage('dashboard')}
+            className={`app-nav-button ${currentPage === 'dashboard' ? 'active' : ''}`}
+            aria-label={t('nav.dashboard')}
+          >
+            <LayoutDashboard className="app-nav-icon" />
+            <span className="app-nav-text">{t('nav.dashboard')}</span>
           </button>
           <button
             onClick={() => setCurrentPage('settings')}

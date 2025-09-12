@@ -21,10 +21,17 @@
         ) AS defectRatePct
         FROM detection_log_tbl
         <where>
-            <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
-                input_date &gt;= #{startDate}
+            <if test="periodType == 'year' and startDate != null">
+                AND YEAR(input_date) = #{startDate}
+            </if>
+            <if test="periodType == 'month' and startDate != null">
+                AND DATE_FORMAT(input_date, '%Y-%m') = #{startDate}
+            </if>
+            <if test="periodType == 'week' and startDate != null and endDate != null">
+                AND input_date &gt;= #{startDate}
                 AND input_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
             </if>
+            AND UPPER(product_result) IN ('NORMAL', 'DEFECT')
         </where>
         GROUP BY period
         ORDER BY period;
@@ -44,7 +51,13 @@
         FROM inventory_tbl
         WHERE out_date IS NOT NULL
         AND UPPER(delivery_status) = 'DONE'
-        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+        <if test="periodType == 'year' and startDate != null">
+            AND YEAR(out_date) = #{startDate}
+        </if>
+        <if test="periodType == 'month' and startDate != null">
+            AND DATE_FORMAT(out_date, '%Y-%m') = #{startDate}
+        </if>
+        <if test="periodType == 'week' and startDate != null and endDate != null">
             AND out_date &gt;= #{startDate}
             AND out_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
         </if>
@@ -71,7 +84,13 @@
         COUNT(*)    AS defectCount
         FROM detection_log_tbl
         WHERE UPPER(product_result) = 'DEFECT'
-        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+        <if test="periodType == 'year' and startDate != null">
+            AND YEAR(input_date) = #{startDate}
+        </if>
+        <if test="periodType == 'month' and startDate != null">
+            AND DATE_FORMAT(input_date, '%Y-%m') = #{startDate}
+        </if>
+        <if test="periodType == 'week' and startDate != null and endDate != null">
             AND input_date &gt;= #{startDate}
             AND input_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
         </if>
@@ -87,7 +106,13 @@
         COUNT(*) AS totalCount
         FROM detection_log_tbl
         WHERE UPPER(product_result) = 'DEFECT'
-        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+        <if test="periodType == 'year' and startDate != null">
+            AND YEAR(input_date) = #{startDate}
+        </if>
+        <if test="periodType == 'month' and startDate != null">
+            AND DATE_FORMAT(input_date, '%Y-%m') = #{startDate}
+        </if>
+        <if test="periodType == 'week' and startDate != null and endDate != null">
             AND input_date &gt;= #{startDate}
             AND input_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
         </if>
@@ -112,7 +137,13 @@
         FROM inventory_tbl
         WHERE out_date IS NOT NULL
         AND UPPER(delivery_status) = 'DONE'
-        <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+        <if test="periodType == 'year' and startDate != null">
+            AND YEAR(out_date) = #{startDate}
+        </if>
+        <if test="periodType == 'month' and startDate != null">
+            AND DATE_FORMAT(out_date, '%Y-%m') = #{startDate}
+        </if>
+        <if test="periodType == 'week' and startDate != null and endDate != null">
             AND out_date &gt;= #{startDate}
             AND out_date &lt; DATE_ADD(#{endDate}, INTERVAL 1 DAY)
         </if>
