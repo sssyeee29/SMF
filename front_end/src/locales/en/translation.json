@@ -165,8 +165,16 @@
   "filter.monthly_compare": "Monthly Comparison",
 
   "common.suffix": "",
-  "common.logout": "Logout"
+  "common.logout": "Logout",
 
+  "date.year": "{{year}}",
+  "date.month": "{{month}}",
+  "date.week": "Week {{week}}",
+  "date.weeks.1": "First",
+  "date.weeks.2": "Second",
+  "date.weeks.3": "Third",
+  "date.weeks.4": "Fourth",
+  "date.weeks.5": "Fifth"
 
 
 

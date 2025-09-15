@@ -18,15 +18,14 @@ import {
     Cell,
     Legend
 } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 import './DashboardPage.css';
 
-// ISO 주차, 월별, 년별을 한국어 형식으로 변환하는 통합 함수
-const formatPeriodToKorean = (periodString) => {
-    if (!periodString) {
-        return '';
-    }
-    // 주별 (예: 2025-W36)
+// ISO 주차, 월별, 년별을 한국어 형식으로 변환
+const formatPeriod = (periodString, t) => {
+    if (!periodString) return '';
+
     if (periodString.includes('-W')) {
         const [year, weekStr] = periodString.split('-W');
         const week = parseInt(weekStr, 10);
@@ -38,6 +37,8 @@ const formatPeriodToKorean = (periodString) => {
         weekStart.setDate(date.getDate() - day + (day === 0 ? -6 : 1));
 
         const month = weekStart.getMonth() + 1;
+
+        // 몇째 주 계산
         let weekOfMonth = 0;
         let tempDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), 1);
         while (tempDate <= weekStart) {
@@ -45,22 +46,21 @@ const formatPeriodToKorean = (periodString) => {
             tempDate.setDate(tempDate.getDate() + 7);
         }
 
-        const weekName = ['', '첫째', '둘째', '셋째', '넷째', '다섯째'][weekOfMonth] || '';
-        return `${yearInt}년 ${month}월 ${weekName} 주`;
+        const weekName = t(`date.weeks.${weekOfMonth}`);
+        return `${t("date.year", { year: yearInt })} ${t("date.month", { month })} ${weekName} ${t("date.week", { week })}`;
     }
-    // 월별 (예: 2025-09)
     else if (periodString.includes('-')) {
         const [year, month] = periodString.split('-');
-        return `${year}년 ${parseInt(month, 10)}월`;
+        return `${t("date.year", { year })} ${t("date.month", { month: parseInt(month, 10) })}`;
     }
-    // 년별 (예: 2025)
     else if (!isNaN(parseInt(periodString, 10))) {
-        return `${periodString}년`;
+        return t("date.year", { year: periodString });
     }
+
     return periodString;
 };
 
-// 백엔드 period는 week/month/year 이므로, UI 값(daily/monthly/yearly)을 매핑
+// 백엔드 period 매핑
 const mapPeriod = (uiPeriod) => {
     if (uiPeriod === 'daily') return 'week';
     if (uiPeriod === 'monthly') return 'month';
@@ -68,7 +68,7 @@ const mapPeriod = (uiPeriod) => {
     return 'month';
 };
 
-// 백엔드 DTO → 프론트 차트키로 변환
+// DTO 매핑
 const mapQuality = (rows = []) =>
     rows.map(r => ({
         date: r.period,
@@ -90,11 +90,8 @@ const mapDefectCause = (rows = []) => {
         const code = (r.causeCode || '').trim().toUpperCase();
         const obj = m.get(date) || { date, lidDefect: 0, bodyDefect: 0 };
 
-        if (code === 'DAMAGE-H') {
-            obj.lidDefect += r.defectCount;
-        } else if (code === 'DAMAGE-B') {
-            obj.bodyDefect += r.defectCount;
-        }
+        if (code === 'DAMAGE-H') obj.lidDefect += r.defectCount;
+        else if (code === 'DAMAGE-B') obj.bodyDefect += r.defectCount;
 
         m.set(date, obj);
     });
@@ -146,6 +143,8 @@ const getYears = () => {
 };
 
 const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
+    const { t } = useTranslation();
+
     const [quality, setQuality] = useState([]);
     const [delivery, setDelivery] = useState([]);
     const [defectCause, setDefectCause] = useState([]);
@@ -193,16 +192,11 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
         try {
             const getParams = (chartId) => {
                 const period = mapPeriod(filters[chartId].period);
-                let startDate = filters[chartId].startDate;
-                let endDate = filters[chartId].endDate;
-
-                if (filters[chartId].period === 'yearly') {
-                    return { period: 'year', startDate, endDate };
-                }
-                if (filters[chartId].period === 'monthly') {
-                    return { period: 'month', startDate, endDate };
-                }
-                return { period, startDate, endDate };
+                return {
+                    period,
+                    startDate: filters[chartId].startDate,
+                    endDate: filters[chartId].endDate
+                };
             };
 
             const [r1, r2, r3, r4] = await Promise.all([
@@ -223,7 +217,6 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
         }
     }, [filters]);
 
-    // 페이지가 처음 렌더링되거나 filters 상태가 변경될 때마다 실행 
     useEffect(() => { loadAll(); }, [loadAll]);
 
     const prepareAreaData = (data) => {
@@ -255,11 +248,11 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
         if (totalSum === 0) return [];
 
         return [
-            { name: '바나나맛', value: totals.banana, color: '#FFD700' },
-            { name: '딸기맛', value: totals.strawberry, color: '#FF6B6B' },
-            { name: '메로나맛', value: totals.melon, color: '#4ECDC4' }
+            { name: t("dashboard.banana"), value: totals.banana, color: '#FFD700' },
+            { name: t("dashboard.strawberry"), value: totals.strawberry, color: '#FF6B6B' },
+            { name: t("dashboard.melon"), value: totals.melon, color: '#4ECDC4' }
         ];
-    }, [filterData]);
+    }, [filterData, t]);
 
     // 필터 UI
     const FilterComponent = ({ chartId, showComparison = false }) => {
@@ -281,7 +274,6 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                             value={filters[chartId].endDate}
                             onChange={(e) => updateFilter(chartId, 'endDate', e.target.value)}
                             className="chart-filter-date"
-                            disabled={!filters[chartId].startDate}
                             min={filters[chartId].startDate}
                             max={today}
                         />
@@ -323,9 +315,9 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                         onChange={(e) => updateFilter(chartId, 'period', e.target.value)}
                         className="chart-filter-select"
                     >
-                        <option value="daily">주별</option>
-                        <option value="monthly">월별</option>
-                        <option value="yearly">년별</option>
+                        <option value="daily">{t("filter.daily")}</option>
+                        <option value="monthly">{t("filter.monthly")}</option>
+                        <option value="yearly">{t("filter.yearly")}</option>
                     </select>
                     {renderPeriodInput()}
                     {showComparison && (
@@ -334,8 +326,8 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                             onChange={(e) => updateFilter(chartId, 'comparison', e.target.value)}
                             className="chart-filter-select"
                         >
-                            <option value="none">비교없음</option>
-                            <option value="monthly">월별비교</option>
+                            <option value="none">{t("filter.none")}</option>
+                            <option value="monthly">{t("filter.monthly_compare")}</option>
                         </select>
                     )}
                 </div>
@@ -351,11 +343,11 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                     <button onClick={() => setCurrentPage('home')} className="dashboard-back-btn">
                         <ArrowLeft className="dashboard-icon" />
                     </button>
-                    <h1 className="dashboard-title">대시보드 페이지</h1>
+                    <h1 className="dashboard-title">{t("dashboard.title")}</h1>
                 </div>
                 <div className="dashboard-header-right">
-                    {username && <span className="dashboard-username">{username} 님</span>}
-                    <button onClick={handleLogout} className="dashboard-logout-btn">로그아웃</button>
+                    {username && <span className="dashboard-username">{username}{t("common.suffix")}</span>}
+                    <button onClick={handleLogout} className="dashboard-logout-btn">{t("common.logout")}</button>
                 </div>
             </div>
 
@@ -364,7 +356,7 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                     {/* 1번 그래프 */}
                     <div className="chart-card">
                         <div className="chart-card-header">
-                            <h3 className="chart-card-title">정상/불량 건수</h3>
+                            <h3 className="chart-card-title">{t("dashboard.normal_defect_count")}</h3>
                             <FilterComponent chartId="chart1" />
                         </div>
                         <div className="chart-card-content">
@@ -372,24 +364,23 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                                 <ResponsiveContainer width="100%" height={350}>
                                     <BarChart data={filterData('chart1')}>
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="date" tickFormatter={formatPeriodToKorean} />
-                                        <YAxis />
-                                        <Tooltip labelFormatter={formatPeriodToKorean} />
+                                        <XAxis dataKey="date" tickFormatter={(value) => formatPeriod(value, t)} />
+                                        <Tooltip labelFormatter={(value) => formatPeriod(value, t)} />
                                         <Legend />
-                                        <Bar dataKey="normal" fill="#4CAF50" name="정상" />
-                                        <Bar dataKey="defective" fill="#FF5722" name="불량" />
+                                        <Bar dataKey="normal" fill="#4CAF50" name={t("status.normal")} />
+                                        <Bar dataKey="defective" fill="#FF5722" name={t("status.defective")} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <div className="no-data-message"><p>조회 데이터가 없습니다.</p></div>
+                                <div className="no-data-message"><p>{t("log.noData") || "조회 데이터가 없습니다."}</p></div>
                             )}
                         </div>
                     </div>
 
-                    {/* 2번 그래프: 납품 현황 */}
+                    {/* 2번 그래프 */}
                     <div className="chart-card">
                         <div className="chart-card-header">
-                            <h3 className="chart-card-title">납품 현황</h3>
+                            <h3 className="chart-card-title">{t("dashboard.delivery_status")}</h3>
                             <FilterComponent chartId="chart2" />
                         </div>
                         <div className="chart-card-content">
@@ -397,24 +388,24 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                                 <ResponsiveContainer width="100%" height={300}>
                                     <ComposedChart data={filterData('chart2')}>
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="date" tickFormatter={formatPeriodToKorean} />
+                                        <XAxis dataKey="date" tickFormatter={(value) => formatPeriod(value, t)} />
                                         <YAxis yAxisId="left" />
                                         <YAxis yAxisId="right" orientation="right" />
-                                        <Tooltip labelFormatter={formatPeriodToKorean} />
-                                        <Bar yAxisId="left" dataKey="deliveryQuantity" fill="#2196F3" name="납품 수량" />
-                                        <Line yAxisId="right" type="monotone" dataKey="deliveryCount" stroke="#FF9800" strokeWidth={3} name="납품 건수" />
+                                        <Tooltip labelFormatter={(value) => formatPeriod(value, t)} />
+                                        <Bar yAxisId="left" dataKey="deliveryQuantity" fill="#2196F3" name={t("dashboard.delivery_quantity")} />
+                                        <Line yAxisId="right" type="monotone" dataKey="deliveryCount" stroke="#FF9800" strokeWidth={3} name={t("dashboard.delivery_count")} />
                                     </ComposedChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <div className="no-data-message"><p>조회 데이터가 없습니다.</p></div>
+                                <div className="no-data-message"><p>{t("log.noData") || "조회 데이터가 없습니다."}</p></div>
                             )}
                         </div>
                     </div>
 
-                    {/* 3번 그래프: 불량 원인 분석 */}
+                    {/* 3번 그래프 */}
                     <div className="chart-card">
                         <div className="chart-card-header">
-                            <h3 className="chart-card-title">불량 원인 분석</h3>
+                            <h3 className="chart-card-title">{t("dashboard.defect_cause_analysis")}</h3>
                             <FilterComponent chartId="chart3" showComparison={true} />
                         </div>
                         <div className="chart-card-content">
@@ -422,15 +413,15 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                                 <ResponsiveContainer width="100%" height={300}>
                                     <AreaChart data={prepareAreaData(filterData('chart3'))}>
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="date" tickFormatter={formatPeriodToKorean} />
+                                        <XAxis dataKey="date" tickFormatter={(value) => formatPeriod(value, t)} />
                                         <YAxis />
-                                        <Tooltip labelFormatter={formatPeriodToKorean} />
-                                        <Area type="monotone" dataKey="lidDefect" stroke="#E91E63" fill="#E91E63" fillOpacity={0.2} name="뚜껑 불량" />
-                                        <Area type="monotone" dataKey="bodyDefect" stroke="#9C27B0" fill="#9C27B0" fillOpacity={0.2} name="데이지 불량" />
+                                        <Tooltip labelFormatter={(value) => formatPeriod(value, t)} />
+                                        <Area type="monotone" dataKey="lidDefect" stroke="#E91E63" fill="#E91E63" fillOpacity={0.2} name={t("dashboard.lid_defect")} />
+                                        <Area type="monotone" dataKey="bodyDefect" stroke="#9C27B0" fill="#9C27B0" fillOpacity={0.2} name={t("dashboard.daisy_defect")} />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <div className="no-data-message"><p>조회 데이터가 없습니다.</p></div>
+                                <div className="no-data-message"><p>{t("log.noData") || "조회 데이터가 없습니다."}</p></div>
                             )}
                         </div>
                     </div>
@@ -438,14 +429,22 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                     {/* 4번 그래프 */}
                     <div className="chart-card">
                         <div className="chart-card-header">
-                            <h3 className="chart-card-title">제품별 납품 현황</h3>
+                            <h3 className="chart-card-title">{t("dashboard.product_delivery_status")}</h3>
                             <FilterComponent chartId="chart4" />
                         </div>
                         <div className="chart-card-content">
                             {chart4Data.length > 0 ? (
                                 <ResponsiveContainer width="100%" height={300}>
                                     <PieChart>
-                                        <Pie data={chart4Data} cx="50%" cy="50%" innerRadius={60} outerRadius={130} paddingAngle={0} dataKey="value">
+                                        <Pie
+                                            data={chart4Data}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={130}
+                                            paddingAngle={0}
+                                            dataKey="value"
+                                        >
                                             {chart4Data.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={entry.color} />
                                             ))}
@@ -455,12 +454,17 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                                     </PieChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <div className="no-data-message"><p>조회 데이터가 없습니다.</p></div>
+                                <div className="no-data-message">
+                                    <p>{t("log.noData") || "조회 데이터가 없습니다."}</p>
+                                </div>
                             )}
                             <div className="chart-donut-legend">
                                 {chart4Data.map((item, index) => (
                                     <div key={index} className="chart-legend-item">
-                                        <div className="chart-legend-color" style={{ backgroundColor: item.color }}></div>
+                                        <div
+                                            className="chart-legend-color"
+                                            style={{ backgroundColor: item.color }}
+                                        ></div>
                                         <span>{item.name}: {item.value}</span>
                                     </div>
                                 ))}
@@ -468,10 +472,12 @@ const DashboardPage = ({ setCurrentPage, handleLogout, username }) => {
                         </div>
                     </div>
 
-                </div>
-            </div>
+                </div> {/* charts-grid */}
+            </div> {/* dashboard-main-content */}
         </div>
     );
 };
 
 export default DashboardPage;
+
+

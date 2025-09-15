@@ -168,6 +168,17 @@
   "filter.monthly_compare": "월별비교",
 
   "common.suffix": "님",
-  "common.logout": "로그아웃"
+  "common.logout": "로그아웃",
+
+  "date.year": "{{year}}년",
+  "date.month": "{{month}}월",
+  "date.week": "{{week}} 주",
+  "date.weeks.1": "첫째",
+  "date.weeks.2": "둘째",
+  "date.weeks.3": "셋째",
+  "date.weeks.4": "넷째",
+  "date.weeks.5": "다섯째"
+
+  
   
 }
