@@ -165,5 +165,17 @@
   "filter.monthly_compare": "月別比較",
 
   "common.suffix": "様",
-  "common.logout": "ログアウト"
+  "common.logout": "ログアウト",
+
+
+  "date.year": "{{year}}年",
+  "date.month": "{{month}}月",
+  "date.week": "{{week}}週",
+  "date.weeks.1": "第1",
+  "date.weeks.2": "第2",
+  "date.weeks.3": "第3",
+  "date.weeks.4": "第4",
+  "date.weeks.5": "第5"
+
+
 }
