@@ -5,7 +5,21 @@
 
 ---
 
-
+## 📑 목차
+- [개발 배경](#개발-배경-불량-검출도-이젠-ai)
+- [팀 소개](#-팀-소개)
+- [백엔드 공통 역할](#-백엔드-공통-역할)
+- [프로젝트 목표](#-프로젝트-목표)
+- [시작 가이드](#-시작-가이드-smart-milk-factory)
+- [기술 스텍](#-기술-스텍-smart-milk-factory)
+- [주요 기능](#-주요-기능)
+- [설계 문서](#-설계-문서)
+- [화면 예시](#-화면-예시)
+  - [대시보드 페이지](#-대시보드-페이지)
+  - [로그 페이지](#-로그-페이지)
+  - [창고 페이지](#-창고-페이지)
+  - [설정 페이지](#-설정-페이지)
+  - [모바일 웹 페이지](#-모바일-웹-페이지)
 
 ## 개발 배경: "불량 검출도 이젠 AI"
 
@@ -46,43 +60,27 @@
  - 대시보드 알림으로 즉시 대응 ➜ 검사 효율·품질 안정성 향상  
 
 
-## 📊 정량 KPI
+###  정량 KPI
 - 정확도 : **mAP50 ≥ 0.92, Precision ≥ 0.93, Recall ≥ 0.92**  
 - 성능 : **처리속도 ≤ 200ms/frame, 처리량 ≥ 10 FPS**  
 
 
-## ⚙️ 기능 목표
+###  기능 목표
 - 맛 분류 : 바나나 / 딸기 / 메로나  
 - 불량 탐지 : 뚜껑 불량, 몸체 손상 탐지  
 - 실시간 분석 및 대시보드 리포트 자동화  
 
 
-## 🗂 데이터·모델 목표
+### 데이터·모델 목표
 - 클래스별 ≥ **2,000장**  
 - **YOLOv8 기반 학습**  
 
 
-## 🖥 시스템 목표
+###  시스템 목표
 - **Spring Boot + Raspberry Pi (Flask 연동)**  
 - **JWT 보안·권한 관리**
 
 ---
-
-
-## 📂 주요 기능
-
-창고 관리 시스템 : DB 기반 로직 처리 + 3D UI 시각화
-
-프론트엔드 : React 기반 UI/UX 개발
-
-대시보드 : 실시간 차트, 일정 관리, 알림 기능
-
-보안 : JWT 인증, XSS 방어
-
-하드웨어 제어 : 라즈베리파이 + 컨베이어벨트, 모바일 환경
-
----
-
 
 # 🚀 시작 가이드 (Smart Milk Factory)
 
@@ -147,4 +145,150 @@ Flask (YOLOv8) → 불량 탐지 후 JSON 반환
 
 Spring Boot → DB 저장 및 대시보드 API 제공
 
-React Frontend → KPI 차트 & 3D 창고 시각화
+React Frontend → KPI 차트 & 3D 창고 시각화  
+```
+---
+
+
+## 🐄 기술 스텍 (Smart Milk Factory)
+
+## Environment
+![VSCode](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+
+## Config
+![NPM](https://img.shields.io/badge/NPM-CB3837?style=for-the-badge&logo=npm&logoColor=white)
+
+
+
+## Development
+![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![YOLOv8](https://img.shields.io/badge/YOLOv8-00FFFF?style=for-the-badge&logo=opencv&logoColor=black)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white)
+![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
+
+## Communication & Collaboration
+![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=for-the-badge&logo=confluence&logoColor=white)
+![Google Sheets](https://img.shields.io/badge/Google%20Sheets-34A853?style=for-the-badge&logo=googlesheets&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+
+---
+## 📂 주요 기능
+
+창고 관리 시스템 : DB 기반 로직 처리 + 3D UI 시각화
+
+프론트엔드 : React 기반 UI/UX 개발
+
+대시보드 : 실시간 차트, 일정 관리, 알림 기능
+
+보안 : JWT 인증, XSS 방어
+
+하드웨어 제어 : 라즈베리파이 + 컨베이어벨트, 모바일 환경
+
+---
+## 📁 설계 문서
+
+<!-- 설계 문서: 화살표(▶) 클릭하면 펼쳐짐 -->
+<details>
+  <summary><b>📐 설계 문서 보기</b> 시퀀스 다이어그램, ERD, WBS, 요구사항 정의서, 클래스 다이어그램)</summary>
+
+  <br>
+
+
+  ### 🗄 요구사항 정의서 & WBS
+ <img width="3551" height="1585" alt="image" src="https://github.com/user-attachments/assets/e21808f0-cba1-4d38-aa8b-74606165aad6" />
+<img width="3551" height="1584" alt="image" src="https://github.com/user-attachments/assets/4b3d549f-1405-4616-a103-06d47bdb61b9" />
+
+  ### 📚 ERD & 클래스 다이어그램
+  <img width="1205" height="1367" alt="image" src="https://github.com/user-attachments/assets/8ee6d04e-085b-4f98-8e5a-12d4478cf2f9" />
+ <img width="3551" height="1611" alt="image" src="https://github.com/user-attachments/assets/b3ec5112-8b86-4940-ac5c-f4b8bb81fe7c" />
+
+  ### 🔧 시퀀스 다이어그램 (PlantUML / Mermaid)
+  ```mermaid
+  sequenceDiagram
+    participant Pi as Raspberry Pi
+    participant AI as Flask/YOLOv8
+    participant BE as Spring Boot
+    participant FE as React
+    Pi->>AI: 이미지 업로드
+    AI-->>BE: 탐지 결과 JSON
+    BE-->>FE: 대시보드 업데이트
+```
+ ### 진행 절차
+ <img width="1820" height="810" alt="image" src="https://github.com/user-attachments/assets/7305b19f-17e8-4a05-829a-480ae76f2235" />
+</details>
+
+## 🖼 화면 예시
+
+<details>
+  <summary><b>📊 대시보드 페이지</b></summary>
+  <br/>
+  <div align="center">
+   <img width="1838" height="601" alt="image" src="https://github.com/user-attachments/assets/87550299-4282-4444-9cac-188a5c946fe0" />
+  <img width="1789" height="590" alt="image" src="https://github.com/user-attachments/assets/9fb35e1c-a50f-41cf-8bcd-6d339de92f15" />
+
+  </div>
+  <br/>
+  - 실시간 차트 및 납품 기록 표시
+</details>
+
+
+<details>
+  <summary><b>📑 로그 페이지</b></summary>
+  <br/>
+  <div align="center">
+    <img width="1166" height="660" alt="image" src="https://github.com/user-attachments/assets/701e2f40-f233-4b08-97cc-5c713252fc0d" />
+
+  </div>
+  <br/>
+  - 불량 탐지 및 시스템 이벤트 기록  
+  - 사용자 및 권한 로그 확인  
+</details>
+
+<details>
+  <summary><b>🏭 창고 페이지</b></summary>
+  <br/>
+  <div align="center">
+    <img width="1042" height="829" alt="image" src="https://github.com/user-attachments/assets/71bf2170-fa6c-456e-9f22-74e6955a6220" />
+    <img width="962" height="778" alt="image" src="https://github.com/user-attachments/assets/92b45355-052c-492d-bc6a-e6936078647f" />
+    <img width="895" height="745" alt="image" src="https://github.com/user-attachments/assets/4e2ce58c-0c98-420e-9c0e-b8a4eed6e046" />
+
+  </div>
+  <br/>
+  - React-Three-Fiber 기반 3D 시각화  
+  - A/B/C/D 구역 및 Defect Zone 표시  
+</details>
+
+
+
+<details>
+  <summary><b>⚙️ 설정 페이지</b></summary>
+  <br/>
+  <div align="center">
+    <img width="1797" height="788" alt="image" src="https://github.com/user-attachments/assets/268e732f-c1e9-4fd4-9b32-23ea18bceb47" />
+
+  </div>
+  <br/>
+  - 계정 및 권한 관리  
+  - 알림 정책 및 파라미터 설정  
+</details>
+
+
+
+<details>
+  <summary><b>📱 모바일 웹 페이지</b></summary>
+  <br/>
+  <div align="center">
+    <img width="1769" height="707" alt="image" src="https://github.com/user-attachments/assets/31892aac-b1ff-4715-8652-5e5b7cb134db" />
+
+  </div>
+  <br/>
+  - 반응형 UI 지원  
+  - 모바일 환경에서 주요 기능 확인 가능  
+</details>
