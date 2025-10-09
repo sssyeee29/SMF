@@ -16,8 +16,8 @@
 ---
 
 
-## <img width="286" height="175" alt="image" src="https://github.com/user-attachments/assets/03c185e0-2d1c-4ec1-aee6-856e239b7921" />
-개발 배경: "불량 검출도 이젠 AI"
+## 개발 배경: "불량 검출도 이젠 AI"
+<img width="124" height="92" alt="image" src="https://github.com/user-attachments/assets/5b3d955c-b708-4e08-92e1-114dc8e6b64b" />
 
 식품 산업에서 불량 제품은 소비자 신뢰를 떨어뜨리고 기업에 손실을 초래하는 중요한 문제입니다.  
 특히 신선식품인 우유는 유통 과정에서 포장 손상이나 찌그러짐 등 다양한 불량이 발생할 수 있습니다.  
