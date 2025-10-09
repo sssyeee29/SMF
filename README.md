@@ -9,7 +9,7 @@
 대량 생산 환경에 적합하지 않습니다. 
 이에 따라 AI와 컴퓨터 비전 기술을 활용해 불량을 실시간으로 탐지하고
 자동화하는 스마트 밀크 프로젝트를 기획하게 되었습니다. 
-<img width="1866" height="951" alt="image" src="https://github.com/user-attachments/assets/64a29136-fad1-4369-bb44-0be01eb257cb" />
+
 
 
 👨‍👩‍👧‍👦 팀 소개
